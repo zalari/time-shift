@@ -1,0 +1,32 @@
+@use '@styles/utils' as utils;
+
+// prettier-ignore
+:host {
+  ---time-shift-navigation-link-passive-background-color: var(--time-shift-navigation-link-passive-background-color, transparent);
+  ---time-shift-navigation-link-hover-background-color: var(--time-shift-navigation-link-hover-background-color, var(--time-shift-color-grey-085));
+  ---time-shift-navigation-link-active-background-color: var(--time-shift-navigation-link-active-background-color, var(--time-shift-color-grey-080));
+}
+
+.title,
+a {
+  padding: utils.space();
+  font-size: 1.5rem;
+}
+
+.title {
+  font-weight: 700;
+}
+
+a {
+  color: inherit;
+  text-decoration: 0;
+  background-color: var(---time-shift-navigation-link-passive-background-color);
+
+  &:not(.active):hover {
+    background-color: var(---time-shift-navigation-link-hover-background-color);
+  }
+
+  &.active {
+    background-color: var(---time-shift-navigation-link-active-background-color);
+  }
+}

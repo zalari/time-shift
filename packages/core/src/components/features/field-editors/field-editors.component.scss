@@ -1,0 +1,38 @@
+@use '@styles/utils' as utils;
+
+:host,
+ul {
+  display: flex;
+  flex-direction: column;
+  gap: utils.space();
+}
+
+ul {
+  margin: 0;
+  padding: 0 0 0 utils.space();
+
+  list-style: none;
+  border-left: 1px solid currentColor;
+}
+
+header,
+li {
+  display: flex;
+  flex-direction: row;
+  gap: utils.space();
+
+  :first-child {
+    flex: 1 1 auto;
+  }
+
+  time-shift-button {
+    &::part(button) {
+      // input font-size * line-height + padding-top + padding-bottom
+      height: calc(1.3rem * 1.15 + 14px + 13px);
+    }
+  }
+
+  [label] ~ time-shift-button {
+    padding-top: 17px;
+  }
+}

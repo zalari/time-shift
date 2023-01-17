@@ -1,0 +1,26 @@
+# https://answers.netlify.com/t/using-pnpm-and-pnpm-workspaces/2759/17
+[build.environment]
+NPM_FLAGS = "--version"
+
+[build]
+command = """
+    pnpm install --recursive &&
+    pnpm run --recursive --filter @time-shift/core... build
+  """
+publish = "dist"
+
+[[redirects]]
+from = "/*"
+status = 200
+to = "/index.html"
+
+[functions]
+directory = "dist/functions/"
+
+[dev]
+autoLaunch = false
+command = "ts-node esbuild.config.ts --watch"
+framework = "#custom"
+port = 3500
+publish = "dist"
+targetPort = 3400

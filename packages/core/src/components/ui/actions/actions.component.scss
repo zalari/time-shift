@@ -1,0 +1,12 @@
+@use '@styles/utils' as utils;
+
+:host {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: utils.space();
+}
+
+slot[name='end']::slotted(*) {
+  margin-left: auto;
+}

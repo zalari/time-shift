@@ -1,0 +1,37 @@
+@use '@styles/utils.scss' as utils;
+@use 'input.component.mixin.scss' as input;
+
+@include input.base('input', 'textarea', 'label::after') {
+  // enable auto-grow for (multiline) textarea
+  // https://codepen.io/chriscoyier/pen/XWKEVLy
+  &::after {
+    content: attr(data-replicated-value) ' ';
+    white-space: pre-wrap;
+    visibility: hidden;
+  }
+
+  textarea {
+    // relates to the label::after auto-grow implementation
+    // https://codepen.io/chriscoyier/pen/XWKEVLy
+    resize: none;
+    overflow: hidden;
+
+    // alignment of contents before and after should not be
+    // centered if input is multiline
+    & ~ .before,
+    & ~ .after {
+      align-self: start;
+    }
+  }
+
+  // custom style for the max-length hint
+  .hint {
+    justify-self: end;
+    margin: 0 utils.space() utils.space() 0;
+
+    color: var(---time-shift-input-passive-placeholder);
+    font-size: 1.1rem;
+    line-height: 1;
+    white-space: nowrap;
+  }
+}

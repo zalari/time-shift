@@ -1,0 +1,25 @@
+@use '~modern-normalize/modern-normalize.css';
+
+:root {
+  --time-shift-base-space: 10px;
+
+  --time-shift-color-grey-100: #fff;
+  --time-shift-color-grey-095: hsl(0, 0%, 95%);
+  --time-shift-color-grey-090: hsl(0, 0%, 90%);
+  --time-shift-color-grey-085: hsl(0, 0%, 85%);
+  --time-shift-color-grey-080: hsl(0, 0%, 80%);
+  --time-shift-color-grey-070: hsl(0, 0%, 70%);
+  --time-shift-color-grey-055: hsl(0, 0%, 55%);
+  --time-shift-color-grey-040: hsl(0, 0%, 40%);
+  --time-shift-color-grey-000: #000;
+
+  --time-shift-color-white: var(--time-shift-color-grey-100);
+  --time-shift-color-black: var(--time-shift-color-grey-000);
+  --time-shift-color-error: #dc1c2f;
+  --time-shift-color-warn: #d9a448;
+  --time-shift-color-okay: #56dc1c;
+}
+
+html {
+  font-size: 10px;
+}

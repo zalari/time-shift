@@ -1,0 +1,9 @@
+{
+  "$schema": "./config.schema.json",
+  "urls": {
+    "corsProxy": "/.netlify/functions/proxy?url="
+  },
+  "database": {
+    "name": "time-shift"
+  }
+}

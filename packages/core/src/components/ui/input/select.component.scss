@@ -1,0 +1,9 @@
+@use 'input.component.mixin.scss' as input;
+
+@include input.base('select') {
+  select {
+    // extend the select across the after icons to allow the
+    // user to click on the arrow to open the dropdown
+    grid-area: center / center / center / after;
+  }
+}

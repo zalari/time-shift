@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "declaration": true,
+    "lib": ["es2017", "dom"],
+    "module": "es2022",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "strict": true,
+    "target": "es2017"
+  },
+  "include": ["src"],
+  "ts-node": {
+    "esm": true
+  }
+}

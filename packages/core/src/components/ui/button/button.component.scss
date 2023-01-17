@@ -1,0 +1,9 @@
+@use '@styles/utils' as utils;
+
+button {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: utils.space(0.5);
+  padding: utils.space(0.5) utils.space(1);
+}

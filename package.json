@@ -1,0 +1,14 @@
+{
+  "name": "time-shift",
+  "version": "0.0.1",
+  "description": "Synchronizes work log time entries.",
+  "author": "david.enke@zalari.de",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "pnpm": {
+    "overrides": {
+      "esbuild": "0.17.2"
+    }
+  }
+}

@@ -1,0 +1,22 @@
+@use '@styles/utils' as utils;
+
+:host {
+  ---time-shift-connection-color-initial: var(--time-shift-color-grey-080);
+  ---time-shift-connection-color-loading: var(---time-shift-connection-color-initial);
+  ---time-shift-connection-color-success: var(--time-shift-color-okay);
+  ---time-shift-connection-color-error: var(--time-shift-color-error);
+  ---time-shift-connection-size: var(--time-shift-connection-size, #{utils.space(0.75)});
+}
+
+:host {
+  display: block;
+  height: var(---time-shift-connection-size);
+  width: var(---time-shift-connection-size);
+  border-radius: 50%;
+}
+
+@each $status in 'initial', 'loading', 'success', 'error' {
+  :host([status='#{$status}']) {
+    background-color: var(---time-shift-connection-color-#{$status});
+  }
+}

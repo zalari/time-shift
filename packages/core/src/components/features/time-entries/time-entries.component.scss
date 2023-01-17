@@ -1,0 +1,33 @@
+@use '@styles/utils' as utils;
+
+// prettier-ignore
+:host {
+  ---time-shift-time-entries-odd-background: var(--time-shift-time-entries-odd-background, var(--time-shift-color-grey-095));
+}
+
+ul {
+  display: table;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  display: table-row;
+
+  span {
+    display: table-cell;
+    padding: utils.space();
+
+    font-size: 1.3rem;
+  }
+
+  &:nth-child(odd) span {
+    background-color: var(---time-shift-time-entries-odd-background);
+  }
+
+  &:last-of-type span {
+    border-bottom: none;
+  }
+}

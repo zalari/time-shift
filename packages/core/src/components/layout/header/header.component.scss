@@ -1,0 +1,10 @@
+@use '@styles/utils' as utils;
+
+:host {
+  display: block;
+  padding: 0 0 0 utils.space();
+}
+
+time-shift-actions {
+  gap: 0;
+}

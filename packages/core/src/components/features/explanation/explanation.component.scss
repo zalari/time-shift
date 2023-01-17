@@ -1,0 +1,25 @@
+@use '@styles/utils' as utils;
+
+:host {
+  display: block;
+  max-width: utils.space(45);
+
+  font-size: 1.4rem;
+  line-height: 1.25;
+}
+
+h1 {
+  margin-top: 0;
+}
+
+dt {
+  font-weight: 700;
+
+  dd ~ & {
+    margin-top: utils.space();
+  }
+}
+
+dd {
+  margin: 0;
+}

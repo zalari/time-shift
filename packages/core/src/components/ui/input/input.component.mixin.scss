@@ -1,0 +1,208 @@
+@use 'sass:string' as string;
+@use '@styles/utils.scss' as utils;
+
+/// This mixin is used to apply the same styles to multiple inputs.
+/// Provide the selector(s) for the input elements as arguments.
+/// All passed content declarations will be scoped within the wrapping
+/// label element.
+///
+/// The label will be styled as a grid, so the input element states can
+/// be addressed by the general sibling selector `~` to style all
+/// following elements dependently (e.g. `input:disabled ~ .hint`.
+///
+/// For validity checks the label will carry an `.invalid` class if the
+/// validation failed at the point the user defined with `validate-on`:
+/// e.g. `&.invalid :not(:disabled) ~ .message { ... }`.
+///
+/// Import it declaring `@use 'input.mixin.scss' as input;` and use it
+/// like `@include input.base('input', 'textarea', 'label::after')`.
+@mixin base($selectors...) {
+  // prepare a sanitized selector list
+  $selector: ();
+  @each $s in $selectors {
+    $selector: append($selector, string.unquote($s), comma);
+  }
+
+  // prettier-ignore
+  :host {
+    ---time-shift-input-passive-background: var(--time-shift-input-passive-background, var(--time-shift-color-white));
+    ---time-shift-input-passive-border: var(--time-shift-input-passive-border, var(--time-shift-color-grey-055));
+    ---time-shift-input-passive-placeholder: var(--time-shift-input-passive-placeholder, var(--time-shift-color-grey-040));
+    ---time-shift-input-passive-color: var(--time-shift-input-passive-color, var(--time-shift-color-black));
+    ---time-shift-input-passive-hint: var(--time-shift-input-passive-hint, var(--time-shift-color-black));
+  
+    ---time-shift-input-invalid-background: var(--time-shift-input-invalid-background, var(--time-shift-color-white));
+    ---time-shift-input-invalid-border: var(--time-shift-input-invalid-border, var(--time-shift-color-error));
+    ---time-shift-input-invalid-placeholder: var(--time-shift-input-invalid-placeholder, var(--time-shift-color-grey-040));
+    ---time-shift-input-invalid-color: var(--time-shift-input-invalid-color, var(--time-shift-color-black));
+    ---time-shift-input-invalid-hint: var(--time-shift-input-invalid-hint, var(--time-shift-color-error));
+  
+    ---time-shift-input-disabled-background: var(--time-shift-input-disabled-background, var(--time-shift-color-white));
+    ---time-shift-input-disabled-border: var(--time-shift-input-disabled-border, var(--time-shift-color-grey-085));
+    ---time-shift-input-disabled-placeholder: var(--time-shift-input-disabled-placeholder, var(--time-shift-color-grey-085));
+    ---time-shift-input-disabled-color: var(--time-shift-input-disabled-color, var(--time-shift-color-grey-085));
+    ---time-shift-input-disabled-hint: var(--time-shift-input-disabled-hint, var(--time-shift-color-grey-085));
+
+    ---time-shift-input-font-size: var(--time-shift-input-font-size, 1.3rem);
+    ---time-shift-input-line-height: var(--time-shift-input-line-height, 1.14);
+    ---time-shift-input-spacing-center: var(--time-shift-input-spacing-center, #{utils.space()});
+    ---time-shift-input-spacing-top: var(--time-shift-input-spacing-top, 1.4rem);
+    ---time-shift-input-spacing-bottom: var(--time-shift-input-spacing-bottom, 1.3rem);
+    ---time-shift-input-spacing-horizontal: var(--time-shift-input-spacing-horizontal, 1.6rem);
+  }
+
+  label {
+    // using a grid allows us to be independent from the semantics of the input,
+    // so the input element can be declared first, allowing us to use the global
+    // sibling selector (~) to style all following elements dependent on the
+    // input (pseudo) states (e.g. :invalid, :disabled, :required)
+    // https://stackblitz.com/edit/css-grid-input
+    display: grid;
+    grid-template-columns: min-content 1fr min-content;
+    grid-template-areas:
+      'above above above'
+      'before center after'
+      'auxiliary auxiliary auxiliary'
+      'below below below';
+
+    font-size: var(---time-shift-input-font-size);
+    line-height: var(---time-shift-input-line-height);
+  }
+
+  #{$selector} {
+    grid-area: center;
+    padding: var(---time-shift-input-spacing-top) var(---time-shift-input-spacing-horizontal)
+      var(---time-shift-input-spacing-bottom);
+
+    box-sizing: border-box;
+    width: 100%;
+
+    appearance: none;
+    background: 0;
+    border: 0;
+    transition: color 0.2s ease;
+
+    font: inherit;
+    line-height: inherit;
+    color: var(---time-shift-input-passive-color);
+    outline: 0;
+
+    &:disabled {
+      color: var(---time-shift-input-disabled-color);
+    }
+  }
+
+  .before,
+  .after {
+    display: flex;
+    flex-direction: row;
+    gap: var(---time-shift-input-spacing-horizontal);
+
+    align-self: center;
+    pointer-events: none;
+
+    :disabled ~ & {
+      opacity: 0.3;
+    }
+  }
+
+  .before {
+    grid-area: before;
+
+    &:not(.empty) {
+      margin-top: var(---time-shift-input-spacing-top);
+      margin-bottom: var(---time-shift-input-spacing-bottom);
+      margin-left: var(---time-shift-input-spacing-horizontal);
+    }
+  }
+
+  .after {
+    grid-area: after;
+
+    &:not(.empty) {
+      margin-top: var(---time-shift-input-spacing-top);
+      margin-right: var(---time-shift-input-spacing-horizontal);
+      margin-bottom: var(---time-shift-input-spacing-bottom);
+    }
+  }
+
+  .hint {
+    grid-area: auxiliary;
+  }
+
+  .label,
+  .message {
+    transition: color 0.2s ease;
+  }
+
+  .label {
+    grid-area: above;
+    padding-bottom: utils.space(0.25);
+    text-transform: uppercase;
+    color: var(---time-shift-input-passive-color);
+
+    :disabled ~ & {
+      color: var(---time-shift-input-disabled-color);
+    }
+
+    .invalid :not(:disabled) ~ & {
+      color: var(---time-shift-input-invalid-color);
+    }
+
+    :required ~ &:after {
+      content: '*';
+    }
+  }
+
+  .below {
+    grid-area: below;
+    display: flex;
+    flex-direction: column;
+    gap: utils.space(0.5);
+  }
+
+  .message {
+    padding-top: utils.space(0.5);
+    color: var(---time-shift-input-passive-message);
+
+    :disabled ~ & {
+      color: var(---time-shift-input-disabled-message);
+    }
+
+    .invalid :not(:disabled) ~ & {
+      color: var(---time-shift-input-invalid-message);
+    }
+  }
+
+  .border {
+    // spans the border around the input and its slots,
+    // but not around the hint, label and message
+    grid-area: before / before / auxiliary / after;
+
+    position: relative;
+    z-index: -1;
+
+    background: var(---time-shift-input-passive-background);
+    border: 1px solid var(---time-shift-input-passive-border);
+
+    transition: 0.2s ease;
+    transition-property: background-color, border-color;
+    pointer-events: none;
+
+    :disabled ~ & {
+      background: var(---time-shift-input-disabled-background);
+      border-color: var(---time-shift-input-disabled-border);
+    }
+
+    .invalid :not(:disabled) ~ & {
+      background: var(---time-shift-input-invalid-background);
+      border-color: var(---time-shift-input-invalid-border);
+    }
+  }
+
+  // everything passed as content to the mixin
+  // will be scoped within the label selector
+  label {
+    @content;
+  }
+}

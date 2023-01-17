@@ -1,0 +1,16 @@
+@use '@styles/utils' as utils;
+
+header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: utils.space();
+}
+
+slot[name='actions']::slotted(*) {
+  margin-left: auto;
+}
+
+h2 {
+  margin: 0;
+}

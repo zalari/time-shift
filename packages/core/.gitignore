@@ -1,0 +1,7 @@
+.idea/
+.vscode/
+
+.netlify/
+node_modules/
+dist/
+src/config.schema.json

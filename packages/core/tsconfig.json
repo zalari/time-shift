@@ -1,0 +1,21 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "declaration": true,
+    "experimentalDecorators": true,
+    "lib": ["es2017", "dom"],
+    "module": "es2022",
+    "moduleResolution": "node",
+    "outDir": "dist",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "es2017"
+  },
+  "ts-node": {
+    "esm": true,
+    "files": true
+  }
+}

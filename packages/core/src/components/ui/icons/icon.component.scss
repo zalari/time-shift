@@ -1,0 +1,23 @@
+:host {
+  ---time-shift-icon-color: var(--time-shift-icon-color, currentColor);
+  ---time-shift-icon-size: var(--time-shift-icon-size, 1.6rem);
+}
+
+:host {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  &,
+  // we're lazy, so we won't repeat setting
+  // the dimensions for every nested svg
+  ::slotted(svg) {
+    // enforce color inheritance
+    color: var(---time-shift-icon-color);
+    // set sizes to container and svg and let the svg positioning magic
+    // happen, which consists of setting a `viewbox` in interaction with
+    // the `preserveAspectRatio` attribute
+    width: var(---time-shift-icon-size);
+    height: var(---time-shift-icon-size);
+  }
+}

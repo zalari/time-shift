@@ -1,0 +1,92 @@
+@use 'input.component.mixin.scss' as input;
+
+@include input.base('input') {
+  ---time-shift-input-spacing-top: 0.7rem;
+
+  ---time-shift-switch-passive-align: var(--time-shift-switch-passive-align, flex-start);
+  ---time-shift-switch-passive-background: var(--time-shift-switch-passive-background, transparent);
+  ---time-shift-switch-passive-border: var(--time-shift-switch-passive-border, #767676);
+  ---time-shift-switch-passive-color: var(--time-shift-switch-passive-color, #fff);
+
+  ---time-shift-switch-active-align: var(--time-shift-switch-active-align, flex-end);
+  ---time-shift-switch-active-background: var(--time-shift-switch-active-background, #efefef);
+  ---time-shift-switch-active-border: var(--time-shift-switch-active-border, #767676);
+  ---time-shift-switch-active-color: var(--time-shift-switch-passive-color, #fff);
+
+  ---time-shift-switch-disabled-background: var(
+    --time-shift-switch-disabled-background,
+    rgba(239, 239, 239, 0.3)
+  );
+  ---time-shift-switch-disabled-color: var(--time-shift-switch-disabled-color, rgba(239, 239, 239, 0.3));
+  ---time-shift-switch-disabled-border: var(--time-shift-switch-disabled-border, rgba(118, 118, 118, 0.3));
+
+  & {
+    position: relative;
+  }
+
+  input {
+    grid-area: before;
+    appearance: checkbox;
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    z-index: -1;
+    pointer-events: none;
+  }
+
+  .placeholder {
+    grid-area: center / center / center / after;
+    padding: var(---time-shift-input-spacing-top) var(---time-shift-input-spacing-horizontal)
+      var(---time-shift-input-spacing-bottom);
+  }
+
+  .border {
+    display: none;
+  }
+}
+
+.toggle {
+  grid-area: before;
+
+  display: flex;
+  flex-direction: column;
+  align-items: var(---time-shift-switch-align);
+
+  width: 2.5em;
+  margin: var(---time-shift-input-spacing-top) 0 var(---time-shift-input-spacing-bottom);
+
+  background-color: var(---time-shift-switch-background);
+  border: 1px solid var(---time-shift-switch-border);
+  border-radius: 1em;
+
+  &::after {
+    content: '';
+    display: block;
+    height: 1em;
+    width: 1em;
+
+    background-color: var(---time-shift-switch-color);
+    border: 1px solid var(---time-shift-switch-border);
+    border-radius: 50%;
+  }
+
+  input:enabled:not(:checked) ~ & {
+    ---time-shift-switch-align: var(---time-shift-switch-passive-align);
+    ---time-shift-switch-background: var(---time-shift-switch-passive-background);
+    ---time-shift-switch-border: var(---time-shift-switch-passive-border);
+    ---time-shift-switch-color: var(---time-shift-switch-passive-color);
+  }
+
+  input:enabled:checked ~ & {
+    ---time-shift-switch-align: var(---time-shift-switch-active-align);
+    ---time-shift-switch-background: var(---time-shift-switch-active-background);
+    ---time-shift-switch-border: var(---time-shift-switch-active-border);
+    ---time-shift-switch-color: var(---time-shift-switch-active-color);
+  }
+
+  input:disabled ~ & {
+    ---time-shift-switch-background: var(---time-shift-switch-disabled-background);
+    ---time-shift-switch-border: var(---time-shift-switch-disabled-border);
+    ---time-shift-switch-color: var(---time-shift-switch-disabled-color);
+  }
+}

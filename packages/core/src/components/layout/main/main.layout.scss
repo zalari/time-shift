@@ -1,0 +1,46 @@
+@use '@styles/utils' as utils;
+
+:host {
+  ---time-shift-layout-main-aside-width: var(--time-shift-layout-main-aside-width, #{utils.space(22)});
+}
+
+:host {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+}
+
+header {
+  flex-grow: 0;
+  background-color: var(--time-shift-color-grey-070);
+}
+
+div {
+  flex: 1 1 auto;
+  min-height: 0;
+
+  display: flex;
+  flex-direction: row;
+}
+
+aside {
+  flex: 0 1 var(---time-shift-layout-main-aside-width);
+
+  display: flex;
+  flex-direction: column;
+  gap: utils.space(2);
+
+  box-sizing: border-box;
+  padding: utils.space(2);
+
+  background-color: var(--time-shift-color-grey-090);
+}
+
+main {
+  flex: 1 1 auto;
+  box-sizing: border-box;
+  padding: utils.space(2);
+  overflow: scroll;
+}
