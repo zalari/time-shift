@@ -43,7 +43,6 @@ export * from './utils/config.utils';
 export * from './utils/converter.utils';
 export * from './utils/cors.utils';
 export * from './utils/database.utils';
-export * from './utils/field.utils';
 export * from './utils/form.utils';
 export * from './utils/router.utils';
 export * from './utils/type.utils';

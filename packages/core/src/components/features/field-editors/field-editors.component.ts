@@ -1,4 +1,4 @@
-import type { AdapterListFields, AdapterListValues } from '@time-shift/common';
+import type { AdapterQueryFields, AdapterQueryValues } from '@time-shift/common';
 import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement, eventOptions, property, queryAll, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
@@ -24,10 +24,10 @@ export class FieldEditors extends LitElement {
   disabled = false;
 
   @property({ type: Object })
-  fields!: AdapterListFields;
+  fields!: AdapterQueryFields;
 
   @property({ type: Object })
-  values: AdapterListValues<AdapterListFields> = {};
+  values: AdapterQueryValues<AdapterQueryFields> = {};
 
   @property({ type: String, reflect: true })
   addLabel = 'Add filter';

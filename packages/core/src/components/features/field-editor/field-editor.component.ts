@@ -39,11 +39,11 @@ export class FieldEditor extends LitElement {
   @property({ reflect: true, type: Boolean })
   required = false;
 
-  @property({ reflect: true })
-  value?: AdapterFieldTypeMap[typeof this.type];
+  @property({ reflect: true, type: Array })
+  options: SelectOption<AdapterFieldTypeMap[typeof this.type]>[] = [];
 
   @property({ reflect: true })
-  options: SelectOption<typeof this.type>[] = [];
+  value?: AdapterFieldTypeMap[typeof this.type];
 
   renderBoolean(): TemplateResult {
     return html`
@@ -151,8 +151,7 @@ export class FieldEditor extends LitElement {
         ['date', () => this.renderDate()],
         ['number', () => this.renderNumber()],
         ['string', () => this.renderString()],
-        ['numbers', () => this.renderSelect(Number)],
-        ['strings', () => this.renderSelect(String)],
+        ['select', () => this.renderSelect(String)],
         ['url', () => this.renderUrl()],
       ])}
     `;

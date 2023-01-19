@@ -21,7 +21,7 @@ const handler: Handler = async ({ rawUrl, headers, httpMethod, body: rawBody }: 
     delete rawHeaders.host;
 
     // add custom user agent
-    if (searchParams.get('ua')) {
+    if (searchParams.has('ua')) {
       rawHeaders['user-agent'] = searchParams.get('ua')!;
     }
 

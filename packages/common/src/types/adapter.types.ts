@@ -74,12 +74,12 @@ export type AdapterConfigFieldTypeMap = {
   string: string;
   number: number;
   boolean: boolean;
+  select: string;
   url: string;
 };
 
-export type AdapterConfigField<T extends keyof AdapterConfigFieldTypeMap> = AdapterFieldCommon & {
-  type: T;
-};
+export type AdapterConfigField<T extends keyof AdapterConfigFieldTypeMap> = AdapterFieldCommon &
+  (T extends 'select' ? { type: T; values: AdapterConfigFieldTypeMap[T][] } : { type: T });
 
 /**
  * Config of an adapter instance.

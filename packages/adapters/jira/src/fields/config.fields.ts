@@ -1,6 +1,13 @@
 import type { AdapterConfigFields, AdapterConfigValues } from '@time-shift/common';
 
 export const config = {
+  apiVersion: {
+    type: 'select',
+    label: 'API version',
+    description:
+      'The version of the API to use. For Jira Cloud version 3 can be used. Most self hosted Jira instances provide version 2.',
+    values: ['2', '3'],
+  },
   apiUrl: {
     type: 'url',
     label: 'API url',

@@ -155,6 +155,9 @@ export class ConnectionEdit extends LitElement {
                       label="${field.label}"
                       message="${ifDefined(field.description)}"
                       placeholder="${ifDefined(field.placeholder)}"
+                      .options="${'values' in field
+                        ? field.values.map(v => ({ value: v, label: v }))
+                        : []}"
                       .value="${this.data?.config[name as keyof ConnectionData]}"
                     ></time-shift-field-editor>
                   `,
@@ -164,10 +167,16 @@ export class ConnectionEdit extends LitElement {
         </time-shift-fieldset>
 
         <time-shift-actions>
-          <time-shift-button type="submit" ?disabled="${!this.formValid}">${this.label}</time-shift-button>
+          <time-shift-button type="submit" ?disabled="${!this.formValid}"
+            >${this.label}</time-shift-button
+          >
           <slot name="actions"></slot>
           <slot name="actions:end" slot="end"></slot>
-          <time-shift-connection-test slot="end" ?disabled="${!this.formValid}" .data="${this.data}">
+          <time-shift-connection-test
+            slot="end"
+            ?disabled="${!this.formValid}"
+            .data="${this.data}"
+          >
             Test connection
           </time-shift-connection-test>
         </time-shift-actions>
