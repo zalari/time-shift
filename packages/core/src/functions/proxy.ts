@@ -6,7 +6,7 @@ const getRawHeaders = (headers: HandlerEvent['headers'] | Headers): Record<strin
     .reduce((all, [key, value]) => ({ ...all, [key]: `${value}` }), {});
 };
 
-const handler: Handler = async ({ rawUrl, headers, httpMethod }: HandlerEvent) => {
+const handler: Handler = async ({ rawUrl, headers, httpMethod, body: rawBody }: HandlerEvent) => {
   // parse the url from the query params
   const { searchParams } = new URL(rawUrl);
   if (!searchParams.has('url')) {
@@ -20,10 +20,16 @@ const handler: Handler = async ({ rawUrl, headers, httpMethod }: HandlerEvent) =
     delete rawHeaders.connection;
     delete rawHeaders.host;
 
+    // add custom user agent
+    if (searchParams.get('ua')) {
+      rawHeaders['user-agent'] = searchParams.get('ua')!;
+    }
+
     // do the request
     const response = await fetch(searchParams.get('url')!, {
       headers: rawHeaders,
       method: httpMethod,
+      body: rawBody,
     });
 
     // gather result
