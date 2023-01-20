@@ -9,8 +9,22 @@ import styles from './time-entries.component.scss';
 export class TimeEntries extends LitElement {
   static override readonly styles = unsafeCSS(styles);
 
+  @property({ type: String, reflect: true })
+  locale: string = 'en';
+
   @property({ type: Array, reflect: true })
   entries: TimeEntry[] = [];
+
+  readonly dateFormat = new Intl.DateTimeFormat(this.locale, { dateStyle: 'medium' });
+  readonly timeFormat = new Intl.RelativeTimeFormat(this.locale, { style: 'short' });
+
+  formatMinutes(minutes: number): string {
+    return this.timeFormat
+      .formatToParts(minutes, 'minutes')
+      .filter((_, index) => index > 0)
+      .map(({ value }) => value)
+      .join('');
+  }
 
   render() {
     return html`
@@ -20,8 +34,8 @@ export class TimeEntries extends LitElement {
           this.entries,
           entry => html`
             <li>
-              <span>${entry.at.toLocaleDateString()}</span>
-              <span>${entry.minutes}</span>
+              <span>${this.dateFormat.format(entry.at)}</span>
+              <span>${this.formatMinutes(entry.minutes)}</span>
               <span>${entry.note}</span>
             </li>
           `,
