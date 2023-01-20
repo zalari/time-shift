@@ -1,0 +1,13 @@
+// prettier-ignore
+:host {
+  ---time-shift-pagination-spacing: var(--time-shift-pagination-spacing, var(--time-shift-base-space, 10px));
+}
+
+:host {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+
+  margin-top: var(---time-shift-pagination-spacing);
+  padding: var(---time-shift-pagination-spacing);
+}

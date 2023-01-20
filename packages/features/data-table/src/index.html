@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Time Shift Data Table Preview</title>
+  </head>
+  <body>
+    <time-shift-data-table items-per-page="3"></time-shift-data-table>
+
+    <script type="module" src="/index.js"></script>
+    <script>
+      document.addEventListener('DOMContentLoaded', async () => {
+        const mocks = await fetch('/index.json');
+        const { data, schema } = await mocks.json();
+        schema[0].formatter = value => `${value}kWh`;
+        schema[3].parser = value => value * 1.35962;
+        schema[3].formatter = value => `${Math.round(value)}`;
+        schema[4].formatter = value =>
+          value.toLocaleString(undefined, {
+            style: 'currency',
+            currency: 'EUR',
+          });
+        schema[6].formatter = value =>
+          value.toISOString().replace(/^(\d{4})-(\d{2})-(\d{2}).*$/, '$3.$2.$1');
+
+        document.querySelector('time-shift-data-table').setData(data, schema);
+      });
+    </script>
+  </body>
+</html>

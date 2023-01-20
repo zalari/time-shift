@@ -1,0 +1,112 @@
+{
+  "schema": [
+    {
+      "column": "battery",
+      "name": "Battery energy density",
+      "type": "number",
+      "sortable": true
+    },
+    {
+      "column": "make",
+      "name": "Make",
+      "type": "string",
+      "sortable": true
+    },
+    {
+      "column": "model",
+      "name": "Model",
+      "type": "string",
+      "sortable": true
+    },
+    {
+      "column": "power",
+      "name": "Power (kW)",
+      "type": "number",
+      "sortable": true
+    },
+    {
+      "column": "price",
+      "name": "Price (€)",
+      "type": "number",
+      "sortable": true
+    },
+    {
+      "column": "range",
+      "name": "Range (km)",
+      "type": "number",
+      "sortable": true
+    },
+    {
+      "align": "right",
+      "column": "release",
+      "name": "Release Date",
+      "type": "date",
+      "sortable": true
+    }
+  ],
+  "data": [
+    {
+      "battery": 22,
+      "make": "Renault",
+      "model": "TWINGO Z.E",
+      "power": 60,
+      "price": 21759,
+      "range": 270,
+      "release": "2020-08-15"
+    },
+    {
+      "battery": 52,
+      "make": "Renault",
+      "model": "ZOE",
+      "power": 80,
+      "price": 23297.47,
+      "range": 395,
+      "release": "2013-03-01"
+    },
+    {
+      "battery": 58,
+      "make": "VW",
+      "model": "ID.3 Pro",
+      "power": 150,
+      "price": 32094.95,
+      "range": 426,
+      "release": "2020-09-01"
+    },
+    {
+      "battery": 77,
+      "make": "VW",
+      "model": "ID.3 Pro S",
+      "power": 150,
+      "price": 40936.31,
+      "range": 549,
+      "release": "2020-09-01"
+    },
+    {
+      "battery": 42.2,
+      "make": "BMW",
+      "model": "i3",
+      "power": 125,
+      "price": 38016.81,
+      "range": 307,
+      "release": "2013-11-16"
+    },
+    {
+      "battery": 28.9,
+      "make": "Mini",
+      "model": "Cooper SE",
+      "power": 135,
+      "price": 31680.67,
+      "range": 234,
+      "release": "2020-03-01"
+    },
+    {
+      "battery": 58,
+      "make": "Tesla",
+      "model": "Model 3",
+      "power": 239,
+      "price": 42900,
+      "range": 409,
+      "release": "2019-02-01"
+    }
+  ]
+}

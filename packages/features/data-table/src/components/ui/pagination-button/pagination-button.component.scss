@@ -1,0 +1,104 @@
+// prettier-ignore
+:host {
+  ---time-shift-pagination-button-size: var(--time-shift-pagination-button-size, calc(var(--time-shift-base-space, 10px) * 4));
+  ---time-shift-pagination-button-spacing: var(--time-shift-pagination-button-spacing, calc(var(--time-shift-base-space, 10px) * 2));
+  ---time-shift-pagination-button-arrow-size: var(--time-shift-pagination-button-arrow-size, calc(var(--time-shift-base-space, 10px) * 1.1856625));
+  ---time-shift-pagination-button-font-size: var(--time-shift-pagination-button-font-size, 1.4rem);
+
+  ---time-shift-pagination-button-passive-arrow-width: var(--time-shift-pagination-button-passive-arrow-width, 2px);
+  ---time-shift-pagination-button-passive-color: var(--time-shift-pagination-button-passive-color, currentColor);
+  ---time-shift-pagination-button-passive-font-weight: var(--time-shift-pagination-button-passive-font-weight, 400);
+
+  ---time-shift-pagination-button-disabled-arrow-width: var(--time-shift-pagination-button-disabled-arrow-width, 2px);
+  ---time-shift-pagination-button-disabled-color: var(--time-shift-pagination-button-disabled-color, var(--time-shift-color-grey-055, #8c8c8c));
+  ---time-shift-pagination-button-disabled-font-weight: var(--time-shift-pagination-button-disabled-font-weight, 400);
+  
+  ---time-shift-pagination-button-hover-arrow-width: var(--time-shift-pagination-button-hover-arrow-width, 2px);
+  ---time-shift-pagination-button-hover-color: var(--time-shift-pagination-button-hover-color, currentColor);
+  ---time-shift-pagination-button-hover-font-weight: var(--time-shift-pagination-button-hover-font-weight, 400);
+
+  ---time-shift-pagination-button-active-arrow-width: var(--time-shift-pagination-button-active-arrow-width, 2px);
+  ---time-shift-pagination-button-active-color: var(--time-shift-pagination-button-active-color, currentColor);
+  ---time-shift-pagination-button-active-font-weight: var(--time-shift-pagination-button-active-font-weight, 700);
+}
+
+// prettier-ignore
+:host {
+  ---time-shift-pagination-button-arrow-width: var(---time-shift-pagination-button-passive-arrow-width);
+  ---time-shift-pagination-button-color: var(---time-shift-pagination-button-passive-color);
+  ---time-shift-pagination-button-font-weight: var(---time-shift-pagination-button-passive-font-weight);
+
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 0 var(---time-shift-pagination-button-spacing);
+  padding: 0;
+  height: var(---time-shift-pagination-button-size);
+  width: var(---time-shift-pagination-button-size);
+
+  background: 0;
+  color: var(---time-shift-pagination-button-color);
+
+  font-family: var(--time-shift-font-face-default);
+  font-size: var(---time-shift-pagination-button-font-size);
+  font-weight: var(---time-shift-pagination-button-font-weight);
+  line-height: var(---time-shift-pagination-button-size);
+  text-align: center;
+
+  cursor: pointer;
+  outline: 0;
+}
+
+// prettier-ignore
+:host([disabled]) {
+  ---time-shift-pagination-button-arrow-width: var(---time-shift-pagination-button-disabled-arrow-width);
+  ---time-shift-pagination-button-color: var(---time-shift-pagination-button-disabled-color);
+  ---time-shift-pagination-button-font-weight: var(---time-shift-pagination-button-disabled-font-weight);
+  cursor: default;
+}
+
+// prettier-ignore
+:host(:not([disabled])[active]) {
+  ---time-shift-pagination-button-arrow-width: var(---time-shift-pagination-button-active-arrow-width);
+  ---time-shift-pagination-button-color: var(---time-shift-pagination-button-active-color);
+  ---time-shift-pagination-button-font-weight: var(---time-shift-pagination-button-active-font-weight);
+}
+
+// prettier-ignore
+:host(:not([disabled]):not([active]):hover) {
+  ---time-shift-pagination-button-arrow-width: var(---time-shift-pagination-button-hover-arrow-width);
+  ---time-shift-pagination-button-color: var(---time-shift-pagination-button-hover-color);
+  ---time-shift-pagination-button-font-weight: var(---time-shift-pagination-button-hover-font-weight);
+}
+
+:host([arrow]) {
+  position: relative;
+
+  &::before {
+    content: '';
+
+    box-sizing: border-box;
+    display: block;
+    height: var(---time-shift-pagination-button-arrow-size);
+    width: var(---time-shift-pagination-button-arrow-size);
+
+    position: absolute;
+    top: 50%;
+    left: 50%;
+
+    border: solid var(---time-shift-pagination-button-color);
+    // prettier-ignore
+    border-width: var(---time-shift-pagination-button-arrow-width) var(---time-shift-pagination-button-arrow-width) 0 0;
+  }
+
+  slot {
+    display: none;
+  }
+}
+
+:host([arrow='left'])::before {
+  transform: translate(-50%, -50%) rotate(-135deg);
+}
+
+:host([arrow='right'])::before {
+  transform: translate(-50%, -50%) rotate(45deg);
+}

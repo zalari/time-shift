@@ -1,0 +1,128 @@
+// prettier-ignore
+:host {
+  ---time-shift-table-header-cell-spacing: var(--time-shift-table-header-cell-spacing, var(--time-shift-base-space, 10px));
+  ---time-shift-table-header-cell-color: var(--time-shift-table-header-cell-color, currentColor);
+  ---time-shift-table-header-cell-border-color: var(--time-shift-table-header-cell-border-color, currentColor);
+  ---time-shift-table-header-cell-border-width: var(--time-shift-table-header-cell-border-width, 1px);
+  ---time-shift-table-header-cell-font-size: var(--time-shift-table-header-cell-font-size, 1rem);
+  ---time-shift-table-header-cell-line-height: var(--time-shift-table-header-cell-line-height, 2.2rem);
+  
+  ---time-shift-table-header-cell-passive-background: var(--time-shift-table-header-cell-passive-background, transparent);
+  ---time-shift-table-header-cell-dragging-background: var(--time-shift-table-header-cell-dragging-background, var(--time-shift-color-GS-115, transparent));
+  ---time-shift-table-header-cell-dragged-over-background: var(--time-shift-table-header-cell-dragged-over-background, var(--time-shift-color-GS-80, transparent));
+
+  // internal properties
+  ---time-shift-table-header-cell-background: var(---time-shift-table-header-cell-passive-background);
+}
+
+:host {
+  display: table-cell;
+  padding: 0 var(---time-shift-table-header-cell-spacing);
+  position: relative;
+
+  background: var(---time-shift-table-header-cell-background);
+  border: solid var(---time-shift-table-header-cell-border);
+  border-width: var(---time-shift-table-header-cell-border-width) 0;
+  color: var(---time-shift-table-header-cell-color);
+
+  font-size: var(---time-shift-table-header-cell-font-size);
+  line-height: var(---time-shift-table-header-cell-line-height);
+  text-transform: uppercase;
+  white-space: nowrap;
+
+  cursor: default;
+  user-select: none;
+}
+
+// sorting
+:host([sortable]) {
+  cursor: pointer;
+}
+
+:host([sorted])::after {
+  content: '';
+  padding-left: 8px;
+}
+
+:host([sorted='asc'])::after {
+  content: '▲';
+}
+
+:host([sorted='desc'])::after {
+  content: '▼';
+}
+
+// drag-and-drop
+:host([draggable]) {
+  cursor: pointer;
+}
+
+:host([draggable][dragging]),
+:host([dragged-over]) {
+  cursor: move;
+  // HINT: this does not work completely as the selection
+  // is restored right after dropping the rows
+  // user-select: none;
+}
+
+:host([draggable][dragging]) {
+  ---time-shift-table-header-cell-background: var(
+    ---time-shift-table-header-cell-dragging-background
+  );
+}
+
+:host([dragged-over]) {
+  ---time-shift-table-header-cell-background: var(
+    ---time-shift-table-header-cell-dragged-over-background
+  );
+
+  &::before {
+    position: absolute;
+
+    content: '';
+    display: block;
+    background: var(---time-shift-table-header-cell-background);
+  }
+}
+
+:host([dragged-over='top'])::before,
+:host([dragged-over='bottom'])::before {
+  height: calc(var(---time-shift-table-header-cell-border-width) * 2);
+  left: 0;
+  right: 0;
+}
+
+:host([dragged-over='right'])::before,
+:host([dragged-over='left'])::before {
+  width: calc(var(---time-shift-table-header-cell-border-width) * 2);
+  bottom: 0;
+  top: 0;
+}
+
+:host([dragged-over='top'])::before {
+  top: calc(var(---time-shift-table-header-cell-border-width) * -2);
+}
+
+:host([dragged-over='right'])::before {
+  right: calc(var(---time-shift-table-header-cell-border-width) * -1);
+}
+
+:host([dragged-over='bottom'])::before {
+  bottom: calc(var(---time-shift-table-header-cell-border-width) * -1);
+}
+
+:host([dragged-over='left'])::before {
+  left: calc(var(---time-shift-table-header-cell-border-width) * -2);
+}
+
+:host(:not(:last-of-type)) {
+  border-right-width: 1px;
+}
+
+:host([align='left']) {
+  text-align: left;
+}
+
+:host([align='right']) {
+  text-align: right;
+}

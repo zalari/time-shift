@@ -1,0 +1,10 @@
+:host {
+  display: table;
+  table-layout: fixed;
+  height: 100%;
+  width: 100%;
+}
+
+:host([dragging]) {
+  user-select: none;
+}

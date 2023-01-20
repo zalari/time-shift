@@ -1,0 +1,25 @@
+// prettier-ignore
+:host {
+  ---time-shift-pagination-dots-size: var(--time-shift-pagination-dots-size, calc(var(--time-shift-base-space, 10px) * 4));
+  ---time-shift-pagination-dots-font-size: var(--time-shift-pagination-dots-font-size, 1.4rem);
+  ---time-shift-pagination-dots-color: var(--time-shift-pagination-dots-color, currentColor);
+}
+
+:host {
+  box-sizing: border-box;
+  display: inline-block;
+  margin: 0 calc(var(---time-shift-pagination-dots-size) / 2);
+  height: var(---time-shift-pagination-dots-size);
+  width: calc(var(---time-shift-pagination-dots-size) / 2);
+
+  background: 0;
+  color: var(---time-shift-pagination-dots-color);
+
+  font-size: var(---time-shift-pagination-dots-font-size);
+  line-height: var(---time-shift-pagination-dots-size);
+  text-align: center;
+
+  cursor: default;
+  user-select: none;
+  pointer-events: none;
+}
