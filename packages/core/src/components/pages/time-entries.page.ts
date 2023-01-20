@@ -3,6 +3,7 @@ import { RouterLocation } from '@vaadin/router';
 
 import { LitElement, html } from 'lit';
 import { customElement, state } from 'lit/decorators.js';
+import { when } from 'lit/directives/when.js';
 
 import { getQuery } from '../../data/query.data';
 import { getConnection } from '../../data/connection.data';
@@ -12,12 +13,16 @@ export class TimeEntriesPage extends LitElement {
   readonly location!: RouterLocation;
 
   @state()
+  loading = true;
+
+  @state()
   entries: TimeEntry[] = [];
 
   override async connectedCallback() {
     super.connectedCallback();
 
-    // reset entries
+    // set loading state and reset entries
+    this.loading = true;
     this.entries = [];
 
     // try to get a query
@@ -32,12 +37,15 @@ export class TimeEntriesPage extends LitElement {
     const { adapter: factory } = getAdapter(connection.type);
     const adapter = await factory(connection.config);
 
-    // prepare the filter fields and fetch the entries
+    // prepare the filter fields
     const fields = Object.entries(query.filters).reduce(
       (all, [name, filter]) => ({ ...all, [name]: { matches: 'eq', value: filter } }),
       {},
     );
+
+    // fetch the entries and align loading state
     this.entries = await adapter.getTimeEntries(fields);
+    this.loading = false;
   }
 
   render() {
@@ -48,7 +56,20 @@ export class TimeEntriesPage extends LitElement {
         <time-shift-pane slot="aside">
           <time-shift-query-list base="/time-entries"></time-shift-query-list>
         </time-shift-pane>
-
+        ${when(
+          this.loading,
+          () => html`<span>Loading...</span>`,
+          () => html`
+            ${when(
+              !this.entries.length,
+              () => html`<span>No entries found</span>`,
+              () =>
+                html`
+                  <time-shift-time-entries .entries="${this.entries}"></time-shift-time-entries>
+                `,
+            )}
+          `,
+        )}
         <time-shift-time-entries .entries="${this.entries}"></time-shift-time-entries>
       </time-shift-layout-main>
     `;
