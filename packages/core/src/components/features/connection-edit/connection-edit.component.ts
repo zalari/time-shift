@@ -38,10 +38,12 @@ export class ConnectionEdit extends LitElement {
   formValid = false;
 
   @state()
-  adapterOptions: SelectOption<string>[] = getAdapterNames().map(name => ({
-    label: name,
-    value: name,
-  }));
+  adapterOptions: SelectOption<string>[] = getAdapterNames()
+    .sort((a, b) => a.localeCompare(b))
+    .map(name => ({
+      label: name,
+      value: name,
+    }));
 
   @state()
   selectedAdapter?: AdapterSet<AdapterConfigFields, AdapterListFields>;

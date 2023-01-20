@@ -22,7 +22,11 @@ export class ConnectionList extends LitElement {
   }
 
   async getConnections() {
-    this.connections = await getAllConnections();
+    const connections = await getAllConnections();
+    this.connections = connections.sort((a, b) =>
+      // sort by name AND type
+      `${a.name}${a.type}`.localeCompare(`${b.name}${b.type}`),
+    );
   }
 
   override connectedCallback() {

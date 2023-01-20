@@ -46,7 +46,9 @@ export class QueryEdit extends LitElement {
   data?: QueryData;
 
   getConnectionOptions(...exclude: Array<number | undefined>): typeof this.connections {
-    return this.connections.filter(({ value }) => !exclude.includes(value));
+    return this.connections
+      .filter(({ value }) => !exclude.includes(value))
+      .sort((a, b) => a.label.localeCompare(b.label));
   }
 
   async prepareConnectionOptions(): Promise<typeof this.connections> {

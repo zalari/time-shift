@@ -41,10 +41,12 @@ export class QueryList extends LitElement {
   async getQuerys() {
     const queries = await getAllQuerys();
     this.queries = await Promise.all(
-      queries.map(async query => {
-        const source = await this.getConnection(query.source);
-        return { ...query, source };
-      }),
+      queries
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map(async query => {
+          const source = await this.getConnection(query.source);
+          return { ...query, source };
+        }),
     );
   }
 
