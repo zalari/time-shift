@@ -8,6 +8,13 @@ export const fields = {
     multiple: true,
     values: ['currentUser()', 'EMPTY'],
   },
+  worklogAuthor: {
+    label: 'Worklog author',
+    description: 'The author of the worklog item.',
+    type: 'string',
+    multiple: true,
+    values: ['currentUser()', 'EMPTY'],
+  },
   key: {
     label: 'Key',
     description: 'The issue key to read worklog items from.',

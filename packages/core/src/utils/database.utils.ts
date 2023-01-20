@@ -20,7 +20,7 @@ export namespace Database {
 
   export const connect = async (): Promise<IDBPDatabase<TimeShiftDB.Schema>> => {
     const { database } = await getConfig();
-    return openDB<TimeShiftDB.Schema>(database.name, 2, {
+    return openDB<TimeShiftDB.Schema>(database.name, 1, {
       upgrade(db) {
         slices.forEach(name => {
           if (!db.objectStoreNames.contains(name as any)) {

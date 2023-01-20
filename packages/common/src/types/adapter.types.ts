@@ -15,6 +15,7 @@ export type AdapterFieldCommon = {
   label: string;
   placeholder?: string;
   description?: string;
+  when?: Record<string, string | number | boolean>;
 };
 
 /**

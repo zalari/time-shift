@@ -77,6 +77,11 @@ export class ConnectionEdit extends LitElement {
     this.formValid = checkFormValidity(this.form);
   }
 
+  checkWhenField(when?: Record<string, string | number | boolean>): boolean {
+    if (when === undefined) return true;
+    return Object.entries(when).every(([name, value]) => this.data?.config[name] === value);
+  }
+
   collectData(): ConnectionData {
     const elements = getFormElements(this.form);
     const dataNames = ['name', 'type'];
@@ -147,19 +152,24 @@ export class ConnectionEdit extends LitElement {
                 Object.entries(this.selectedAdapter!.config),
                 ([name, field]) =>
                   html`
-                    <time-shift-field-editor
-                      required
-                      ?disabled="${this.disabled}"
-                      name="${name}"
-                      type="${field.type}"
-                      label="${field.label}"
-                      message="${ifDefined(field.description)}"
-                      placeholder="${ifDefined(field.placeholder)}"
-                      .options="${'values' in field
-                        ? field.values.map(v => ({ value: v, label: v }))
-                        : []}"
-                      .value="${this.data?.config[name as keyof ConnectionData]}"
-                    ></time-shift-field-editor>
+                    ${when(
+                      this.checkWhenField(field.when),
+                      () => html`
+                        <time-shift-field-editor
+                          required
+                          ?disabled="${this.disabled}"
+                          name="${name}"
+                          type="${field.type}"
+                          label="${field.label}"
+                          message="${ifDefined(field.description)}"
+                          placeholder="${ifDefined(field.placeholder)}"
+                          .options="${'values' in field
+                            ? field.values.map(v => ({ value: v, label: v }))
+                            : []}"
+                          .value="${this.data?.config[name as keyof ConnectionData]}"
+                        ></time-shift-field-editor>
+                      `,
+                    )}
                   `,
               )}
             `,

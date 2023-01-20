@@ -13,13 +13,27 @@ export const config = {
     label: 'API url',
     description: 'The API url to either the self hosted Jira instance or the Atlassian cloud.',
   },
+  apiAuth: {
+    type: 'select',
+    label: 'Authorization method',
+    description:
+      'Whether to use a personal access token, or an username (email) and password (api token) pair.',
+    values: ['Bearer', 'Basic'],
+  },
   apiEmail: {
     type: 'string',
-    label: 'API email',
+    label: 'Email address',
+    when: { apiAuth: 'Basic' },
   },
   apiToken: {
     type: 'string',
     label: 'API token',
+    when: { apiAuth: 'Basic' },
+  },
+  apiPersonalAccessToken: {
+    type: 'string',
+    label: 'Personal access token',
+    when: { apiAuth: 'Bearer' },
   },
 } satisfies AdapterConfigFields;
 
