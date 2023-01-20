@@ -151,6 +151,7 @@ export class QueryEdit extends LitElement {
                 required
                 label="Source connection"
                 name="source"
+                placeholder="Select a connection"
                 validate-on="input blur"
                 ?disabled="${this.disabled}"
                 .primitive="${Number}"

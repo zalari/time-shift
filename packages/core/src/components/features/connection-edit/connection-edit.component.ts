@@ -130,6 +130,7 @@ export class ConnectionEdit extends LitElement {
             required
             label="Adapter"
             name="type"
+            placeholder="Select an adapter"
             ?disabled="${this.disabled}"
             .primitive="${String}"
             .options="${this.adapterOptions}"
