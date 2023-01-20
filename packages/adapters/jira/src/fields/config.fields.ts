@@ -6,7 +6,10 @@ export const config = {
     label: 'API version',
     description:
       'The version of the API to use. For Jira Cloud version 3 can be used. Most self hosted Jira instances provide version 2.',
-    values: ['2', '3'],
+    values: [
+      { label: 'Version 2', value: '2' },
+      { label: 'Version 3', value: '3' },
+    ],
   },
   apiUrl: {
     type: 'url',
@@ -18,22 +21,25 @@ export const config = {
     label: 'Authorization method',
     description:
       'Whether to use a personal access token, or an username (email) and password (api token) pair.',
-    values: ['Bearer', 'Basic'],
+    values: [
+      { label: 'Personal access token', value: 'bearer' },
+      { label: 'Username / password', value: 'basic' },
+    ],
   },
   apiEmail: {
     type: 'string',
     label: 'Email address',
-    when: { apiAuth: 'Basic' },
+    when: { apiAuth: 'basic' },
   },
   apiToken: {
     type: 'string',
     label: 'API token',
-    when: { apiAuth: 'Basic' },
+    when: { apiAuth: 'basic' },
   },
   apiPersonalAccessToken: {
     type: 'string',
     label: 'Personal access token',
-    when: { apiAuth: 'Bearer' },
+    when: { apiAuth: 'bearer' },
   },
 } satisfies AdapterConfigFields;
 

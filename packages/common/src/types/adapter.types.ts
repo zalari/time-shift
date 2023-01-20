@@ -33,7 +33,10 @@ export type AdapterQueryField<T extends ComparableTypes> = AdapterFieldCommon &
     | {
         type: T;
         multiple: boolean;
-        values?: Array<ComparisonValueMap[T]>;
+        values?: {
+          label: string;
+          value: ComparisonValueMap[T];
+        }[];
       }
   );
 
@@ -80,7 +83,15 @@ export type AdapterConfigFieldTypeMap = {
 };
 
 export type AdapterConfigField<T extends keyof AdapterConfigFieldTypeMap> = AdapterFieldCommon &
-  (T extends 'select' ? { type: T; values: AdapterConfigFieldTypeMap[T][] } : { type: T });
+  (T extends 'select'
+    ? {
+        type: T;
+        values: {
+          label: string;
+          value: AdapterConfigFieldTypeMap[T];
+        }[];
+      }
+    : { type: T });
 
 /**
  * Config of an adapter instance.

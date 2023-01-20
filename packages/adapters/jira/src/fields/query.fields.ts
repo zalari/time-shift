@@ -6,14 +6,20 @@ export const fields = {
     description: 'The assignee to query from.',
     type: 'string',
     multiple: true,
-    values: ['currentUser()', 'EMPTY'],
+    values: [
+      { label: 'Current user', value: 'currentUser()' },
+      { label: 'No user', value: 'EMPTY' },
+    ],
   },
   worklogAuthor: {
     label: 'Worklog author',
     description: 'The author of the worklog item.',
     type: 'string',
     multiple: true,
-    values: ['currentUser()', 'EMPTY'],
+    values: [
+      { label: 'Current user', value: 'currentUser()' },
+      { label: 'No user', value: 'EMPTY' },
+    ],
   },
   key: {
     label: 'Key',
@@ -34,7 +40,14 @@ export const fields = {
     type: 'string',
     multiple: true,
     matchers: ['eq'],
-    values: ['Bug', 'Epic', 'Story', 'Task', 'standardIssueTypes()', 'subTaskIssueTypes()'],
+    values: [
+      { label: 'Bug', value: 'Bug' },
+      { label: 'Epic', value: 'Epic' },
+      { label: 'Story', value: 'Story' },
+      { label: 'Task', value: 'Task' },
+      { label: 'Issue', value: 'standardIssueTypes()' },
+      { label: 'Sub-Task', value: 'subTaskIssueTypes()' },
+    ],
   },
 } satisfies AdapterQueryFields;
 

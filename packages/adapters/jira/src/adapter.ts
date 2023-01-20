@@ -15,11 +15,11 @@ export const createClient = (
   const clients = { '2': Version2Client, '3': Version3Client };
   const { apiAuth, apiUrl, apiVersion = '3' } = config;
   const authentication = {} as Config['authentication'];
-  if (apiAuth === 'Basic') {
+  if (apiAuth === 'basic') {
     const { apiEmail: email, apiToken } = config;
     authentication!.basic = { email, apiToken };
   }
-  if (apiAuth === 'Bearer') {
+  if (apiAuth === 'bearer') {
     const { apiPersonalAccessToken } = config;
     authentication!.personalAccessToken = apiPersonalAccessToken;
   }

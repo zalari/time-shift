@@ -166,9 +166,7 @@ export class ConnectionEdit extends LitElement {
                           label="${field.label}"
                           message="${ifDefined(field.description)}"
                           placeholder="${ifDefined(field.placeholder)}"
-                          .options="${'values' in field
-                            ? field.values.map(v => ({ value: v, label: v }))
-                            : []}"
+                          .options="${'values' in field ? field.values : []}"
                           .value="${this.data?.config[name as keyof ConnectionData]}"
                         ></time-shift-field-editor>
                       `,
