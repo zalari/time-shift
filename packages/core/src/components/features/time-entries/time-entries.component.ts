@@ -1,8 +1,11 @@
 import type { TimeEntry } from '@time-shift/common';
+import type { TableData, TableSchema } from '@time-shift/data-table';
+
 import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
-import { map } from 'lit/directives/map.js';
+import { ref } from 'lit/directives/ref.js';
 
+import '@time-shift/data-table';
 import styles from './time-entries.component.scss';
 
 @customElement('time-shift-time-entries')
@@ -12,11 +15,34 @@ export class TimeEntries extends LitElement {
   @property({ type: String, reflect: true })
   locale: string = 'en';
 
-  @property({ type: Array, reflect: true })
+  @property({ type: Array })
   entries: TimeEntry[] = [];
 
   readonly dateFormat = new Intl.DateTimeFormat(this.locale, { dateStyle: 'medium' });
   readonly timeFormat = new Intl.RelativeTimeFormat(this.locale, { style: 'short' });
+
+  readonly schema: TableSchema = [
+    {
+      column: 'at',
+      name: 'Date',
+      type: 'date',
+      sortable: true,
+      formatter: this.dateFormat.format.bind(this),
+    },
+    {
+      column: 'minutes',
+      name: 'Minutes',
+      type: 'number',
+      sortable: true,
+      formatter: this.formatMinutes.bind(this),
+    },
+    {
+      column: 'note',
+      name: 'Notes',
+      type: 'string',
+      multiline: true,
+    },
+  ];
 
   formatMinutes(minutes: number): string {
     return this.timeFormat
@@ -26,21 +52,19 @@ export class TimeEntries extends LitElement {
       .join('');
   }
 
+  handleTableRef(element?: Element) {
+    if (element === undefined) return;
+    const table = element as HTMLElementTagNameMap['time-shift-data-table'];
+    table.setData(this.entries as unknown as TableData, this.schema);
+  }
+
   render() {
     return html`
       <header></header>
-      <ul>
-        ${map(
-          this.entries,
-          entry => html`
-            <li>
-              <span>${this.dateFormat.format(entry.at)}</span>
-              <span>${this.formatMinutes(entry.minutes)}</span>
-              <span>${entry.note}</span>
-            </li>
-          `,
-        )}
-      </ul>
+      <time-shift-data-table
+        .itemsPerPage="${25}"
+        ${ref(this.handleTableRef)}
+      ></time-shift-data-table>
     `;
   }
 }

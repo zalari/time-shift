@@ -25,6 +25,7 @@
   },
   "dependencies": {
     "@time-shift/common": "workspace:*",
+    "@time-shift/data-table": "workspace:*",
     "@netlify/functions": "1.4.0",
     "@vaadin/router": "1.7.4",
     "idb": "7.1.1",

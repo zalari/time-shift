@@ -70,7 +70,6 @@ export class TimeEntriesPage extends LitElement {
             )}
           `,
         )}
-        <time-shift-time-entries .entries="${this.entries}"></time-shift-time-entries>
       </time-shift-layout-main>
     `;
   }
