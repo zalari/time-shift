@@ -19,8 +19,6 @@ type NormalizedQuery = Omit<Query, 'source'> & {
 export class QueryList extends LitElement {
   static override readonly styles = unsafeCSS(styles);
 
-  readonly connections = new Map<Connection['id'], Connection>();
-
   @state()
   queries: NormalizedQuery[] = [];
 
@@ -33,9 +31,7 @@ export class QueryList extends LitElement {
   }
 
   async getConnection(id: Connection['id']): Promise<Connection | undefined> {
-    const connection = this.connections.get(id) ?? (await getConnection(id));
-    this.connections.set(id, connection!);
-    return connection;
+    return await getConnection(id);
   }
 
   async getQuerys() {
@@ -52,11 +48,13 @@ export class QueryList extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback();
+    Database.Event.addListener('connection:updated', this.getQuerys.bind(this));
     Database.Event.addListener('queries:changed', this.getQuerys.bind(this));
     this.getQuerys();
   }
 
   override disconnectedCallback() {
+    Database.Event.removeListener('connection:updated', this.getQuerys.bind(this));
     Database.Event.removeListener('queries:changed', this.getQuerys.bind(this));
     super.disconnectedCallback();
   }
@@ -75,7 +73,7 @@ export class QueryList extends LitElement {
                     <strong>${name}</strong>
                     ${when(
                       source !== undefined,
-                      () => html`<span>source: ${source!.name} (${source!.type})</span>`,
+                      () => html`<span>${source!.name} (${source!.type})</span>`,
                     )}
                   </a>
                 </li>
