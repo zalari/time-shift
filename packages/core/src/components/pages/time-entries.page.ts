@@ -39,7 +39,7 @@ export class TimeEntriesPage extends LitElement {
 
     // prepare the filter fields
     const fields = Object.entries(query.filters).reduce(
-      (all, [name, filter]) => ({ ...all, [name]: { matches: 'eq', value: filter } }),
+      (all, [name, filter]) => ({ ...all, [name]: filter }),
       {},
     );
 

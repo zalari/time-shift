@@ -42,14 +42,14 @@ export const createQuery = async (value: Omit<Query, 'id'>): Promise<Query['id']
   const db = await Database.connect();
   const id = await db.add('queries', value as Query);
   db.close();
-  
+
   Database.Event.dispatch('queries:changed', 'query:created');
   return id as unknown as Query['id'];
 };
 
 export const updateQuery = async (value: Query): Promise<Query['id']> => {
   const db = await Database.connect();
-  const id =await db.put('queries', value);
+  const id = await db.put('queries', value);
   db.close();
 
   Database.Event.dispatch('queries:changed', 'query:updated');
