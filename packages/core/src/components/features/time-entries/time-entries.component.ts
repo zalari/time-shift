@@ -55,7 +55,9 @@ export class TimeEntries extends LitElement {
   handleTableRef(element?: Element) {
     if (element === undefined) return;
     const table = element as HTMLElementTagNameMap['time-shift-data-table'];
-    table.setData(this.entries as unknown as TableData, this.schema);
+    table.setData(this.entries as unknown as TableData, this.schema, {
+      sort: { column: 'at', invert: true },
+    });
   }
 
   render() {

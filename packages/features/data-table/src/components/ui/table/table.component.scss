@@ -1,8 +1,10 @@
 :host {
   display: table;
-  table-layout: fixed;
-  height: 100%;
   width: 100%;
+}
+
+:host([layout='fixed']) {
+  table-layout: fixed;
 }
 
 :host([dragging]) {

@@ -119,10 +119,14 @@
   border-right-width: 1px;
 }
 
-:host([align='left']) {
+:host([alignment='left']) {
   text-align: left;
 }
 
-:host([align='right']) {
+:host([alignment='center']) {
+  text-align: center;
+}
+
+:host([alignment='right']) {
   text-align: right;
 }

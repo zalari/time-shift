@@ -11,7 +11,7 @@ export class TableCell extends LitElement {
   readonly role = 'cell';
 
   @property({ reflect: true, type: String })
-  align: 'left' | 'right' = 'left';
+  alignment: 'left' | 'center' | 'right' = 'left';
 
   @property({ reflect: true, type: Boolean })
   multiline = false;

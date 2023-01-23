@@ -11,6 +11,12 @@ import { HeadlessTable } from '../../../libs/table.lib';
 import { destroyDraggableColumn, makeColumnDraggable } from '../../../utils/draggable-column.utils';
 import { destroyDraggableRow, makeRowDraggable } from '../../../utils/draggable-row.utils';
 
+// prettier-ignore
+type Split<S extends string, D extends string> =
+    string extends S ? string[] :
+    S extends '' ? [] :
+    S extends `${infer T}${D}${infer U}` ? [T, ...Split<U, D>] : [S];
+
 @customElement('time-shift-data-table')
 export class DataTable extends LitElement {
   private readonly columnsByReference = new Map<HTMLElement, string>();
@@ -67,12 +73,20 @@ export class DataTable extends LitElement {
     this.dispatchEvent(new CustomEvent('time-shift-data-table:row-dragged', { detail }));
   }
 
-  async setData(data: TableData, schema: TableSchema) {
-    const options: HeadlessTable.Options = {};
+  async setData(data: TableData, schema: TableSchema, options: HeadlessTable.Options = {}) {
+    // set pagination
     if (this.itemsPerPage !== undefined && this.itemsPerPage > 0) {
-      options.pagination = { perPage: this.itemsPerPage };
+      options.pagination = { perPage: this.itemsPerPage, current: this.currentPage };
     }
+
+    // prepare data
     this.data = new HeadlessTable.DataInternal(data, schema, options);
+
+    // set sorting if needed
+    if (options.sort !== undefined) {
+      const { column, invert } = options.sort;
+      this.data = this.data.sortBy(column, invert);
+    }
   }
 
   @eventOptions({ passive: true })
@@ -228,7 +242,7 @@ export class DataTable extends LitElement {
       return undefined;
     }
 
-    return this.data.isCurrentSortInverted() ? 'desc' : 'asc';
+    return this.data.isCurrentSortInverted() ? 'asc' : 'desc';
   }
 
   getDraggedOverForColumn(column: string): 'left' | 'right' | undefined {
@@ -269,12 +283,12 @@ export class DataTable extends LitElement {
             ${this.data!.getColumns().map(
               ({ header: { align, column, name, sortable } }) => html`
                 <time-shift-table-header-cell
-                  align="${align}"
                   ?sortable="${sortable}"
-                  sorted="${ifDefined(this.getSortModeForColumn(column))}"
                   ?draggable="${this.draggableColumns}"
                   ?dragging="${this.draggedColumn === column}"
                   dragged-over="${ifDefined(this.getDraggedOverForColumn(column))}"
+                  alignment="${ifDefined(align)}"
+                  sorted="${ifDefined(this.getSortModeForColumn(column))}"
                   @click="${() => sortable && this.sortByColumn(column)}"
                   ${ref(columnRef =>
                     this.storeColumnByReference(columnRef as HTMLElement | undefined, column),
@@ -297,10 +311,10 @@ export class DataTable extends LitElement {
                   ${row.cells.map(
                     ({ header: { align, column, multiline }, value: { formatted } }) => html`
                       <time-shift-table-cell
-                        align="${align}"
                         ?multiline="${multiline}"
                         ?draggable="${this.draggableRows}"
                         ?dragging="${this.draggedRow === row || this.draggedColumn === column}"
+                        alignment="${ifDefined(align)}"
                         dragged-over="${ifDefined(
                           this.getDraggedOverForRow(row) || this.getDraggedOverForColumn(column),
                         )}"

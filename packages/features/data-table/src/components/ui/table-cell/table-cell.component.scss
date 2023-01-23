@@ -3,12 +3,12 @@
   ---time-shift-table-cell-spacing: var(--time-shift-base-space, 10px);
   ---time-shift-table-cell-border-width: var(--time-shift-table-cell-border-width, 1px);
   ---time-shift-table-cell-font-size: var(--time-shift-table-cell-font-size, 1.4rem);
-  ---time-shift-table-cell-line-height: var(--time-shift-table-cell-line-height, 2rem);
+  ---time-shift-table-cell-line-height: var(--time-shift-table-cell-line-height, 1.25);
 }
 
 :host {
   display: table-cell;
-  padding: 0 var(---time-shift-table-cell-spacing);
+  padding: var(---time-shift-table-cell-spacing);
   position: relative;
 
   border: solid currentColor;
@@ -85,27 +85,19 @@
 
   :host([multiline]) & {
     overflow: hidden;
-    white-space: pre;
+    // white-space: pre;
     word-break: break-all;
   }
 
-  // :host([size='s']) & {
-  //   height: utils.gu(4);
-  // }
-
-  // :host([size='m']) & {
-  //   height: utils.gu(6);
-  // }
-
-  // :host([size='l']) & {
-  //   height: utils.gu(9);
-  // }
-}
-
-:host([align='left']) {
-  text-align: left;
-}
-
-:host([align='right']) {
-  text-align: right;
+  :host([alignment='left']) & {
+    justify-content: flex-start;
+  }
+  
+  :host([alignment='center']) & {
+    justify-content: center;
+  }
+  
+  :host([alignment='right']) & {
+    justify-content: flex-end;
+  }
 }

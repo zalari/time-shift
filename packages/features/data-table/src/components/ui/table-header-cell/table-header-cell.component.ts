@@ -11,7 +11,7 @@ export class TableHeaderCell extends LitElement {
   readonly role = 'columnheader';
 
   @property({ reflect: true, type: String })
-  align: 'left' | 'right' = 'left';
+  alignment: 'left' | 'center' | 'right' = 'left';
 
   @property({ reflect: true, type: Boolean })
   sortable = false;

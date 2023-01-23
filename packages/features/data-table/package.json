@@ -18,7 +18,9 @@
     "build:bundle": "ts-node esbuild.config.ts",
     "build:types": "tsc --project tsconfig.types.json",
     "build": "run-s clean build:*",
-    "dev": "ts-node esbuild.config.ts --watch"
+    "dev:bundle": "ts-node esbuild.config.ts --watch",
+    "dev:types": "tsc --project tsconfig.types.json --watch",
+    "dev": "run-p dev:*"
   },
   "dependencies": {
     "lit": "2.6.1",

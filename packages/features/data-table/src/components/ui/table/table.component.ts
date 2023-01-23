@@ -10,6 +10,9 @@ export class Table extends LitElement {
   @property({ reflect: true, type: String })
   readonly role = 'table';
 
+  @property({ reflect: true, type: String })
+  layout: 'auto' | 'fixed' = 'auto';
+
   @property({ reflect: true, type: Boolean })
   dragging = false;
 

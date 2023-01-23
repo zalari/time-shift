@@ -4,17 +4,17 @@ import type { Sorter, TableDataTypeMap } from '../types/table.types';
 export const defaultSorters = {
   bool({ cell: { value: { parsed: a } } }, { cell: { value: { parsed: b } } }, inverted) {
     return inverted
-      ? (a === b) ? 0 : a ? -1 : 1
-      : (a === b)? 0 : a ? 1 : -1;
+      ? (a === b)? 0 : a ? 1 : -1
+      : (a === b) ? 0 : a ? -1 : 1
   },
   string({ cell: { value: { parsed: a } } }, { cell: { value: { parsed: b } } }, inverted)  {
-    return inverted ? b.localeCompare(a) : a.localeCompare(b);
+    return inverted ? a.localeCompare(b) : b.localeCompare(a);
   },
   number({ cell: { value: { parsed: a } } }, { cell: { value: { parsed: b } } }, inverted) {
-    return inverted ? b - a : a - b;
+    return inverted ? a - b : b - a;
   },
   date({ cell: { value: { parsed: a } } }, { cell: { value: { parsed: b } } }, inverted) {
-    return inverted ? +b - +a : +a - +b;
+    return inverted ? +a - +b : +b - +a;
   },
 } satisfies {
   [key in keyof TableDataTypeMap]: Sorter<TableDataTypeMap[key]>;
