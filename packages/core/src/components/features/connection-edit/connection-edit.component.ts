@@ -1,6 +1,5 @@
 import {
-  type AdapterConfigFields,
-  type AdapterListFields,
+  type AdapterFields,
   type AdapterSet,
   getAdapter,
   getAdapterNames,
@@ -46,7 +45,7 @@ export class ConnectionEdit extends LitElement {
     }));
 
   @state()
-  selectedAdapter?: AdapterSet<AdapterConfigFields, AdapterListFields>;
+  selectedAdapter?: AdapterSet<AdapterFields, AdapterFields>;
 
   @property({ type: Boolean, reflect: true })
   disabled = false;

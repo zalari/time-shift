@@ -1,4 +1,4 @@
-import type { AdapterConfigFields, AdapterConfigValues } from '@time-shift/common';
+import type { AdapterFields, AdapterValues } from '@time-shift/common';
 
 export const config = {
   account: {
@@ -9,7 +9,7 @@ export const config = {
     type: 'string',
     label: 'API key',
   },
-} satisfies AdapterConfigFields;
+} satisfies AdapterFields;
 
 export type MiteAdapterConfigFields = typeof config;
-export type MiteAdapterConfigValues = AdapterConfigValues<MiteAdapterConfigFields>;
+export type MiteAdapterConfigValues = AdapterValues<MiteAdapterConfigFields>;

@@ -1,4 +1,4 @@
-import type { AdapterQueryFields, AdapterQueryValues } from '@time-shift/common';
+import type { AdapterFields, AdapterValues } from '@time-shift/common';
 import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement, eventOptions, property, queryAll, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
@@ -7,9 +7,9 @@ import { map } from 'lit/directives/map.js';
 import type { SelectOption } from '../../ui/input/select.component';
 import type { EventWithTarget } from '../../../utils/type.utils';
 
-import styles from './field-editors.component.scss';
+import styles from './query-filters.component.scss';
 
-@customElement('time-shift-field-editors')
+@customElement('time-shift-query-filters')
 export class FieldEditors extends LitElement {
   static override readonly styles = unsafeCSS(styles);
   static readonly formAssociated = true;
@@ -24,10 +24,10 @@ export class FieldEditors extends LitElement {
   disabled = false;
 
   @property({ type: Object })
-  fields!: AdapterQueryFields;
+  fields!: AdapterFields;
 
   @property({ type: Object })
-  values: AdapterQueryValues<AdapterQueryFields> = {};
+  values: AdapterValues<AdapterFields> = {};
 
   @property({ type: String, reflect: true })
   addLabel = 'Add filter';
@@ -107,7 +107,9 @@ export class FieldEditors extends LitElement {
                   placeholder="${ifDefined(this.fields[name].placeholder)}"
                   .value="${value}"
                 ></time-shift-field-editor>
-                <time-shift-button @click="${this.handleFilterRemove}">${this.removeLabel}</time-shift-button>
+                <time-shift-button @click="${this.handleFilterRemove}">
+                  ${this.removeLabel}
+                </time-shift-button>
               </li>
             `,
         )}
@@ -118,6 +120,6 @@ export class FieldEditors extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'time-shift-field-editors': FieldEditors;
+    'time-shift-query-filters': FieldEditors;
   }
 }

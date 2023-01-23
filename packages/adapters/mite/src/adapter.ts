@@ -6,7 +6,10 @@ import type { MiteAdapterQueryFields } from './fields/query.fields';
 
 import { miteClient } from './utils/mite.utils.js';
 
-export const adapter: AdapterFactory<MiteAdapterConfigFields, MiteAdapterQueryFields> = async config => {
+export const adapter: AdapterFactory<
+  MiteAdapterConfigFields,
+  MiteAdapterQueryFields
+> = async config => {
   const { account, apiKey } = config;
 
   return {
@@ -21,8 +24,8 @@ export const adapter: AdapterFactory<MiteAdapterConfigFields, MiteAdapterQueryFi
 
     async getTimeEntries(fields = {}): Promise<TimeEntry<MiteTimeEntry>[]> {
       // prepare options from fields
-      const options = Object.keys(fields).reduce(
-        (all, key) => ({ ...all, [key]: fields[key as keyof MiteAdapterQueryFields]?.value }),
+      const options = Object.entries(fields).reduce(
+        (all, [key, value]) => ({ ...all, [key]: value }),
         {} satisfies MiteTimeEntryOptions,
       );
       const entries = await miteClient(account, apiKey).getTimeEntries(options);

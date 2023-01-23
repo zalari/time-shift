@@ -1,4 +1,4 @@
-import type { AdapterConfigFields, AdapterConfigValues } from '@time-shift/common';
+import type { AdapterFields, AdapterValues } from '@time-shift/common';
 import { Database } from '../utils/database.utils';
 
 declare global {
@@ -23,7 +23,7 @@ export type Connection = {
   id: number;
   name: string;
   type: string;
-  config: AdapterConfigValues<AdapterConfigFields>;
+  config: AdapterValues<AdapterFields>;
 };
 
 export const getAllConnections = async (): Promise<Connection[]> => {

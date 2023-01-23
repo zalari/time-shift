@@ -1,4 +1,4 @@
-import type { AdapterConfigFields, AdapterConfigValues } from '@time-shift/common';
+import type { AdapterFields, AdapterValues } from '@time-shift/common';
 
 export const config = {
   apiVersion: {
@@ -6,6 +6,7 @@ export const config = {
     label: 'API version',
     description:
       'The version of the API to use. For Jira Cloud version 3 can be used. Most self hosted Jira instances provide version 2.',
+    multiple: false,
     values: [
       { label: 'Version 2', value: '2' },
       { label: 'Version 3', value: '3' },
@@ -21,6 +22,7 @@ export const config = {
     label: 'Authorization method',
     description:
       'Whether to use a personal access token, or an username (email) and password (api token) pair.',
+    multiple: false,
     values: [
       { label: 'Personal access token', value: 'bearer' },
       { label: 'Username / password', value: 'basic' },
@@ -41,7 +43,7 @@ export const config = {
     label: 'Personal access token',
     when: { apiAuth: 'bearer' },
   },
-} satisfies AdapterConfigFields;
+} satisfies AdapterFields;
 
 export type JiraAdapterConfigFields = typeof config;
-export type JiraAdapterConfigValues = AdapterConfigValues<JiraAdapterConfigFields>;
+export type JiraAdapterConfigValues = AdapterValues<JiraAdapterConfigFields>;

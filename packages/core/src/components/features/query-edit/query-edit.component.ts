@@ -1,4 +1,4 @@
-import { type AdapterQueryFields, getAdapter } from '@time-shift/common';
+import { type AdapterFields, getAdapter } from '@time-shift/common';
 import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement, eventOptions, property, query, state } from 'lit/decorators.js';
 import { when } from 'lit/directives/when.js';
@@ -34,7 +34,7 @@ export class QueryEdit extends LitElement {
   selectedSource?: Connection;
 
   @state()
-  listFields?: AdapterQueryFields;
+  listFields?: AdapterFields;
 
   @property({ type: Boolean, reflect: true })
   disabled = false;
@@ -61,7 +61,7 @@ export class QueryEdit extends LitElement {
     return getConnection(id);
   }
 
-  getListFields(connection?: Connection): AdapterQueryFields | undefined {
+  getListFields(connection?: Connection): AdapterFields | undefined {
     if (!connection?.type) return;
     return getAdapter(connection?.type).fields;
   }

@@ -1,9 +1,10 @@
-import type { AdapterConfigFields, AdapterQueryFields, AdapterSet } from '../types/adapter.types';
+import type { AdapterSet } from '../types/adapter.types';
+import type { AdapterFields } from '../types/field.types';
 
 // @fixme: provide as global to all adapters
 declare global {
   interface Adapters {
-    [name: string]: AdapterSet<AdapterConfigFields, AdapterQueryFields>;
+    [name: string]: AdapterSet<AdapterFields, AdapterFields>;
   }
 
   interface TimeShift {
@@ -28,15 +29,18 @@ export const prepareNamespace = () => {
 /**
  * Registers an adapter to be globally available.
  */
-export const registerAdapter = <C extends AdapterConfigFields, Q extends AdapterQueryFields>(
+export const registerAdapter = <
+  ConfigFields extends AdapterFields,
+  QueryFields extends AdapterFields,
+>(
   name: string,
-  adapter: AdapterSet<C, Q>,
+  adapter: AdapterSet<ConfigFields, QueryFields>,
 ) => {
   prepareNamespace();
   window['time-shift'].adapters[name] = adapter as any;
 };
 
-export const getAdapter = (name: string): AdapterSet<AdapterConfigFields, AdapterQueryFields> => {
+export const getAdapter = (name: string): AdapterSet<AdapterFields, AdapterFields> => {
   prepareNamespace();
   return window['time-shift'].adapters[name];
 };

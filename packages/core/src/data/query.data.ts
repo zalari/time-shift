@@ -1,4 +1,4 @@
-import type { AdapterQueryFields, AdapterQueryValues } from '@time-shift/common';
+import type { AdapterFields, AdapterValues } from '@time-shift/common';
 
 import { Database } from '../utils/database.utils';
 import type { Connection } from './connection.data';
@@ -25,7 +25,7 @@ export type Query = {
   id: number;
   name: string;
   source: Connection['id'];
-  filters: AdapterQueryValues<AdapterQueryFields>;
+  filters: AdapterValues<AdapterFields>;
 };
 
 export const getAllQuerys = async (): Promise<Query[]> => {

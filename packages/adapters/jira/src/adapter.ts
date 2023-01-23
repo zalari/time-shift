@@ -1,4 +1,4 @@
-import type { AdapterConfigValues, AdapterFactory, TimeEntry } from '@time-shift/common';
+import type { AdapterValues, AdapterFactory, TimeEntry } from '@time-shift/common';
 
 import type { Worklog as Worklog2 } from 'jira.js/out/version2/models';
 import type { Worklog as Worklog3 } from 'jira.js/out/version3/models';
@@ -9,9 +9,7 @@ import type { JiraAdapterQueryFields } from './fields/query.fields';
 
 type Worklog = Worklog2 | Worklog3;
 
-export const createClient = (
-  config: AdapterConfigValues<JiraAdapterConfigFields>,
-): Version3Client => {
+export const createClient = (config: AdapterValues<JiraAdapterConfigFields>): Version3Client => {
   const clients = { '2': Version2Client, '3': Version3Client };
   const { apiAuth, apiUrl, apiVersion = '3' } = config;
   const authentication = {} as Config['authentication'];
@@ -68,8 +66,8 @@ export const adapter: AdapterFactory<
 
     async getTimeEntries(options = {}): Promise<TimeEntry<Worklog>[]> {
       // build jql query
-      const jql = Object.keys(options).reduce(
-        (all, field) => `${all} AND ${field}=${options[field as keyof typeof options]?.value}`,
+      const jql = Object.entries(options).reduce(
+        (all, [field, value]) => `${all} AND ${field}=${value}`,
         'timespent>0',
       );
 

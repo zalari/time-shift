@@ -1,4 +1,4 @@
-import { TimeEntry, getAdapter } from '@time-shift/common';
+import { type TimeEntry, getAdapter } from '@time-shift/common';
 import { RouterLocation } from '@vaadin/router';
 
 import { LitElement, html } from 'lit';
