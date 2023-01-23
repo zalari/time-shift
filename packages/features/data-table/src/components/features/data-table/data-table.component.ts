@@ -1,11 +1,12 @@
-import { html, LitElement } from 'lit';
+import { html, LitElement, type TemplateResult } from 'lit';
 import { customElement, eventOptions, property, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { map } from 'lit/directives/map.js';
 import { ref } from 'lit/directives/ref.js';
 import { when } from 'lit/directives/when.js';
 
 import type { DropTarget } from '../../../types/draggable.types';
-import type { TableData, TableSchema } from '../../../types/table.types';
+import type { Cell, Row, TableData, TableSchema } from '../../../types/table.types';
 
 import { HeadlessTable } from '../../../libs/table.lib';
 import { destroyDraggableColumn, makeColumnDraggable } from '../../../utils/draggable-column.utils';
@@ -73,6 +74,17 @@ export class DataTable extends LitElement {
     this.dispatchEvent(new CustomEvent('time-shift-data-table:row-dragged', { detail }));
   }
 
+  emitCellClickedEvent(detail: {
+    cell: Cell;
+    ref: HTMLElementTagNameMap['time-shift-table-cell'];
+  }) {
+    this.dispatchEvent(new CustomEvent('time-shift-data-table:cell-clicked', { detail }));
+  }
+
+  emitRowClickedEvent(detail: { row: Row; ref: HTMLElementTagNameMap['time-shift-table-row'] }) {
+    this.dispatchEvent(new CustomEvent('time-shift-data-table:row-clicked', { detail }));
+  }
+
   async setData(data: TableData, schema: TableSchema, options: HeadlessTable.Options = {}) {
     // set pagination
     if (this.itemsPerPage !== undefined && this.itemsPerPage > 0) {
@@ -97,6 +109,18 @@ export class DataTable extends LitElement {
       pageCount: this.data?.getPageCount() ?? 0,
       perPage: this.data?.getPerPage() ?? 0,
     });
+  }
+
+  @eventOptions({ passive: true })
+  handleCellClick(event: Event, cell: Cell) {
+    const ref = event.currentTarget as HTMLElementTagNameMap['time-shift-table-cell'];
+    this.emitCellClickedEvent({ cell, ref });
+  }
+
+  @eventOptions({ passive: true })
+  handleRowClick(event: Event, row: Row) {
+    const ref = event.currentTarget as HTMLElementTagNameMap['time-shift-table-row'];
+    this.emitRowClickedEvent({ row, ref });
   }
 
   sortByColumn(column: string) {
@@ -265,22 +289,14 @@ export class DataTable extends LitElement {
     }
   }
 
-  setCellContent(cell: HTMLElement | undefined, content: string | Element) {
-    if (cell === undefined) return;
-    if (content instanceof Element) {
-      cell.appendChild(content);
-    } else {
-      cell.innerText = content;
-    }
-  }
-
   render() {
     return html` ${when(
       this.data !== undefined,
       () => html`
         <time-shift-table>
           <time-shift-table-header>
-            ${this.data!.getColumns().map(
+            ${map(
+              this.data!.getColumns(),
               ({ header: { align, column, name, sortable } }) => html`
                 <time-shift-table-header-cell
                   ?sortable="${sortable}"
@@ -300,28 +316,33 @@ export class DataTable extends LitElement {
             )}
           </time-shift-table-header>
           <time-shift-table-body>
-            ${this.data!.getVisibleRows().map(
+            ${map(
+              this.data!.getVisibleRows(),
               row => html`
                 <time-shift-table-row
                   ?draggable="${this.draggableRows}"
                   ?droppable-after="${this.draggableRows}"
                   ?droppable-before="${this.draggableRows}"
+                  @click="${(event: Event) => this.handleRowClick(event, row)}"
                   ${ref(rowRef => this.storeRowByReference(rowRef as HTMLElement | undefined, row))}
                 >
-                  ${row.cells.map(
-                    ({ header: { align, column, multiline }, value: { formatted } }) => html`
+                  ${map(
+                    row.cells,
+                    cell => html`
                       <time-shift-table-cell
-                        ?multiline="${multiline}"
+                        ?multiline="${cell.header.multiline}"
                         ?draggable="${this.draggableRows}"
-                        ?dragging="${this.draggedRow === row || this.draggedColumn === column}"
-                        alignment="${ifDefined(align)}"
+                        ?dragging="${this.draggedRow === row ||
+                        this.draggedColumn === cell.header.column}"
+                        alignment="${ifDefined(cell.header.align)}"
                         dragged-over="${ifDefined(
-                          this.getDraggedOverForRow(row) || this.getDraggedOverForColumn(column),
+                          this.getDraggedOverForRow(row) ||
+                            this.getDraggedOverForColumn(cell.header.column),
                         )}"
-                        ${ref(cell =>
-                          this.setCellContent(cell as HTMLElement | undefined, formatted),
-                        )}
-                      ></time-shift-table-cell>
+                        @click="${(event: Event) => this.handleCellClick(event, cell)}"
+                      >
+                        ${cell.value.formatted}
+                      </time-shift-table-cell>
                     `,
                   )}
                 </time-shift-table-row>
@@ -358,6 +379,8 @@ declare global {
     'time-shift-data-table:dragging': CustomEvent<boolean>;
     'time-shift-data-table:column-dragged': CustomEvent<string>;
     'time-shift-data-table:row-dragged': CustomEvent<HeadlessTable.Row>;
+    'time-shift-data-table:cell-clicked': CustomEvent<Cell>;
+    'time-shift-data-table:row-clicked': CustomEvent<Row>;
   }
   interface HTMLElementTagNameMap {
     'time-shift-data-table': DataTable;

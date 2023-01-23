@@ -1,7 +1,7 @@
 import type { TimeEntry } from '@time-shift/common';
 import type { TableData, TableSchema } from '@time-shift/data-table';
 
-import { LitElement, html, unsafeCSS } from 'lit';
+import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { ref } from 'lit/directives/ref.js';
 
@@ -22,6 +22,13 @@ export class TimeEntries extends LitElement {
   readonly timeFormat = new Intl.RelativeTimeFormat(this.locale, { style: 'short' });
 
   readonly schema: TableSchema = [
+    {
+      column: 'select',
+      name: '',
+      type: 'boolean',
+      formatter: (value: boolean) => html`<input type="checkbox" ?checked="${value}" />`,
+      parser: () => undefined,
+    },
     {
       column: 'at',
       name: 'Date',
@@ -60,11 +67,16 @@ export class TimeEntries extends LitElement {
     });
   }
 
+  handleRowClick({ detail }: HTMLElementEventMap['time-shift-data-table:row-clicked']) {
+    console.log(detail);
+  }
+
   render() {
     return html`
       <header></header>
       <time-shift-data-table
         .itemsPerPage="${25}"
+        @time-shift-data-table:row-clicked="${this.handleRowClick}"
         ${ref(this.handleTableRef)}
       ></time-shift-data-table>
     `;

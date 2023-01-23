@@ -10,7 +10,7 @@ import type { EventWithTarget } from '../../../utils/type.utils';
 import styles from './query-filters.component.scss';
 
 @customElement('time-shift-query-filters')
-export class FieldEditors extends LitElement {
+export class FieldEditors<F extends AdapterFields> extends LitElement {
   static override readonly styles = unsafeCSS(styles);
   static readonly formAssociated = true;
 
@@ -18,16 +18,16 @@ export class FieldEditors extends LitElement {
   readonly elements!: NodeListOf<HTMLElementTagNameMap['time-shift-field-editor']>;
 
   @state()
-  selectedFieldName?: string;
+  selectedFieldName?: keyof F;
 
   @property({ type: Boolean, reflect: true })
   disabled = false;
 
   @property({ type: Object })
-  fields!: AdapterFields;
+  fields!: F;
 
   @property({ type: Object })
-  values: AdapterValues<AdapterFields> = {};
+  values: Partial<AdapterValues<F>> = {};
 
   @property({ type: String, reflect: true })
   addLabel = 'Add filter';
@@ -69,7 +69,7 @@ export class FieldEditors extends LitElement {
     const name = event.target.parentElement!.dataset.name!;
     if (!confirm(`${this.removeLabel} "${this.fields[name].label}"?`)) return;
     const { [name]: _, ...values } = this.values;
-    this.values = values;
+    this.values = values as Partial<AdapterValues<F>>;
     this.emitInputEvent();
   }
 
@@ -105,6 +105,9 @@ export class FieldEditors extends LitElement {
                   label="${this.fields[name].label}"
                   message="${ifDefined(this.fields[name].description)}"
                   placeholder="${ifDefined(this.fields[name].placeholder)}"
+                  .options="${'values' in this.fields[name]
+                    ? (this.fields[name] as any).values
+                    : []}"
                   .value="${value}"
                 ></time-shift-field-editor>
                 <time-shift-button @click="${this.handleFilterRemove}">

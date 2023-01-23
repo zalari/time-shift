@@ -1,3 +1,4 @@
+import type { TemplateResult } from 'lit';
 import type { Formatter, TableDataTypeMap } from '../types/table.types';
 
 export const defaultFormatters = {
@@ -18,6 +19,6 @@ export const getFormatterForType = <K extends keyof TableDataTypeMap>(
 export const formatValue = <K extends keyof TableDataTypeMap>(
   value: TableDataTypeMap[K],
   type: K,
-): string | Element => {
+): TemplateResult | Element | string => {
   return getFormatterForType(type)(value);
 };

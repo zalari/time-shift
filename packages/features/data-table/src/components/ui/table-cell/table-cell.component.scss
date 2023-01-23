@@ -1,6 +1,6 @@
 // prettier-ignore
 :host {
-  ---time-shift-table-cell-spacing: var(--time-shift-base-space, 10px);
+  ---time-shift-table-cell-spacing: var(--time-shift-table-cell-spacing, var(--time-shift-base-space, 10px));
   ---time-shift-table-cell-border-width: var(--time-shift-table-cell-border-width, 1px);
   ---time-shift-table-cell-font-size: var(--time-shift-table-cell-font-size, 1.4rem);
   ---time-shift-table-cell-line-height: var(--time-shift-table-cell-line-height, 1.25);
@@ -19,9 +19,14 @@
   line-height: var(---time-shift-table-cell-line-height);
   vertical-align: middle;
   white-space: nowrap;
+}
 
-  // TODO: check if we could set this more explicit
-  user-select: none;
+:host(:first-of-type) {
+  padding-left: 0;
+}
+
+:host(:last-of-type) {
+  padding-right: 0;
 }
 
 // drag-and-drop
@@ -92,11 +97,11 @@
   :host([alignment='left']) & {
     justify-content: flex-start;
   }
-  
+
   :host([alignment='center']) & {
     justify-content: center;
   }
-  
+
   :host([alignment='right']) & {
     justify-content: flex-end;
   }

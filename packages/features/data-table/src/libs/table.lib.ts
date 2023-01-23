@@ -48,11 +48,15 @@ export namespace HeadlessTable {
   export class Row implements TableType.Row {
     private readonly _cellsByColumn = new Map<string, Cell>();
 
+    get index(): number {
+      return this._index;
+    }
+
     get cells(): Cell[] {
       return this._cells;
     }
 
-    constructor(private readonly _cells: Cell[] = []) {
+    constructor(private readonly _index: number, private readonly _cells: Cell[] = []) {
       _cells.forEach(cell => this.addCell(cell));
     }
 
@@ -87,11 +91,11 @@ export namespace HeadlessTable {
 
       this._schema.forEach(({ column, type, name, ...entry }, columnIndex) => {
         const align = entry.align || 'left';
-        const sortable = entry.sortable !== undefined ? entry.sortable : false;
-        const multiline = entry.multiline !== undefined ? entry.multiline : false;
-        const formatter = entry.formatter || getFormatterForType(type);
-        const parser = entry.parser || getParserForType(type);
-        const sorter = entry.sorter || getSorterForType(type);
+        const sortable = entry.sortable ?? false;
+        const multiline = entry.multiline ?? false;
+        const formatter = entry.formatter ?? getFormatterForType(type);
+        const parser = entry.parser ?? getParserForType(type);
+        const sorter = entry.sorter ?? getSorterForType(type);
         const header = {
           // basic meta data
           align,
@@ -104,7 +108,7 @@ export namespace HeadlessTable {
           formatter,
           parser,
           sorter,
-        };
+        } satisfies TableType.Header;
 
         headers.set(column, header);
 
@@ -125,7 +129,7 @@ export namespace HeadlessTable {
 
           // (prepare and) add to row
           if (rows[rowIndex] === undefined) {
-            rows[rowIndex] = new Row();
+            rows[rowIndex] = new Row(rowIndex);
           }
           rows[rowIndex].addCell(cell);
         });

@@ -16,9 +16,6 @@ export class TableRow extends LitElement {
   @property({ reflect: true, type: Boolean, attribute: 'droppable-before' })
   droppableBefore = false;
 
-  @property({ reflect: true, type: String })
-  size: 's' | 'm' | 'l' = 'm';
-
   render() {
     return html`<slot></slot>`;
   }
