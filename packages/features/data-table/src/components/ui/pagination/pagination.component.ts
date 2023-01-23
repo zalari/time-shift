@@ -62,7 +62,7 @@ export class Pagination extends LitElement {
       <time-shift-pagination-button
         arrow="${ifDefined(arrow)}"
         data-page=${page}
-        ?is-active=${checkActive && page === this.current}
+        ?active=${checkActive && page === this.current}
         ?disabled=${disabled}
         @click=${this.handlePageClick}
       >
@@ -90,8 +90,9 @@ export class Pagination extends LitElement {
             this.hasBothSubsets,
 
             () => html`
-              ${this.renderPageButton(this.current - 1)} ${this.renderPageButton(this.current)}
-              ${this.renderPageButton(this.current + 1)}
+              ${this.renderPageButton(this.current - 1, false, true)}
+              ${this.renderPageButton(this.current, false, true)}
+              ${this.renderPageButton(this.current + 1, false, true)}
             `,
           )}
           ${when(
@@ -106,7 +107,9 @@ export class Pagination extends LitElement {
         `,
 
         () => html`
-          ${Array.from({ length: this.count }, (_, index) => this.renderPageButton(index + 1))}
+          ${Array.from({ length: this.count }, (_, index) =>
+            this.renderPageButton(index + 1, false, true),
+          )}
           ${this.renderPageButton(this.current + 1, !this.hasRightPage, false, 'right')}
         `,
       )}
