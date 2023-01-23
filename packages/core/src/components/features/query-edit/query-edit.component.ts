@@ -164,10 +164,10 @@ export class QueryEdit extends LitElement {
               this.listFields !== undefined,
               () => html`
                 <time-shift-fieldset legend="Fields">
-                  <time-shift-field-editors
+                  <time-shift-query-filters
                     .fields="${this.listFields!}"
                     .values="${this.data?.filters!}"
-                  ></time-shift-field-editors>
+                  ></time-shift-query-filters>
                 </time-shift-fieldset>
               `,
             )}
