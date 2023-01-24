@@ -29,7 +29,7 @@
     "@netlify/functions": "1.4.0",
     "@vaadin/router": "1.7.4",
     "idb": "7.1.1",
-    "lit": "2.5.0",
+    "lit": "2.6.1",
     "modern-normalize": "1.1.0"
   },
   "devDependencies": {
