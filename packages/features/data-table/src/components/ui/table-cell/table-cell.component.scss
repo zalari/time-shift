@@ -1,9 +1,11 @@
 // prettier-ignore
 :host {
-  ---time-shift-table-cell-spacing: var(--time-shift-table-cell-spacing, var(--time-shift-base-space, 10px));
+  ---time-shift-table-cell-color-border: var(--time-shift-table-cell-color-border, currentColor);
   ---time-shift-table-cell-border-width: var(--time-shift-table-cell-border-width, 1px);
+  ---time-shift-table-cell-cursor: var(--time-shift-table-cell-cursor, initial);
   ---time-shift-table-cell-font-size: var(--time-shift-table-cell-font-size, 1.4rem);
   ---time-shift-table-cell-line-height: var(--time-shift-table-cell-line-height, 1.25);
+  ---time-shift-table-cell-spacing: var(--time-shift-table-cell-spacing, var(--time-shift-base-space, 10px));
 }
 
 :host {
@@ -11,7 +13,7 @@
   padding: var(---time-shift-table-cell-spacing);
   position: relative;
 
-  border: solid currentColor;
+  border: solid var(---time-shift-table-cell-color-border);
   border-width: 0 0 var(---time-shift-table-cell-border-width);
 
   font-family: var(--time-shift-font-face-default);
@@ -19,6 +21,8 @@
   line-height: var(---time-shift-table-cell-line-height);
   vertical-align: middle;
   white-space: nowrap;
+
+  cursor: var(---time-shift-table-cell-cursor);
 }
 
 :host(:first-of-type) {

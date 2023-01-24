@@ -19,6 +19,7 @@ export const getFormatterForType = <K extends keyof TableDataTypeMap>(
 export const formatValue = <K extends keyof TableDataTypeMap>(
   value: TableDataTypeMap[K],
   type: K,
+  index: number,
 ): TemplateResult | Element | string => {
-  return getFormatterForType(type)(value);
+  return getFormatterForType(type)(value, index);
 };

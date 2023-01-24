@@ -1,3 +1,18 @@
+// prettier-ignore
+:host {
+  ---time-shift-table-row-color-background: var(--time-shift-table-row-color-background, transparent);
+  ---time-shift-table-row-color-background-even: var(--time-shift-table-row-color-background-even, var(---time-shift-table-row-color-background, transparent));
+  ---time-shift-table-row-color-background-odd: var(--time-shift-table-row-color-background-odd, var(---time-shift-table-row-color-background, transparent));
+}
+
 :host {
   display: table-row;
+}
+
+:host(:nth-child(even)) {
+  background-color: var(---time-shift-table-row-color-background-even);
+}
+
+:host(:nth-child(odd)) {
+  background-color: var(---time-shift-table-row-color-background-odd);
 }

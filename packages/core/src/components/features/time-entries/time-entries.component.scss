@@ -2,9 +2,22 @@
 
 // prettier-ignore
 :host {
-  ---time-shift-time-entries-odd-background: var(--time-shift-time-entries-odd-background, var(--time-shift-color-grey-095));
+  ---time-shift-time-entries-background-even: var(--time-shift-time-entries-background-even, var(--time-shift-color-white));
+  ---time-shift-time-entries-background-odd: var(--time-shift-time-entries-background-odd, var(--time-shift-color-grey-095));
+}
+
+header {
+  padding-bottom: utils.space(2);
 }
 
 time-shift-data-table {
+  --time-shift-table-row-color-background-even: var(---time-shift-time-entries-background-even);
+  --time-shift-table-row-color-background-odd: var(---time-shift-time-entries-background-odd);
+
+  --time-shift-table-header-cell-sort-asc: var(--time-shift-time-entries-sort-asc, '▲');
+  --time-shift-table-header-cell-sort-desc: var(--time-shift-time-entries-sort-desc, '▲');
+
+  --time-shift-table-cell-border-width: 0;
+  --time-shift-table-cell-cursor: pointer;
   --time-shift-table-cell-spacing: #{utils.space(0.65)};
 }

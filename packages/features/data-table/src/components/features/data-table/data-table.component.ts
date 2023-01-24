@@ -297,7 +297,7 @@ export class DataTable extends LitElement {
           <time-shift-table-header>
             ${map(
               this.data!.getColumns(),
-              ({ header: { align, column, name, sortable } }) => html`
+              ({ header: { align, column, label, sortable } }) => html`
                 <time-shift-table-header-cell
                   ?sortable="${sortable}"
                   ?draggable="${this.draggableColumns}"
@@ -310,7 +310,7 @@ export class DataTable extends LitElement {
                     this.storeColumnByReference(columnRef as HTMLElement | undefined, column),
                   )}
                 >
-                  ${name}
+                  ${label}
                 </time-shift-table-header-cell>
               `,
             )}
@@ -320,6 +320,7 @@ export class DataTable extends LitElement {
               this.data!.getVisibleRows(),
               row => html`
                 <time-shift-table-row
+                  data-index="${row.index}"
                   ?draggable="${this.draggableRows}"
                   ?droppable-after="${this.draggableRows}"
                   ?droppable-before="${this.draggableRows}"
@@ -379,8 +380,14 @@ declare global {
     'time-shift-data-table:dragging': CustomEvent<boolean>;
     'time-shift-data-table:column-dragged': CustomEvent<string>;
     'time-shift-data-table:row-dragged': CustomEvent<HeadlessTable.Row>;
-    'time-shift-data-table:cell-clicked': CustomEvent<Cell>;
-    'time-shift-data-table:row-clicked': CustomEvent<Row>;
+    'time-shift-data-table:cell-clicked': CustomEvent<{
+      cell: Cell;
+      ref: HTMLElementTagNameMap['time-shift-table-cell'];
+    }>;
+    'time-shift-data-table:row-clicked': CustomEvent<{
+      row: Row;
+      ref: HTMLElementTagNameMap['time-shift-table-row'];
+    }>;
   }
   interface HTMLElementTagNameMap {
     'time-shift-data-table': DataTable;

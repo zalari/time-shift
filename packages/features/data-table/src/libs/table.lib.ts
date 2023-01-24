@@ -89,7 +89,7 @@ export namespace HeadlessTable {
       const columns: Column[] = [];
       const rows: Row[] = [];
 
-      this._schema.forEach(({ column, type, name, ...entry }, columnIndex) => {
+      this._schema.forEach(({ column, type, label, ...entry }, columnIndex) => {
         const align = entry.align || 'left';
         const sortable = entry.sortable ?? false;
         const multiline = entry.multiline ?? false;
@@ -101,7 +101,7 @@ export namespace HeadlessTable {
           align,
           column,
           multiline,
-          name,
+          label,
           type,
           sortable,
           // callbacks
@@ -115,7 +115,7 @@ export namespace HeadlessTable {
         this._data.forEach((entry, rowIndex) => {
           const raw = entry[column];
           const parsed = parser(raw);
-          const formatted = formatter(parsed);
+          const formatted = formatter(parsed, rowIndex);
           const value: TableType.Value = { raw, formatted, parsed };
           const cell = new Cell(header, value);
 
