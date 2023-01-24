@@ -7,6 +7,7 @@
   ---time-shift-table-header-cell-font-size: var(--time-shift-table-header-cell-font-size, 1rem);
   ---time-shift-table-header-cell-line-height: var(--time-shift-table-header-cell-line-height, 2.2rem);
   
+  ---time-shift-table-header-cell-sort-size: var(--time-shift-table-header-cell-sort-size, 1em);
   ---time-shift-table-header-cell-sort-none: var(---time-shift-table-header-cell-sort-none, '');
   ---time-shift-table-header-cell-sort-asc: var(--time-shift-table-header-cell-sort-asc, '▲');
   ---time-shift-table-header-cell-sort-desc: var(--time-shift-table-header-cell-sort-desc, '▼');
@@ -46,6 +47,7 @@
 :host([sorted])::after {
   content: var(---time-shift-table-header-cell-sort-none);
   padding-left: calc(var(---time-shift-table-header-cell-spacing) / 2);
+  font-size: var(---time-shift-table-header-cell-sort-size);
 }
 
 :host([sorted='asc'])::after {

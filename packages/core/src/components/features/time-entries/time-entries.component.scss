@@ -4,6 +4,10 @@
 :host {
   ---time-shift-time-entries-background-even: var(--time-shift-time-entries-background-even, var(--time-shift-color-white));
   ---time-shift-time-entries-background-odd: var(--time-shift-time-entries-background-odd, var(--time-shift-color-grey-095));
+
+  ---time-shift-time-entries-sort-size: var(--time-shift-time-entries-sort-size, 1.5em);
+  ---time-shift-time-entries-sort-asc: var(--time-shift-time-entries-sort-asc, '▴');
+  ---time-shift-time-entries-sort-desc: var(--time-shift-time-entries-sort-desc, '▾');
 }
 
 header {
@@ -14,8 +18,9 @@ time-shift-data-table {
   --time-shift-table-row-color-background-even: var(---time-shift-time-entries-background-even);
   --time-shift-table-row-color-background-odd: var(---time-shift-time-entries-background-odd);
 
-  --time-shift-table-header-cell-sort-asc: var(--time-shift-time-entries-sort-asc, '▲');
-  --time-shift-table-header-cell-sort-desc: var(--time-shift-time-entries-sort-desc, '▲');
+  --time-shift-table-header-cell-sort-size: var(---time-shift-time-entries-sort-size);
+  --time-shift-table-header-cell-sort-asc: var(---time-shift-time-entries-sort-asc);
+  --time-shift-table-header-cell-sort-desc: var(---time-shift-time-entries-sort-desc);
 
   --time-shift-table-cell-border-width: 0;
   --time-shift-table-cell-cursor: pointer;
