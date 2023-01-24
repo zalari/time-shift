@@ -310,7 +310,7 @@ export class DataTable extends LitElement {
                     this.storeColumnByReference(columnRef as HTMLElement | undefined, column),
                   )}
                 >
-                  ${label}
+                  <slot name="header-cell-${column}">${label}</slot>
                 </time-shift-table-header-cell>
               `,
             )}
@@ -342,7 +342,12 @@ export class DataTable extends LitElement {
                         )}"
                         @click="${(event: Event) => this.handleCellClick(event, cell)}"
                       >
-                        ${cell.value.formatted}
+                        <slot
+                          name="row-${row.index}-cell-${cell.header.column}"
+                          data-cell-value-formatted="${ifDefined(cell.value.formatted)}"
+                        >
+                          ${cell.value.formatted}
+                        </slot>
                       </time-shift-table-cell>
                     `,
                   )}
