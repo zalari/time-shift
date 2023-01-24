@@ -79,6 +79,8 @@ export namespace HeadlessTable {
 
     private readonly _rows: ReadonlyArray<Row>;
 
+    private readonly _visibleRows: ReadonlyArray<Row>;
+
     constructor(
       private readonly _data: TableType.TableData,
       private readonly _schema: TableType.TableSchema,
@@ -135,6 +137,10 @@ export namespace HeadlessTable {
         });
       });
 
+      // derive visible rows from pagination
+      // no pagination required, deliver all rows
+      let visibleRows = rows;
+
       // prepare pagination from given options
       if (this._options.pagination !== undefined) {
         // set first page as current by default
@@ -145,6 +151,12 @@ export namespace HeadlessTable {
         this._options.pagination.pageCount = Math.ceil(
           rows.length / this._options.pagination.perPage,
         );
+
+        // apply pagination and deliver visible rows only
+        const { current = 1, perPage } = this._options.pagination;
+        const from = (current - 1) * perPage;
+        const to = from + perPage;
+        visibleRows = rows.slice(from, to);
       }
 
       // ❄❄❄ freeze the stuff ❄❄❄
@@ -156,6 +168,7 @@ export namespace HeadlessTable {
       this._cells = Object.freeze(cells);
       this._columns = Object.freeze(columns);
       this._rows = Object.freeze(rows);
+      this._visibleRows = Object.freeze(visibleRows);
 
       Object.freeze(this);
     }
@@ -197,21 +210,15 @@ export namespace HeadlessTable {
     }
 
     getVisibleRows(): ReadonlyArray<Row> {
-      // no pagination required, deliver all rows
-      const rows = this.getRows();
-      if (this._options.pagination === undefined) {
-        return rows;
-      }
-
-      // apply pagination and deliver visible rows only
-      const { current = 1, perPage } = this._options.pagination;
-      const from = (current - 1) * perPage;
-      const to = from + perPage;
-      return rows.slice(from, to);
+      return this._visibleRows;
     }
 
     getTotalRowCount(): number {
       return this._rows.length;
+    }
+
+    getVisibleRowCount(): number {
+      return this._visibleRows.length;
     }
 
     // TODO: implement me!

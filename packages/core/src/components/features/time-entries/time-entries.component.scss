@@ -11,6 +11,9 @@
 }
 
 header {
+  display: flex;
+  flex-direction: row;
+  gap: utils.space(1);
   padding-bottom: utils.space(2);
 }
 
@@ -25,4 +28,11 @@ time-shift-data-table {
   --time-shift-table-cell-border-width: 0;
   --time-shift-table-cell-cursor: pointer;
   --time-shift-table-cell-spacing: #{utils.space(0.65)};
+
+  label {
+
+    span {
+      padding-left: utils.space(0.5);
+    }
+  }
 }
