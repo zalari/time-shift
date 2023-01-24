@@ -357,7 +357,7 @@ export class DataTable extends LitElement {
           </time-shift-table-body>
         </time-shift-table>
         ${when(
-          this.itemsPerPage !== undefined,
+          this.itemsPerPage !== undefined && this.itemsPerPage < this.data!.getTotalRowCount(),
           () => html`
             <time-shift-pagination
               current="${ifDefined(this.data!.getCurrentPage())}"

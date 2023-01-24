@@ -210,6 +210,10 @@ export namespace HeadlessTable {
       return rows.slice(from, to);
     }
 
+    getTotalRowCount(): number {
+      return this._rows.length;
+    }
+
     // TODO: implement me!
     filterBy(): DataInternal {
       return this;
