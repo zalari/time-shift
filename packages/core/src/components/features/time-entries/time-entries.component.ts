@@ -93,7 +93,7 @@ export class TimeEntries extends LitElement {
 
   handleTableRef(element?: Element) {
     if (element === undefined) return;
-    const options = { sort: { column: 'at', invert: true } } satisfies HeadlessTable.Options;
+    const options = { sort: { column: 'at', invert: false } } satisfies HeadlessTable.Options;
     this.table = element as HTMLElementTagNameMap['time-shift-data-table'];
     this.table.setData(this.entries as unknown as TableData, this.schema, options);
 
