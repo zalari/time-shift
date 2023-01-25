@@ -226,7 +226,7 @@ export class TimeEntries extends LitElement {
           <input
             type="checkbox"
             .indeterminate="${this.selected.size > 0 && this.selected.size < this.allRows.length}"
-            ?checked="${this.selected.size === this.entries.length}"
+            .checked="${this.selected.size === this.entries.length}"
             @change="${this.handleSelectAllChange}"
           />
           <span>${this.selected.size} / ${this.entries.length}</span>
@@ -244,7 +244,7 @@ export class TimeEntries extends LitElement {
                     type="checkbox"
                     slot="row-${row.index}-cell-selected"
                     data-row-index="${row.index}"
-                    ?checked="${this.selected.has(row.index)}"
+                    .checked="${this.selected.has(row.index)}"
                     @change="${this.handleRowChange}"
                     @click="${this.handleInputClick}"
                   />
