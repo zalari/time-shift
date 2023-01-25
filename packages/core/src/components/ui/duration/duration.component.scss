@@ -1,0 +1,26 @@
+@use '@styles/utils' as utils;
+
+:host {
+  ---time-shift-duration-label-suffix: var(--time-shift-duration-label-suffix, ':');
+}
+
+:host {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+
+  font-size: 1.25rem;
+  cursor: pointer;
+}
+
+.label {
+  margin-right: utils.space(0.25);
+
+  &::after {
+    content: var(---time-shift-duration-label-suffix);
+  }
+}
+
+.value {
+  font-weight: 700;
+}

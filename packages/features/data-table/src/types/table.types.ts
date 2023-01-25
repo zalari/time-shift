@@ -40,7 +40,7 @@ export type Cell<T extends TableDataTypes = TableDataTypes> = {
   value: Value<T>;
 };
 export type Column = { header: Header };
-export type Row = { index: number; cells: Cell[] };
+export type Row = { index: number; data: TableDataEntry; cells: Cell[] };
 
 export type Formatter<T extends TableDataTypes> = (
   value: T,

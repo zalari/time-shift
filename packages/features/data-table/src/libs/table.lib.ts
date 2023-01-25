@@ -56,7 +56,15 @@ export namespace HeadlessTable {
       return this._cells;
     }
 
-    constructor(private readonly _index: number, private readonly _cells: Cell[] = []) {
+    get data(): TableType.TableDataEntry {
+      return this._data;
+    }
+
+    constructor(
+      private readonly _index: number,
+      private readonly _data: TableType.TableDataEntry,
+      private readonly _cells: Cell[] = [],
+    ) {
       _cells.forEach(cell => this.addCell(cell));
     }
 
@@ -131,7 +139,7 @@ export namespace HeadlessTable {
 
           // (prepare and) add to row
           if (rows[rowIndex] === undefined) {
-            rows[rowIndex] = new Row(rowIndex);
+            rows[rowIndex] = new Row(rowIndex, entry);
           }
           rows[rowIndex].addCell(cell);
         });

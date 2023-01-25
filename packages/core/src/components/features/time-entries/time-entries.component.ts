@@ -1,12 +1,19 @@
 import type { TimeEntry } from '@time-shift/common';
-import type { HeadlessTable, TableData, TableSchema } from '@time-shift/data-table';
+import { HeadlessTable, TableData, TableSchema } from '@time-shift/data-table';
 
 import { html, LitElement, unsafeCSS } from 'lit';
-import { customElement, property, query, state } from 'lit/decorators.js';
-import { keyed } from 'lit/directives/keyed.js';
+import { customElement, eventOptions, property, query, state } from 'lit/decorators.js';
 import { ref } from 'lit/directives/ref.js';
 import { repeat } from 'lit/directives/repeat.js';
 import { when } from 'lit/directives/when.js';
+
+import {
+  getDuration,
+  getDurationFormatted,
+  getDurationToday,
+  getDurationYesterday,
+  getReadableDate,
+} from '../../../utils/time-entry.utils';
 
 import '@time-shift/data-table';
 import styles from './time-entries.component.scss';
@@ -27,14 +34,14 @@ export class TimeEntries extends LitElement {
   @state()
   private selected = new Set<number>();
 
+  @state()
+  private decimal = false;
+
   @property({ type: String, reflect: true })
-  locale: string = 'en';
+  readonly locale: string = 'en';
 
   @property({ type: Array })
-  entries: TimeEntry[] = [];
-
-  readonly dateFormat = new Intl.DateTimeFormat(this.locale, { dateStyle: 'medium' });
-  readonly timeFormat = new Intl.RelativeTimeFormat(this.locale, { style: 'short' });
+  readonly entries: TimeEntry[] = [];
 
   readonly schema: TableSchema = [
     {
@@ -47,14 +54,14 @@ export class TimeEntries extends LitElement {
       label: 'Date',
       type: 'date',
       sortable: true,
-      formatter: this.dateFormat.format.bind(this),
+      formatter: getReadableDate,
     },
     {
       column: 'minutes',
       label: 'Minutes',
       type: 'number',
       sortable: true,
-      formatter: this.formatMinutes.bind(this),
+      formatter: getDurationFormatted,
     },
     {
       column: 'note',
@@ -73,12 +80,15 @@ export class TimeEntries extends LitElement {
     return visible.map(row => row.index).every(index => this.selected.has(index));
   }
 
-  formatMinutes(minutes: number): string {
-    return this.timeFormat
-      .formatToParts(minutes, 'minutes')
-      .filter((_, index) => index > 0)
-      .map(({ value }) => value)
-      .join('');
+  getVisibleTimeEntries(): TimeEntry[] {
+    const visible = this.table?.data!.getVisibleRows() ?? [];
+    return visible.map(row => row.data) as unknown as TimeEntry[];
+  }
+
+  getSelectedTimeEntries(): TimeEntry[] {
+    return this.allRows
+      .filter(row => this.selected.has(row.index))
+      .map(row => row.data) as unknown as TimeEntry[];
   }
 
   handleTableRef(element?: Element) {
@@ -91,10 +101,12 @@ export class TimeEntries extends LitElement {
     this.allRows = this.table!.data!.getRows();
   }
 
+  @eventOptions({ passive: true })
   handleInputClick(event: Event) {
     event.stopPropagation();
   }
 
+  @eventOptions({ passive: true })
   handleRowClick(event: HTMLElementEventMap['time-shift-data-table:row-clicked']) {
     const { index } = event.detail.row;
     const input = this.table!.querySelector<HTMLInputElement>(`input[data-row-index="${index}"]`)!;
@@ -102,10 +114,12 @@ export class TimeEntries extends LitElement {
     input.dispatchEvent(new Event('change'));
   }
 
+  @eventOptions({ passive: true })
   handlePageTurned() {
     this.requestUpdate();
   }
 
+  @eventOptions({ passive: true })
   handleRowChange(event: Event) {
     // get checked state and row index
     const { checked, dataset } = event.target as HTMLInputElement;
@@ -121,6 +135,7 @@ export class TimeEntries extends LitElement {
     this.selected = selected;
   }
 
+  @eventOptions({ passive: true })
   handleSelectAllChange() {
     const { length } = this.entries;
     this.selected = this.selectAll.checked
@@ -128,12 +143,14 @@ export class TimeEntries extends LitElement {
       : new Set();
   }
 
+  @eventOptions({ passive: true })
   handleToggleAll() {
     // trigger the change event of the checkbox
     this.selectAll.checked = !this.selectAll.checked;
     this.selectAll.dispatchEvent(new Event('change'));
   }
 
+  @eventOptions({ passive: true })
   handleToggleVisible() {
     const visible = this.table!.data!.getVisibleRows().map(row => row.index);
     const selected = Array.from(this.selected);
@@ -144,6 +161,11 @@ export class TimeEntries extends LitElement {
     } else {
       this.selected = new Set([...selected, ...visible]);
     }
+  }
+
+  @eventOptions({ passive: true })
+  handleDecimalChange(event: HTMLElementEventMap['time-shift-duration:decimal-changed']) {
+    this.decimal = event.detail;
   }
 
   render() {
@@ -165,6 +187,33 @@ export class TimeEntries extends LitElement {
           )}
           visible
         </time-shift-button>
+      </header>
+
+      <header>
+        <time-shift-duration
+          label="Total"
+          minutes="${getDuration(this.entries)}"
+          ?decimal="${this.decimal}"
+          @time-shift-duration:decimal-changed="${this.handleDecimalChange}"
+        ></time-shift-duration>
+        <time-shift-duration
+          label="Yesterday"
+          minutes="${getDurationYesterday(this.entries)}"
+          ?decimal="${this.decimal}"
+          @time-shift-duration:decimal-changed="${this.handleDecimalChange}"
+        ></time-shift-duration>
+        <time-shift-duration
+          label="Today"
+          minutes="${getDurationToday(this.entries)}"
+          ?decimal="${this.decimal}"
+          @time-shift-duration:decimal-changed="${this.handleDecimalChange}"
+        ></time-shift-duration>
+        <time-shift-duration
+          label="Selected"
+          minutes="${getDuration(this.getSelectedTimeEntries())}"
+          ?decimal="${this.decimal}"
+          @time-shift-duration:decimal-changed="${this.handleDecimalChange}"
+        ></time-shift-duration>
       </header>
 
       <time-shift-data-table

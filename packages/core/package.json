@@ -28,6 +28,7 @@
     "@time-shift/data-table": "workspace:*",
     "@netlify/functions": "1.4.0",
     "@vaadin/router": "1.7.4",
+    "dayjs": "1.11.7",
     "idb": "7.1.1",
     "lit": "2.6.1",
     "modern-normalize": "1.1.0"
