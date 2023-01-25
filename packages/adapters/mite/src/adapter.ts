@@ -30,6 +30,7 @@ export const adapter: AdapterFactory<
       );
       const entries = await miteClient(account, apiKey).getTimeEntries(options);
       return entries.map(({ time_entry: entry }) => ({
+        id: `${entry.id}`,
         at: new Date(entry.date_at),
         minutes: entry.minutes,
         active: entry.tracking ? true : false,

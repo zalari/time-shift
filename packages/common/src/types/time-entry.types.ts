@@ -4,6 +4,11 @@
  */
 export type TimeEntry<P = {}> = {
   /**
+   * an unique identifier within the source adapter.
+   */
+  id: string;
+
+  /**
    * The date of the time entry.
    */
   at: Date;
