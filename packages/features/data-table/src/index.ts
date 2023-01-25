@@ -12,7 +12,7 @@ export * from './components/ui/table-cell/table-cell.component';
 export * from './components/ui/table-header/table-header.component';
 export * from './components/ui/table-header-cell/table-header-cell.component';
 export * from './components/ui/table-row/table-row.component';
-export * from './libs/table.lib';
+export * from './libs/headless-table.lib';
 export * from './types/draggable.types';
 export * from './types/table.types';
 export * from './utils/draggable-column.utils';

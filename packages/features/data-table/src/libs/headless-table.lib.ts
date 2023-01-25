@@ -100,7 +100,8 @@ export namespace HeadlessTable {
       const rows: Row[] = [];
 
       this._schema.forEach(({ column, type, label, ...entry }, columnIndex) => {
-        const align = entry.align || 'left';
+        const align = entry.align ?? 'left';
+        const width = entry.width ?? 'auto';
         const sortable = entry.sortable ?? false;
         const multiline = entry.multiline ?? false;
         const formatter = entry.formatter ?? getFormatterForType(type);
@@ -114,6 +115,7 @@ export namespace HeadlessTable {
           label,
           type,
           sortable,
+          width,
           // callbacks
           formatter,
           parser,

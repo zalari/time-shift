@@ -8,7 +8,7 @@ import { when } from 'lit/directives/when.js';
 import type { DropTarget } from '../../../types/draggable.types';
 import type { Cell, Row, TableData, TableSchema } from '../../../types/table.types';
 
-import { HeadlessTable } from '../../../libs/table.lib';
+import { HeadlessTable } from '../../../libs/headless-table.lib';
 import { destroyDraggableColumn, makeColumnDraggable } from '../../../utils/draggable-column.utils';
 import { destroyDraggableRow, makeRowDraggable } from '../../../utils/draggable-row.utils';
 
