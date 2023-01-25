@@ -31,49 +31,63 @@ export type AdapterFieldTypeMap = {
 export type AdapterFieldType = keyof AdapterFieldTypeMap;
 
 /**
- * A field of a given type.
+ * Types predefined option values.
  */
-export type AdapterField<K extends AdapterFieldType> = {
-  /**
-   * The type must be one of the declared ones in the map.
-   */
-  type: K;
-
-  /**
-   * The label is shown above the input and must be set to clearly identify the field to the user.
-   */
+export type AdapterFieldOptions<K extends AdapterFieldType> = {
   label: string;
+  value: AdapterFieldTypeMap[K];
+}[];
 
-  /**
-   * Is either shown as a placeholder or as a label for a checkbox field.
-   */
-  placeholder?: string;
+/**
+ * A field of a given type.
+ * We have to bend over backwards to get the type inference right.
+ * @see https://stackoverflow.com/a/67198723/1146207
+ */
+export type AdapterField = AdapterFieldType extends infer K
+  ? K extends AdapterFieldType
+    ? {
+        /**
+         * The type must be one of the declared ones in the map.
+         */
+        type: K;
 
-  /**
-   * Will be shown additionaly below the input.
-   */
-  description?: string;
+        /**
+         * The label is shown above the input and must be set to clearly identify the field to the user.
+         */
+        label: string;
 
-  /**
-   * Allows predefinition of available values.
-   */
-  options?: { label: string; value: AdapterFieldTypeMap[K] }[];
+        /**
+         * Is either shown as a placeholder or as a label for a checkbox field.
+         */
+        placeholder?: string;
 
-  /**
-   * Let multiple values be selected.
-   */
-  multiple?: boolean;
+        /**
+         * Will be shown additionaly below the input.
+         */
+        description?: string;
 
-  /**
-   * Show this field conditionally depending on other fields (and their current values).
-   */
-  when?: Record<string, string | number | boolean>;
-};
+        /**
+         * Allows predefinition of available values.
+         */
+        options?: AdapterFieldOptions<K>;
+
+        /**
+         * Let multiple values be selected.
+         */
+        multiple?: boolean;
+
+        /**
+         * Show this field conditionally depending on other fields (and their current values).
+         */
+        when?: Record<string, string | number | boolean>;
+      }
+    : never
+  : never;
 
 /**
  * Fields to narrow the adapter results.
  */
-export type AdapterFields = Record<string, AdapterField<AdapterFieldType>>;
+export type AdapterFields = Record<string, AdapterField>;
 
 /**
  * Values of an adapter, based on its configuration.

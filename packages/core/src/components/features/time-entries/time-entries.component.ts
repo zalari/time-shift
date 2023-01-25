@@ -1,5 +1,6 @@
 import type { TimeEntry } from '@time-shift/common';
-import { HeadlessTable, TableData, TableSchema } from '@time-shift/data-table';
+import type { HeadlessTable, TableData, TableSchema } from '@time-shift/data-table';
+import '@time-shift/data-table';
 
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, eventOptions, property, query, state } from 'lit/decorators.js';
@@ -10,13 +11,11 @@ import { when } from 'lit/directives/when.js';
 import {
   getDuration,
   getDurationDecimal,
-  getDurationFormatted,
   getDurationToday,
   getDurationYesterday,
   getReadableDate,
 } from '../../../utils/time-entry.utils';
 
-import '@time-shift/data-table';
 import styles from './time-entries.component.scss';
 
 @customElement('time-shift-time-entries')

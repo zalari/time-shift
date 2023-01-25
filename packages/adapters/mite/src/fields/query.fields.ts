@@ -1,4 +1,4 @@
-import type { AdapterField, AdapterFields } from '@time-shift/common';
+import type { AdapterFields } from '@time-shift/common';
 
 export const fields = {
   at: {
@@ -15,19 +15,19 @@ export const fields = {
       { label: 'this year', value: 'this_year' },
       { label: 'last year', value: 'last_year' },
     ],
-  } satisfies AdapterField<'string'>,
+  },
 
   from: {
     label: 'From',
     description: 'All time entries after this date.',
     type: 'date',
-  } satisfies AdapterField<'date'>,
+  },
 
   to: {
     label: 'To',
     description: 'All time entries before this date.',
     type: 'date',
-  } satisfies AdapterField<'date'>,
+  },
 
   user_id: {
     label: 'Users',
@@ -36,8 +36,8 @@ export const fields = {
     type: 'number',
     multiple: true,
     // values will be added later, once the connection is configured
-    options: [] as AdapterField<'number'>['options'],
-  } satisfies AdapterField<'number'>,
+    options: [{ label: '', value: 0 }],
+  },
 
   customer_id: {
     label: 'Customers',
@@ -45,8 +45,8 @@ export const fields = {
     type: 'number',
     multiple: true,
     // values will be added later, once the connection is configured
-    options: [] as AdapterField<'number'>['options'],
-  } satisfies AdapterField<'number'>,
+    options: [{ label: '', value: 0 }],
+  },
 
   project_id: {
     label: 'Projects',
@@ -54,8 +54,8 @@ export const fields = {
     type: 'number',
     multiple: true,
     // values will be added later, once the connection is configured
-    options: [] as AdapterField<'number'>['options'],
-  } satisfies AdapterField<'number'>,
+    options: [{ label: '', value: 0 }],
+  },
 
   service_id: {
     label: 'Services',
@@ -63,32 +63,32 @@ export const fields = {
     type: 'number',
     multiple: true,
     // values will be added later, once the connection is configured
-    options: [] as AdapterField<'number'>['options'],
-  } satisfies AdapterField<'number'>,
+    options: [{ label: '', value: 0 }],
+  },
 
   note: {
     label: 'Note',
     description: 'Time entries containing this note.',
     type: 'string',
-  } satisfies AdapterField<'string'>,
+  },
 
   billable: {
     label: 'Billable',
     placeholder: 'Whether the time entry is billable.',
     type: 'boolean',
-  } satisfies AdapterField<'boolean'>,
+  },
 
   locked: {
     label: 'Locked',
     placeholder: 'Whether the time entry is locked.',
     type: 'boolean',
-  } satisfies AdapterField<'boolean'>,
+  },
 
   tracking: {
     label: 'Tracking',
     placeholder: 'Whether the time entry is currently tracking.',
     type: 'boolean',
-  } satisfies AdapterField<'boolean'>,
+  },
 } satisfies AdapterFields;
 
 export type MiteAdapterQueryFields = typeof fields;
