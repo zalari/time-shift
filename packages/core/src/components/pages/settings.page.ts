@@ -14,7 +14,7 @@ export class SettingsPage extends LitElement {
           <time-shift-button slot="actions" @click="${handleNavigation('/settings/connection/new')}">
             Add
           </time-shift-button>
-          <time-shift-connection-list></time-shift-connection-list>
+          <time-shift-connection-list base="/settings/connection"></time-shift-connection-list>
         </time-shift-pane>
 
         <time-shift-pane slot="aside" headline="Queries">

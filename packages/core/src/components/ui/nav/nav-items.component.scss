@@ -1,0 +1,9 @@
+@use '@styles/utils' as utils;
+
+:host {
+  display: flex;
+  flex-direction: column;
+  gap: utils.space();
+  margin: 0;
+  padding: 0;
+}

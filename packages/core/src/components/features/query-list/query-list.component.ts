@@ -1,13 +1,10 @@
 import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement, property, state } from 'lit/decorators.js';
 import { map } from 'lit/directives/map.js';
-import { when } from 'lit/directives/when.js';
-
-import { Connection, getConnection } from '../../../data/connection.data';
-import { type Query, getAllQuerys } from '../../../data/query.data';
 
 import { Database } from '../../../utils/database.utils';
-import { toggleActive } from '../../../utils/router.utils';
+import { Connection, getConnection } from '../../../data/connection.data';
+import { type Query, getAllQuerys } from '../../../data/query.data';
 
 import styles from './query-list.component.scss';
 
@@ -61,28 +58,18 @@ export class QueryList extends LitElement {
 
   render() {
     return html`
-      ${when(
-        this.queries.length > 0,
-        () => html`
-          <ul>
-            ${map(
-              this.queries,
-              ({ name, source, id }) => html`
-                <li>
-                  <a href="${this.base}/${id}" ${toggleActive('active')}>
-                    <strong>${name}</strong>
-                    ${when(
-                      source !== undefined,
-                      () => html`<span>${source!.name} (${source!.type})</span>`,
-                    )}
-                  </a>
-                </li>
-              `,
-            )}
-          </ul>
-        `,
-        () => html`<p>No queries found.</p>`,
-      )}
+      <time-shift-nav-items empty="No queries found.">
+        ${map(
+          this.queries,
+          ({ name, source, id }) => html`
+            <time-shift-nav-item
+              href="${this.base}/${id}"
+              label="${name}"
+              description="${source!.name} (${source!.type})"
+            ></time-shift-nav-item>
+          `,
+        )}
+      </time-shift-nav-items>
     `;
   }
 }

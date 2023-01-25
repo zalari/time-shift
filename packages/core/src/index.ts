@@ -37,6 +37,8 @@ export * from './components/ui/input/input-text.component';
 export * from './components/ui/input/input.component.mixin';
 export * from './components/ui/input/select.component';
 export * from './components/ui/input/switch.component';
+export * from './components/ui/nav/nav-item.component';
+export * from './components/ui/nav/nav-items.component';
 export * from './components/ui/pane/pane.component';
 export * from './data/connection.data';
 export * from './data/query.data';

@@ -1,10 +1,8 @@
 import { LitElement, html, unsafeCSS } from 'lit';
-import { customElement, state } from 'lit/decorators.js';
+import { customElement, property, state } from 'lit/decorators.js';
 import { map } from 'lit/directives/map.js';
-import { when } from 'lit/directives/when.js';
 
 import { Database } from '../../../utils/database.utils';
-import { toggleActive } from '../../../utils/router.utils';
 import { type Connection, getAllConnections } from '../../../data/connection.data';
 
 import styles from './connection-list.component.scss';
@@ -15,6 +13,9 @@ export class ConnectionList extends LitElement {
 
   @state()
   connections: Connection[] = [];
+
+  @property({ type: String, reflect: true })
+  base = '';
 
   constructor() {
     super();
@@ -42,25 +43,18 @@ export class ConnectionList extends LitElement {
 
   render() {
     return html`
-      ${when(
-        this.connections.length > 0,
-        () => html`
-          <ul>
-            ${map(
-              this.connections,
-              ({ name, type, id }) => html`
-                <li>
-                  <a href="/settings/connection/${id}" ${toggleActive('active')}>
-                    <strong>${name}</strong>
-                    <span>${type}</span>
-                  </a>
-                </li>
-              `,
-            )}
-          </ul>
-        `,
-        () => html`<p>No connections found.</p>`,
-      )}
+      <time-shift-nav-items empty="No connections found.">
+        ${map(
+          this.connections,
+          ({ name, type, id }) => html`
+            <time-shift-nav-item
+              href="/settings/connection/${id}"
+              label="${name}"
+              description="${type}"
+            ></time-shift-nav-item>
+          `,
+        )}
+      </time-shift-nav-items>
     `;
   }
 }

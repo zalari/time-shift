@@ -1,0 +1,48 @@
+@use '@styles/utils' as utils;
+
+// prettier-ignore
+:host {
+  ---time-shift-nav-item-passive-background-color: var(--time-shift-nav-item-passive-background-color, var(--time-shift-color-grey-080));
+  ---time-shift-nav-item-passive-border-color: var(--time-shift-nav-item-passive-border-color, var(--time-shift-color-grey-080));
+
+  ---time-shift-nav-item-hover-background-color: var(--time-shift-nav-item-hover-background-color, var(--time-shift-color-grey-085));
+  ---time-shift-nav-item-hover-border-color: var(--time-shift-nav-item-hover-border-color, var(--time-shift-color-grey-080));
+
+  ---time-shift-nav-item-active-background-color: var(--time-shift-nav-item-active-background-color, var(--time-shift-color-grey-090));
+  ---time-shift-nav-item-active-border-color: var(--time-shift-nav-item-active-border-color, var(--time-shift-color-grey-080));
+
+  // internal properties
+  ---time-shift-nav-item-background-color: var(---time-shift-nav-item-passive-background-color);
+  ---time-shift-nav-item-border-color: var(---time-shift-nav-item-passive-border-color);
+}
+
+a {
+  display: flex;
+  flex-direction: column;
+  padding: utils.space();
+
+  font-size: 1.3rem;
+  text-decoration: inherit;
+
+  border: 2px solid var(---time-shift-nav-item-border-color);
+  border-radius: 5px;
+  background-color: var(---time-shift-nav-item-background-color);
+  color: inherit;
+
+  &:not(.active):hover {
+    ---time-shift-nav-item-background-color: var(---time-shift-nav-item-hover-background-color);
+    ---time-shift-nav-item-border-color: var(---time-shift-nav-item-hover-border-color);
+  }
+
+  &.active {
+    ---time-shift-nav-item-background-color: var(---time-shift-nav-item-active-background-color);
+    ---time-shift-nav-item-border-color: var(---time-shift-nav-item-active-border-color);
+  }
+
+  strong {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    width: 100%;
+  }
+}
