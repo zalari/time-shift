@@ -48,6 +48,7 @@ export class TimeEntries extends LitElement {
       column: 'selected',
       label: 'Selected',
       type: 'bool',
+      width: 1,
     },
     {
       column: 'at',

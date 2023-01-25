@@ -16,6 +16,8 @@ export type TableSchemaEntry<T extends keyof TableDataTypeMap = any> = {
   sortable?: boolean;
 
   align?: 'left' | 'center' | 'right';
+  width?: 'auto' | number;
+
   multiline?: boolean;
   formatter?: Formatter<T>;
   parser?: Parser<T, TableDataTypeMap[T]>;

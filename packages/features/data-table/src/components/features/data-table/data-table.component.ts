@@ -3,6 +3,7 @@ import { customElement, eventOptions, property, state } from 'lit/decorators.js'
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { map } from 'lit/directives/map.js';
 import { ref } from 'lit/directives/ref.js';
+import { styleMap } from 'lit/directives/style-map.js';
 import { when } from 'lit/directives/when.js';
 
 import type { DropTarget } from '../../../types/draggable.types';
@@ -297,7 +298,7 @@ export class DataTable extends LitElement {
           <time-shift-table-header>
             ${map(
               this.data!.getColumns(),
-              ({ header: { align, column, label, sortable } }) => html`
+              ({ header: { align, column, label, sortable, width } }) => html`
                 <time-shift-table-header-cell
                   ?sortable="${sortable}"
                   ?draggable="${this.draggableColumns}"
@@ -305,6 +306,10 @@ export class DataTable extends LitElement {
                   dragged-over="${ifDefined(this.getDraggedOverForColumn(column))}"
                   alignment="${ifDefined(align)}"
                   sorted="${ifDefined(this.getSortModeForColumn(column))}"
+                  style="${styleMap({
+                    ['--time-shift-table-header-cell-width']:
+                      width === 'auto' ? undefined : `${width}%`,
+                  })}"
                   @click="${() => sortable && this.sortByColumn(column)}"
                   ${ref(columnRef =>
                     this.storeColumnByReference(columnRef as HTMLElement | undefined, column),

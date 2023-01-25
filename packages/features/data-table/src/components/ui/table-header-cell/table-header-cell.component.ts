@@ -1,6 +1,8 @@
 import { html, LitElement, unsafeCSS } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 
+import type { TableSchemaEntry } from '../../../types/table.types';
+
 import styles from './table-header-cell.component.scss';
 
 @customElement('time-shift-table-header-cell')
@@ -11,7 +13,7 @@ export class TableHeaderCell extends LitElement {
   readonly role = 'columnheader';
 
   @property({ reflect: true, type: String })
-  alignment: 'left' | 'center' | 'right' = 'left';
+  alignment: TableSchemaEntry['align'] = 'left';
 
   @property({ reflect: true, type: Boolean })
   sortable = false;

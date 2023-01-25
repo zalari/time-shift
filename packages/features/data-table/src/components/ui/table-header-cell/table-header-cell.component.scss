@@ -6,6 +6,7 @@
   ---time-shift-table-header-cell-border-width: var(--time-shift-table-header-cell-border-width, 1px);
   ---time-shift-table-header-cell-font-size: var(--time-shift-table-header-cell-font-size, 1rem);
   ---time-shift-table-header-cell-line-height: var(--time-shift-table-header-cell-line-height, 2.2rem);
+  ---time-shift-table-header-cell-width: var(--time-shift-table-header-cell-width, auto);
   
   ---time-shift-table-header-cell-sort-size: var(--time-shift-table-header-cell-sort-size, 1em);
   ---time-shift-table-header-cell-sort-none: var(---time-shift-table-header-cell-sort-none, '');
@@ -24,6 +25,7 @@
   display: table-cell;
   padding: 0 var(---time-shift-table-header-cell-spacing);
   position: relative;
+  width: var(---time-shift-table-header-cell-width);
 
   background: var(---time-shift-table-header-cell-background);
   border: solid var(---time-shift-table-header-cell-border);
