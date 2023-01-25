@@ -171,25 +171,6 @@ export class TimeEntries extends LitElement {
   render() {
     return html`
       <header>
-        <time-shift-button @click="${this.handleToggleAll}">
-          ${when(
-            this.allChecked,
-            () => 'Deselect',
-            () => 'Select',
-          )}
-          all
-        </time-shift-button>
-        <time-shift-button @click="${this.handleToggleVisible}">
-          ${when(
-            this.visibleChecked,
-            () => 'Deselect',
-            () => 'Select',
-          )}
-          visible
-        </time-shift-button>
-      </header>
-
-      <header>
         <time-shift-duration
           label="Total"
           minutes="${getDuration(this.entries)}"
@@ -214,6 +195,25 @@ export class TimeEntries extends LitElement {
           ?decimal="${this.decimal}"
           @time-shift-duration:decimal-changed="${this.handleDecimalChange}"
         ></time-shift-duration>
+      </header>
+
+      <header>
+        <time-shift-button @click="${this.handleToggleAll}">
+          ${when(
+            this.allChecked,
+            () => 'Deselect',
+            () => 'Select',
+          )}
+          all
+        </time-shift-button>
+        <time-shift-button @click="${this.handleToggleVisible}">
+          ${when(
+            this.visibleChecked,
+            () => 'Deselect',
+            () => 'Select',
+          )}
+          visible
+        </time-shift-button>
       </header>
 
       <time-shift-data-table

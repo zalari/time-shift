@@ -1,19 +1,26 @@
 @use '@styles/utils' as utils;
 
+// prettier-ignore
 :host {
-  ---time-shift-duration-label-suffix: var(--time-shift-duration-label-suffix, ':');
+  ---time-shift-duration-background-color: var(--time-shift-duration-background-color, var(--time-shift-color-grey-085));
+  ---time-shift-duration-label-suffix: var(--time-shift-duration-label-suffix, '');
 }
 
 :host {
   display: flex;
-  flex-direction: row;
-  align-items: center;
+  flex-direction: column;
+  gap: utils.space(0.5);
 
-  font-size: 1.25rem;
+  padding: utils.space(0.75) utils.space();
+  min-width: utils.space(10);
+
+  background-color: var(---time-shift-duration-background-color);
+  border-radius: 5px;
   cursor: pointer;
 }
 
 .label {
+  font-size: 1.25rem;
   margin-right: utils.space(0.25);
 
   &::after {
@@ -22,5 +29,6 @@
 }
 
 .value {
+  font-size: 1.5rem;
   font-weight: 700;
 }
