@@ -29,7 +29,11 @@ export class TableHeaderCell extends LitElement {
   draggedOver?: 'top' | 'right' | 'bottom' | 'left';
 
   render() {
-    return html`<slot></slot>`;
+    return html`
+      <div class="content">
+        <slot></slot>
+      </div>
+    `;
   }
 }
 

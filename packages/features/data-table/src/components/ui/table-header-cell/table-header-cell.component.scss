@@ -34,9 +34,16 @@
   line-height: var(---time-shift-table-header-cell-line-height);
   text-transform: uppercase;
   white-space: nowrap;
+  vertical-align: top;
 
   cursor: default;
   user-select: none;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
 // sorting
@@ -44,18 +51,20 @@
   cursor: pointer;
 }
 
-:host([sorted])::after {
-  content: var(---time-shift-table-header-cell-sort-none);
-  padding-left: calc(var(---time-shift-table-header-cell-spacing) / 2);
-  font-size: var(---time-shift-table-header-cell-sort-size);
-}
+.content {
+  :host([sorted]) &::after {
+    content: var(---time-shift-table-header-cell-sort-none);
+    padding-left: calc(var(---time-shift-table-header-cell-spacing) / 2);
+    font-size: var(---time-shift-table-header-cell-sort-size);
+  }
 
-:host([sorted='asc'])::after {
-  content: var(---time-shift-table-header-cell-sort-asc);
-}
+  :host([sorted='asc']) &::after {
+    content: var(---time-shift-table-header-cell-sort-asc);
+  }
 
-:host([sorted='desc'])::after {
-  content: var(---time-shift-table-header-cell-sort-desc);
+  :host([sorted='desc']) &::after {
+    content: var(---time-shift-table-header-cell-sort-desc);
+  }
 }
 
 // drag-and-drop
