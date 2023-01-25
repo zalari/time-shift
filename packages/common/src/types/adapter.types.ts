@@ -11,6 +11,11 @@ export type Adapter<QueryFields extends AdapterFields> = {
   checkConnection(): Promise<boolean>;
 
   /**
+   * In order to configure the getTimeEntries method, the adapter must provide a list of fields.
+   */
+  getTimeEntryFields: () => Promise<QueryFields>;
+
+  /**
    * Get all time entries for a given date range.
    */
   getTimeEntries: (fields?: Partial<AdapterValues<QueryFields>>) => Promise<TimeEntry[]>;
@@ -33,5 +38,4 @@ export type AdapterFactory<
 export type AdapterSet<ConfigFields extends AdapterFields, QueryFields extends AdapterFields> = {
   adapter: AdapterFactory<ConfigFields, QueryFields>;
   config: ConfigFields;
-  fields: QueryFields;
 };

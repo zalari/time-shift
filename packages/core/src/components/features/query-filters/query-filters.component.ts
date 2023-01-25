@@ -10,7 +10,7 @@ import type { EventWithTarget } from '../../../utils/type.utils';
 import styles from './query-filters.component.scss';
 
 @customElement('time-shift-query-filters')
-export class FieldEditors<F extends AdapterFields> extends LitElement {
+export class QueryFilters<F extends AdapterFields = any> extends LitElement {
   static override readonly styles = unsafeCSS(styles);
   static readonly formAssociated = true;
 
@@ -27,7 +27,7 @@ export class FieldEditors<F extends AdapterFields> extends LitElement {
   fields!: F;
 
   @property({ type: Object })
-  values: Partial<AdapterValues<F>> = {};
+  filters: Partial<AdapterValues<F>> = {};
 
   @property({ type: String, reflect: true })
   addLabel = 'Add filter';
@@ -45,7 +45,7 @@ export class FieldEditors<F extends AdapterFields> extends LitElement {
 
   getFilterOptions(): SelectOption<string>[] {
     return Object.entries(this.fields)
-      .filter(([name]) => !(name in this.values))
+      .filter(([name]) => !(name in this.filters))
       .map(([name, field]) => ({
         value: name,
         label: field.label,
@@ -59,7 +59,7 @@ export class FieldEditors<F extends AdapterFields> extends LitElement {
 
   @eventOptions({ passive: true })
   handleFilterAdd() {
-    this.values[this.selectedFieldName!] = undefined as any;
+    this.filters[this.selectedFieldName!] = undefined as any;
     this.selectedFieldName = undefined;
     this.emitInputEvent();
   }
@@ -68,8 +68,8 @@ export class FieldEditors<F extends AdapterFields> extends LitElement {
   handleFilterRemove(event: EventWithTarget) {
     const name = event.target.parentElement!.dataset.name!;
     if (!confirm(`${this.removeLabel} "${this.fields[name].label}"?`)) return;
-    const { [name]: _, ...values } = this.values;
-    this.values = values as Partial<AdapterValues<F>>;
+    const { [name]: _, ...values } = this.filters;
+    this.filters = values as Partial<AdapterValues<F>>;
     this.emitInputEvent();
   }
 
@@ -93,7 +93,7 @@ export class FieldEditors<F extends AdapterFields> extends LitElement {
       </header>
       <ul>
         ${map(
-          Object.entries(this.values),
+          Object.entries(this.filters),
           ([name, value]) =>
             html`
               <li data-name="${name}">
@@ -105,9 +105,7 @@ export class FieldEditors<F extends AdapterFields> extends LitElement {
                   label="${this.fields[name].label}"
                   message="${ifDefined(this.fields[name].description)}"
                   placeholder="${ifDefined(this.fields[name].placeholder)}"
-                  .options="${'values' in this.fields[name]
-                    ? (this.fields[name] as any).values
-                    : []}"
+                  .options="${ifDefined(this.fields[name].options)}"
                   .value="${value}"
                 ></time-shift-field-editor>
                 <time-shift-button @click="${this.handleFilterRemove}">
@@ -123,6 +121,6 @@ export class FieldEditors<F extends AdapterFields> extends LitElement {
 
 declare global {
   interface HTMLElementTagNameMap {
-    'time-shift-query-filters': FieldEditors;
+    'time-shift-query-filters': QueryFilters;
   }
 }

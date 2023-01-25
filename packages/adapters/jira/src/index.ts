@@ -1,7 +1,7 @@
 import { type AdapterSet, registerAdapter } from '@time-shift/common';
 
 import { type JiraAdapterConfigFields, config } from './fields/config.fields.js';
-import { type JiraAdapterQueryFields, fields } from './fields/query.fields.js';
+import type { JiraAdapterQueryFields } from './fields/query.fields.js';
 import { adapter } from './adapter.js';
 
 declare global {
@@ -10,4 +10,4 @@ declare global {
   }
 }
 
-registerAdapter('jira', { adapter, config, fields });
+registerAdapter('jira', { adapter, config });

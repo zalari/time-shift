@@ -23,12 +23,6 @@ export const getHoursFormat = (): Intl.NumberFormat => {
   });
 };
 
-export const getHoursUnit = (): string => {
-  return getHoursFormat()
-    .formatToParts(1)
-    .find(({ type }) => type === 'unit')!.value;
-};
-
 export const getDuration = (entries: WithMinutes[]): number => {
   return entries.reduce((duration, { minutes }) => duration + minutes, 0);
 };
@@ -63,10 +57,12 @@ export const getDurationDecimal = (minutes: number): string => {
 };
 
 export const getDurationFormatted = (minutes: number): string => {
-  const unit = getHoursUnit();
-  return dayjs.duration(minutes, 'minutes').format(`HH:mm[${unit}]`);
+  return dayjs
+    .duration(minutes, 'minutes')
+    .format('DD[d] HH[h] mm[m]')
+    .replace(/00\w\s/g, '');
 };
 
 export const getReadableDate = (date: Date): string => {
   return dayjs(date).format('LL');
-}
+};

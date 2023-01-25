@@ -41,6 +41,7 @@ export class InputNumber extends Editable<number, HTMLInputElement>()(LitElement
       <input
         part="input"
         type="number"
+        autocomplete="${this.disableAutocomplete ? 'off' : 'on'}"
         name="${ifDefined(this.name)}"
         placeholder="${ifDefined(this.placeholder)}"
         min="${ifDefined(this.min)}"

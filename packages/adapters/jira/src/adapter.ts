@@ -5,7 +5,7 @@ import type { Worklog as Worklog3 } from 'jira.js/out/version3/models';
 import { type Config, Version2Client, Version3Client } from 'jira.js';
 
 import type { JiraAdapterConfigFields } from './fields/config.fields';
-import type { JiraAdapterQueryFields } from './fields/query.fields';
+import { type JiraAdapterQueryFields, fields } from './fields/query.fields';
 
 type Worklog = Worklog2 | Worklog3;
 
@@ -63,6 +63,10 @@ export const adapter: AdapterFactory<
       } catch (error) {
         return false;
       }
+    },
+
+    async getTimeEntryFields(): Promise<JiraAdapterQueryFields> {
+      return fields;
     },
 
     async getTimeEntries(options = {}): Promise<TimeEntry<Worklog>[]> {

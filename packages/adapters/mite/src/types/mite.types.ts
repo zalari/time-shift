@@ -1,90 +1,115 @@
-export type MiteDate =
-  | 'today'
-  | 'yesterday'
-  | 'this_week'
-  | 'last_week'
-  | 'this_month'
-  | 'last_month'
-  | 'this_year'
-  | 'last_year'
-  | Date;
+export namespace Mite {
+  export type Commons = {
+    id: number;
+    created_at: Date;
+    updated_at: Date;
+  };
 
-export type MiteUngroupedTimeEntry = {
-  time_entry: MiteTimeEntry;
-};
+  export type Archivable = {
+    name: string;
+    note: string;
+    archived: boolean;
+  };
 
-export type MiteGroupedTimeEntry = {
-  time_entry_group: MiteTimeEntry;
-};
+  export type Rated = {
+    active_hourly_rate: null | 'hourly_rate' | 'hourly_rates_per_service';
+    hourly_rate: number;
+    hourly_rates_per_service: {
+      service_id: number;
+      hourly_rate: number;
+    }[];
+  };
 
-export type MiteTrackingTimeEntry = {
-  id: number;
-  minutes: number;
-  since: string;
-};
+  export type WrappedEntry<K extends string, R> = {
+    [key in K]: R;
+  };
 
-export type MiteTimeEntryOptions = {
-  user_id?: number;
-  customer_id?: number;
-  project_id?: number;
-  service_id?: number;
-  note?: string;
-  at?: MiteDate;
-  from?: MiteDate;
-  to?: MiteDate;
-  billable?: boolean;
-  locked?: boolean;
-  tracking?: boolean;
-  sort?: 'date' | 'user' | 'customer' | 'project' | 'service' | 'note' | 'minutes' | 'revenue';
-  direction?: 'asc' | 'desc';
-  group_by?: Array<'user' | 'customer' | 'project' | 'service' | 'day' | 'week' | 'month' | 'year'>;
-  limit?: number;
-  page?: number;
-};
+  export type TrackingTimeEntry = Commons & {
+    minutes: number;
+    since: string;
+  };
 
-export type MiteTimeEntryResponse = {
-  time_entry: MiteTimeEntry;
-};
+  export type TimeEntryOptions = {
+    user_id?: number;
+    customer_id?: number;
+    project_id?: number;
+    service_id?: number;
+    note?: string;
+    at?:
+      | 'today'
+      | 'yesterday'
+      | 'this_week'
+      | 'last_week'
+      | 'this_month'
+      | 'last_month'
+      | 'this_year'
+      | 'last_year'
+      | Date;
+    from?: Date;
+    to?: Date;
+    billable?: boolean;
+    locked?: boolean;
+    tracking?: boolean;
+    sort?: 'date' | 'user' | 'customer' | 'project' | 'service' | 'note' | 'minutes' | 'revenue';
+    direction?: 'asc' | 'desc';
+    group_by?: Array<
+      'user' | 'customer' | 'project' | 'service' | 'day' | 'week' | 'month' | 'year'
+    >;
+    limit?: number;
+    page?: number;
+  };
 
-export type MiteTimeEntry = {
-  id: number;
-  minutes: number;
-  date_at: string;
-  note: string;
-  billable: boolean;
-  locked: boolean;
-  revenue: any;
-  hourly_rate: number;
-  user_id: number;
-  user_name: string;
-  project_id: number;
-  project_name: string;
-  customer_id: number;
-  customer_name: string;
-  service_id: number;
-  service_name: string;
-  created_at: string;
-  updated_at: string;
-  tracking?: MiteTrackingTimeEntry;
-};
+  export type UngroupedTimeEntry = WrappedEntry<'time_entry', TimeEntry>;
+  export type GroupedTimeEntry = WrappedEntry<'time_entry_group', TimeEntry>;
 
-export type MiteAccount = {
-  id: number;
-  name: string;
-  title: string;
-  currency: string;
-  created_at: Date;
-  updated_at: Date;
-};
+  export type TimeEntry = Commons & {
+    minutes: number;
+    date_at: string;
+    note: string;
+    billable: boolean;
+    locked: boolean;
+    revenue: any;
+    hourly_rate: number;
+    user_id: number;
+    user_name: string;
+    project_id: number;
+    project_name: string;
+    customer_id: number;
+    customer_name: string;
+    service_id: number;
+    service_name: string;
+    tracking?: TrackingTimeEntry;
+  };
 
-export type MiteMyself = {
-  id: number;
-  name: string;
-  email: string;
-  note: string;
-  archived: boolean;
-  role: string; // Time tracker, Co-worker, Administrator (admin), Account owner
-  language: string;
-  created_at: Date;
-  updated_at: Date;
-};
+  export type Account = Commons & {
+    name: string;
+    title: string;
+    currency: string;
+  };
+
+  export type User = Commons &
+    Archivable & {
+      email: string;
+      role: string; // Time tracker, Co-worker, Administrator (admin), Account owner
+      language: string;
+    };
+
+  export type Myself = User;
+
+  export type Customer = Commons & Rated & Archivable;
+
+  export type Project = Commons &
+    Rated &
+    Archivable & {
+      customer_id: number;
+      customer_name: string;
+      budget: number;
+      budget_type: 'minutes' | 'minutes_per_month' | 'cents' | 'cents_per_month';
+    };
+
+  export type Service = Commons &
+    Archivable & {
+      billable: boolean;
+      hourly_rate: number;
+    };
+}

@@ -61,16 +61,17 @@ export class QueryEdit extends LitElement {
     return getConnection(id);
   }
 
-  getListFields(connection?: Connection): AdapterFields | undefined {
+  async getListFields(connection?: Connection): Promise<AdapterFields | undefined> {
     if (!connection?.type) return;
-    return getAdapter(connection?.type).fields;
+    const adaper = await getAdapter(connection?.type).adapter(connection.config);
+    return adaper.getTimeEntryFields();
   }
 
   @eventOptions({ passive: true })
   async handleFormInput() {
     this.data = this.collectData();
     this.selectedSource = await this.selectConnection(this.data?.source);
-    this.listFields = this.getListFields(this.selectedSource);
+    this.listFields = await this.getListFields(this.selectedSource);
     this.formValid = checkFormValidity(this.form);
   }
 
@@ -109,7 +110,7 @@ export class QueryEdit extends LitElement {
 
     this.connections = await this.prepareConnectionOptions();
     this.selectedSource = await this.selectConnection(this.data?.source);
-    this.listFields = this.getListFields(this.selectedSource);
+    this.listFields = await this.getListFields(this.selectedSource);
   }
 
   override firstUpdated() {
@@ -166,7 +167,7 @@ export class QueryEdit extends LitElement {
                 <time-shift-fieldset legend="Fields">
                   <time-shift-query-filters
                     .fields="${this.listFields!}"
-                    .values="${this.data?.filters!}"
+                    .filters="${this.data?.filters!}"
                   ></time-shift-query-filters>
                 </time-shift-fieldset>
               `,

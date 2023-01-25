@@ -3,6 +3,7 @@ import { type TemplateResult, LitElement, html, unsafeCSS } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { choose } from 'lit/directives/choose.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
+import { when } from 'lit/directives/when.js';
 
 import { Primitive } from '../../../utils/type.utils';
 import type { EditableInterface } from '../../ui/input/input.component.mixin';
@@ -40,7 +41,7 @@ export class FieldEditor extends LitElement {
   required = false;
 
   @property({ reflect: true, type: Array })
-  options: SelectOption<AdapterFieldTypeMap[typeof this.type]>[] = [];
+  options?: SelectOption<AdapterFieldTypeMap[typeof this.type]>[];
 
   @property({ reflect: true })
   value?: AdapterFieldTypeMap[typeof this.type];
@@ -60,33 +61,48 @@ export class FieldEditor extends LitElement {
     `;
   }
 
-  renderString(): TemplateResult {
+  renderString(type: HTMLElementTagNameMap['time-shift-input-text']['type']): TemplateResult {
     return html`
-      <time-shift-input-text
-        ?disabled=${this.disabled}
-        ?required=${this.required}
-        class="input"
-        label="${this.label}"
-        name="${ifDefined(this.name)}"
-        placeholder="${ifDefined(this.placeholder)}"
-        message="${ifDefined(this.message)}"
-        .value="${this.value}"
-      ></time-shift-input-text>
+      ${when(
+        this.options === undefined,
+        () => html`
+          <time-shift-input-text
+            ?disabled=${this.disabled}
+            ?required=${this.required}
+            disable-autocomplete
+            class="input"
+            label="${this.label}"
+            type="${type}"
+            name="${ifDefined(this.name)}"
+            placeholder="${ifDefined(this.placeholder)}"
+            message="${ifDefined(this.message)}"
+            .value="${this.value}"
+          ></time-shift-input-text>
+        `,
+        () => this.renderSelect(String),
+      )}
     `;
   }
 
   renderNumber(): TemplateResult {
     return html`
-      <time-shift-input-number
-        ?disabled=${this.disabled}
-        ?required=${this.required}
-        class="input"
-        label="${this.label}"
-        name="${ifDefined(this.name)}"
-        placeholder="${ifDefined(this.placeholder)}"
-        message="${ifDefined(this.message)}"
-        .value="${this.value}"
-      ></time-shift-input-number>
+      ${when(
+        this.options === undefined,
+        () => html`
+          <time-shift-input-number
+            ?disabled=${this.disabled}
+            ?required=${this.required}
+            disable-autocomplete
+            class="input"
+            label="${this.label}"
+            name="${ifDefined(this.name)}"
+            placeholder="${ifDefined(this.placeholder)}"
+            message="${ifDefined(this.message)}"
+            .value="${this.value}"
+          ></time-shift-input-number>
+        `,
+        () => this.renderSelect(Number),
+      )}
     `;
   }
 
@@ -150,8 +166,9 @@ export class FieldEditor extends LitElement {
         ['boolean', () => this.renderBoolean()],
         ['date', () => this.renderDate()],
         ['number', () => this.renderNumber()],
-        ['string', () => this.renderString()],
-        ['select', () => this.renderSelect(String)],
+        ['string', () => this.renderString('text')],
+        ['email', () => this.renderString('email')],
+        ['token', () => this.renderString('password')],
         ['url', () => this.renderUrl()],
       ])}
     `;

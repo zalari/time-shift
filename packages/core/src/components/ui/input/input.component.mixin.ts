@@ -21,6 +21,7 @@ export declare class EditableInterface<
   name?: string;
   label?: string;
   message?: string;
+  disableAutocomplete?: boolean;
 
   readonly invalid: boolean;
   validateOn: InputValidationType[];
@@ -88,6 +89,9 @@ export const Editable =
 
       @property({ reflect: true, type: String })
       message?: string;
+
+      @property({ reflect: true, type: Boolean, attribute: 'disable-autocomplete' })
+      disableAutocomplete = false;
 
       /**
        * The events that triggers validation.

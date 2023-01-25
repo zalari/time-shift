@@ -35,6 +35,9 @@ export class InputText extends Editable<string, HTMLInputElement | HTMLTextAreaE
   @property({ reflect: true, type: String })
   separator = '/';
 
+  @property({ reflect: true, type: String })
+  type: 'text' | 'password' | 'email' | 'tel' | 'url' = 'text';
+
   protected override renderInput() {
     return html`
       ${when(
@@ -42,6 +45,7 @@ export class InputText extends Editable<string, HTMLInputElement | HTMLTextAreaE
         () => html`
           <textarea
             part="input"
+            autocomplete="${this.disableAutocomplete ? 'off' : 'on'}"
             name="${ifDefined(this.name)}"
             placeholder="${ifDefined(this.placeholder)}"
             maxlength="${ifDefined(this.maxlength)}"
@@ -56,7 +60,8 @@ export class InputText extends Editable<string, HTMLInputElement | HTMLTextAreaE
         () => html`
           <input
             part="input"
-            type="text"
+            type="${this.type}"
+            autocomplete="${this.disableAutocomplete ? 'off' : 'on'}"
             name="${ifDefined(this.name)}"
             placeholder="${ifDefined(this.placeholder)}"
             maxlength="${ifDefined(this.maxlength)}"

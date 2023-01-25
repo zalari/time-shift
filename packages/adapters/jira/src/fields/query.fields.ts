@@ -1,42 +1,46 @@
-import type { AdapterFields } from '@time-shift/common';
+import type { AdapterField, AdapterFields } from '@time-shift/common';
 
 export const fields = {
   assignee: {
     label: 'Assignee',
     description: 'The assignee to query from.',
-    type: 'select',
+    type: 'string',
     multiple: true,
-    values: [
+    options: [
       { label: 'Current user', value: 'currentUser()' },
       { label: 'No user', value: 'EMPTY' },
     ],
-  },
+  } satisfies AdapterField<'string'>,
+
   worklogAuthor: {
     label: 'Worklog author',
     description: 'The author of the worklog item.',
-    type: 'select',
+    type: 'string',
     multiple: true,
-    values: [
+    options: [
       { label: 'Current user', value: 'currentUser()' },
       { label: 'No user', value: 'EMPTY' },
     ],
-  },
+  } satisfies AdapterField<'string'>,
+
   key: {
     label: 'Key',
     description: 'The issue key to read worklog items from.',
     type: 'string',
-  },
+  } satisfies AdapterField<'string'>,
+
   project: {
     label: 'Project',
     description: 'The project to search in.',
     type: 'string',
-  },
+  } satisfies AdapterField<'string'>,
+
   issueType: {
     label: 'Issue Type',
     description: 'Limit to specific issue type(s).',
-    type: 'select',
+    type: 'string',
     multiple: true,
-    values: [
+    options: [
       { label: 'Bug', value: 'Bug' },
       { label: 'Epic', value: 'Epic' },
       { label: 'Story', value: 'Story' },
@@ -44,7 +48,7 @@ export const fields = {
       { label: 'Issue', value: 'standardIssueTypes()' },
       { label: 'Sub-Task', value: 'subTaskIssueTypes()' },
     ],
-  },
+  } satisfies AdapterField<'string'>,
 } satisfies AdapterFields;
 
 export type JiraAdapterQueryFields = typeof fields;

@@ -9,6 +9,7 @@ import { when } from 'lit/directives/when.js';
 
 import {
   getDuration,
+  getDurationDecimal,
   getDurationFormatted,
   getDurationToday,
   getDurationYesterday,
@@ -59,10 +60,10 @@ export class TimeEntries extends LitElement {
     },
     {
       column: 'minutes',
-      label: 'Minutes',
+      label: 'Duration',
       type: 'number',
       sortable: true,
-      formatter: getDurationFormatted,
+      formatter: getDurationDecimal,
     },
     {
       column: 'note',
