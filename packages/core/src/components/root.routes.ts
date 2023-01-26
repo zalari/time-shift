@@ -30,7 +30,7 @@ export const ROOT_ROUTES = [
         redirect: '/settings',
       },
       {
-        path: 'connection/new',
+        path: 'connection/new/:prefill?',
         component: 'time-shift-connection-new-page',
       },
       {
@@ -42,7 +42,7 @@ export const ROOT_ROUTES = [
         redirect: '/settings',
       },
       {
-        path: 'query/new',
+        path: 'query/new/:prefill?',
         component: 'time-shift-query-new-page',
       },
       {

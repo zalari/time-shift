@@ -2,7 +2,7 @@ import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement, property } from 'lit/decorators.js';
 import { when } from 'lit/directives/when.js';
 
-import { toggleActive } from '../../../utils/router.utils';
+import { navigateTo, toggleActive } from '../../../utils/router.utils';
 
 import styles from './nav-item.component.scss';
 
@@ -22,8 +22,13 @@ export class NavItem extends LitElement {
   render() {
     return html`
       <a href="${this.href}" ${toggleActive('active')}>
-        <strong>${this.label}</strong>
-        ${when(this.description !== undefined, () => html`<span>${this.description}</span>`)}
+        <span class="label">
+          <strong>${this.label}</strong>
+          ${when(this.description !== undefined, () => html`<span>${this.description}</span>`)}
+        </span>
+        <span class="actions">
+          <slot name="actions"></slot>
+        </span>
       </a>
     `;
   }

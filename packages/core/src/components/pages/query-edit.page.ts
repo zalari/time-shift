@@ -54,10 +54,12 @@ export class QueryEditPage extends LitElement {
           .data="${this.query}"
           @query-edit:save-data="${this.handleSaveData}"
         >
-          <time-shift-button slot="actions" @click="${handleNavigation('/settings')}"
-            >Close</time-shift-button
-          >
-          <time-shift-button slot="actions" @click="${this.handleDelete}">Delete</time-shift-button>
+          <time-shift-button slot="actions" @click="${handleNavigation('/settings')}">
+            Close
+          </time-shift-button>
+          <time-shift-button slot="actions" @click="${this.handleDelete}">
+            Delete
+          </time-shift-button>
           <time-shift-button
             slot="actions:end"
             @click="${handleNavigation(`/time-entries/${this.query!.id}`)}"

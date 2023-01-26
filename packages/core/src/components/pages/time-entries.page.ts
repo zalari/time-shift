@@ -54,8 +54,9 @@ export class TimeEntriesPage extends LitElement {
         <time-shift-navigation slot="header"></time-shift-navigation>
 
         <time-shift-pane slot="aside">
-          <time-shift-query-list base="/time-entries"></time-shift-query-list>
+          <time-shift-query-list disable-clone base="/time-entries"></time-shift-query-list>
         </time-shift-pane>
+
         ${when(
           this.loading,
           () => html`<span>Loading...</span>`,

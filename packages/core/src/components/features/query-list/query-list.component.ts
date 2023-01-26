@@ -1,12 +1,16 @@
 import { LitElement, html, unsafeCSS } from 'lit';
-import { customElement, property, state } from 'lit/decorators.js';
+import { customElement, eventOptions, property, state } from 'lit/decorators.js';
 import { map } from 'lit/directives/map.js';
+import { when } from 'lit/directives/when.js';
 
 import { Database } from '../../../utils/database.utils';
+import { navigateTo } from '../../../utils/router.utils';
+
 import { Connection, getConnection } from '../../../data/connection.data';
-import { type Query, getAllQuerys } from '../../../data/query.data';
+import { type Query, getAllQuerys, getQuery } from '../../../data/query.data';
 
 import styles from './query-list.component.scss';
+import { encodeParamValue } from '../../../utils/url.utils';
 
 type NormalizedQuery = Omit<Query, 'source'> & {
   source: Connection | undefined;
@@ -18,6 +22,9 @@ export class QueryList extends LitElement {
 
   @state()
   queries: NormalizedQuery[] = [];
+
+  @property({ type: Boolean, reflect: true, attribute: 'disable-clone' })
+  disableClone = false;
 
   @property({ type: String, reflect: true })
   base = '';
@@ -43,6 +50,15 @@ export class QueryList extends LitElement {
     );
   }
 
+  @eventOptions({ passive: false })
+  async handleClone(event: Event) {
+    event.preventDefault();
+    const query = await getQuery(Number((event.target as HTMLElement).dataset.id!));
+    const { id, name, ...entries } = query!;
+    const clone = { ...entries!, name: `${name} (Clone)` } satisfies Omit<Query, 'id'>;
+    navigateTo(`${this.base}/new/${encodeParamValue(clone)}`);
+  }
+
   override connectedCallback() {
     super.connectedCallback();
     Database.Event.addListener('connection:updated', this.getQuerys.bind(this));
@@ -66,7 +82,16 @@ export class QueryList extends LitElement {
               href="${this.base}/${id}"
               label="${name}"
               description="${source!.name} (${source!.type})"
-            ></time-shift-nav-item>
+            >
+              ${when(
+                !this.disableClone,
+                () => html`
+                  <time-shift-button slot="actions" data-id="${id}" @click="${this.handleClone}">
+                    Clone
+                  </time-shift-button>
+                `,
+              )}
+            </time-shift-nav-item>
           `,
         )}
       </time-shift-nav-items>

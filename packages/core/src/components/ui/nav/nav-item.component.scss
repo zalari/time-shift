@@ -18,7 +18,8 @@
 
 a {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  gap: utils.space();
   padding: utils.space();
 
   font-size: 1.3rem;
@@ -38,11 +39,28 @@ a {
     ---time-shift-nav-item-background-color: var(---time-shift-nav-item-active-background-color);
     ---time-shift-nav-item-border-color: var(---time-shift-nav-item-active-border-color);
   }
+}
 
-  strong {
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
+.label {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+
+.actions {
+  display: none;
+  flex-direction: column;
+  flex: 0 0 auto;
+  gap: utils.space(0.5);
+
+  a:hover & {
+    display: flex;
   }
+}
+
+strong,
+span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }

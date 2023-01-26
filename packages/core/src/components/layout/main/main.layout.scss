@@ -1,7 +1,8 @@
 @use '@styles/utils' as utils;
 
+// prettier-ignore
 :host {
-  ---time-shift-layout-main-aside-width: var(--time-shift-layout-main-aside-width, #{utils.space(22)});
+  ---time-shift-layout-main-aside-width: var(--time-shift-layout-main-aside-width, #{utils.space(30)});
 }
 
 :host {
@@ -26,7 +27,7 @@ div {
 }
 
 aside {
-  flex: 0 1 var(---time-shift-layout-main-aside-width);
+  flex: 0 1 auto;
 
   display: flex;
   flex-direction: column;
@@ -34,6 +35,7 @@ aside {
 
   box-sizing: border-box;
   padding: utils.space(2);
+  width: var(---time-shift-layout-main-aside-width);
 
   background-color: var(--time-shift-color-grey-090);
 }
