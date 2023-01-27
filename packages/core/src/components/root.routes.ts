@@ -13,7 +13,8 @@ export const ROOT_ROUTES = [
       if (queries.length === 0) {
         return commands.redirect('/settings/query/new');
       } else {
-        return commands.redirect(`/time-entries/${queries[0].id}`);
+        const [{ id }] = queries.sort((a, b) => a.name.localeCompare(b.name));
+        return commands.redirect(`/time-entries/${id}`);
       }
     },
   },
