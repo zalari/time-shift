@@ -70,6 +70,12 @@ export class TimeEntries extends LitElement {
       type: 'string',
       multiline: true,
     },
+    {
+      column: 'generated',
+      label: 'Generated',
+      type: 'string',
+      multiline: true,
+    },
   ];
 
   get allChecked(): boolean {

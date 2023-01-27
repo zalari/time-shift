@@ -26,7 +26,7 @@ export type TimeEntry<P = {}> = {
   /**
    * In order to map time entries with specific comments, we need a place for generated notes.
    */
-  generatedNote?: string;
+  generated?: string;
 
   /**
    * As adapters may deliver some more information, we can store it here.
