@@ -48,6 +48,7 @@ export class Select<T = string> extends Editable()(LitElement) {
         part="input"
         name="${ifDefined(this.name)}"
         placeholder="${ifDefined(this.placeholder)}"
+        autocomplete="${this.disableAutocomplete ? 'off' : 'on'}"
         ?disabled="${this.disabled}"
         ?required="${this.required}"
         .value="${live(this.stringifyValue(this.value))}"
