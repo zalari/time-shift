@@ -1,6 +1,6 @@
 import type { AdapterFields } from '@time-shift/common';
 
-export const fields = {
+export const queryFields = {
   assignee: {
     label: 'Assignee',
     description: 'The assignee to query from.',
@@ -51,4 +51,4 @@ export const fields = {
   },
 } satisfies AdapterFields;
 
-export type JiraAdapterQueryFields = typeof fields;
+export type JiraAdapterQueryFields = typeof queryFields;

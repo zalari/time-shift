@@ -1,6 +1,6 @@
 import type { AdapterFields, AdapterValues } from '@time-shift/common';
 
-export const config = {
+export const configFields = {
   apiVersion: {
     type: 'string',
     label: 'API version',
@@ -43,5 +43,5 @@ export const config = {
   },
 } satisfies AdapterFields;
 
-export type JiraAdapterConfigFields = typeof config;
+export type JiraAdapterConfigFields = typeof configFields;
 export type JiraAdapterConfigValues = AdapterValues<JiraAdapterConfigFields>;

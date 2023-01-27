@@ -1,19 +1,19 @@
 import type { AdapterFields } from '@time-shift/common';
 
-export const fields = {
+export const queryFields = {
   at: {
     label: 'At',
     description: 'The time range or date of the time entry',
     type: 'string',
     options: [
-      { label: 'today', value: 'today' },
-      { label: 'yesterday', value: 'yesterday' },
-      { label: 'this week', value: 'this_week' },
-      { label: 'last week', value: 'last_week' },
-      { label: 'this month', value: 'this_month' },
-      { label: 'last month', value: 'last_month' },
-      { label: 'this year', value: 'this_year' },
-      { label: 'last year', value: 'last_year' },
+      { label: 'Today', value: 'today' },
+      { label: 'Yesterday', value: 'yesterday' },
+      { label: 'This week', value: 'this_week' },
+      { label: 'Last week', value: 'last_week' },
+      { label: 'This month', value: 'this_month' },
+      { label: 'Last month', value: 'last_month' },
+      { label: 'This year', value: 'this_year' },
+      { label: 'Last year', value: 'last_year' },
     ],
   },
 
@@ -91,4 +91,4 @@ export const fields = {
   },
 } satisfies AdapterFields;
 
-export type MiteAdapterQueryFields = typeof fields;
+export type MiteAdapterQueryFields = typeof queryFields;

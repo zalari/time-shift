@@ -1,14 +1,16 @@
-import type { AdapterFactory, TimeEntry } from '@time-shift/common';
+import type { AdapterFactory, AdapterTimeEntryFieldsResponse, TimeEntry } from '@time-shift/common';
 
 import type { Mite } from './types/mite.types';
 import type { MiteAdapterConfigFields } from './fields/config.fields';
-import { type MiteAdapterQueryFields, fields } from './fields/query.fields';
+import { type MiteAdapterQueryFields, queryFields } from './fields/query.fields';
+import { type MiteAdapterNoteMappingFields, noteMappingFields } from './fields/note-mapping.fields';
 
 import { miteClient } from './utils/mite.utils.js';
 
 export const adapter: AdapterFactory<
   MiteAdapterConfigFields,
-  MiteAdapterQueryFields
+  MiteAdapterQueryFields,
+  MiteAdapterNoteMappingFields
 > = async config => {
   const { account, apiKey } = config;
 
@@ -22,7 +24,9 @@ export const adapter: AdapterFactory<
       }
     },
 
-    async getTimeEntryFields(): Promise<MiteAdapterQueryFields> {
+    async getTimeEntryFields(): Promise<
+      AdapterTimeEntryFieldsResponse<MiteAdapterQueryFields, MiteAdapterNoteMappingFields>
+    > {
       const client = miteClient(account, apiKey);
       const users = await client.getUsers();
       const customers = await client.getCustomers();
@@ -33,12 +37,12 @@ export const adapter: AdapterFactory<
       type Optionable = Mite.Commons & Mite.Archivable;
       const getOptions = ({ id, name }: Optionable) => ({ label: name, value: id });
 
-      fields.user_id.options = users.map(getOptions);
-      fields.customer_id.options = customers.map(getOptions);
-      fields.project_id.options = projects.map(getOptions);
-      fields.service_id.options = services.map(getOptions);
+      queryFields.user_id.options = users.map(getOptions);
+      queryFields.customer_id.options = customers.map(getOptions);
+      queryFields.project_id.options = projects.map(getOptions);
+      queryFields.service_id.options = services.map(getOptions);
 
-      return fields;
+      return { queryFields, noteMappingFields };
     },
 
     async getTimeEntries(fields = {}): Promise<TimeEntry<Mite.TimeEntry>[]> {

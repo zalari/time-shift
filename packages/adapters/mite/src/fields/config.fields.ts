@@ -1,6 +1,6 @@
 import type { AdapterFields, AdapterValues } from '@time-shift/common';
 
-export const config = {
+export const configFields = {
   account: {
     type: 'string',
     label: 'Account name',
@@ -12,5 +12,5 @@ export const config = {
   },
 } satisfies AdapterFields;
 
-export type MiteAdapterConfigFields = typeof config;
+export type MiteAdapterConfigFields = typeof configFields;
 export type MiteAdapterConfigValues = AdapterValues<MiteAdapterConfigFields>;

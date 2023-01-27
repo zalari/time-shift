@@ -1,11 +1,17 @@
-import type { AdapterValues, AdapterFactory, TimeEntry } from '@time-shift/common';
+import type {
+  AdapterValues,
+  AdapterFactory,
+  TimeEntry,
+  AdapterTimeEntryFieldsResponse,
+} from '@time-shift/common';
 
 import type { Worklog as Worklog2 } from 'jira.js/out/version2/models';
 import type { Worklog as Worklog3 } from 'jira.js/out/version3/models';
 import { type Config, Version2Client, Version3Client } from 'jira.js';
 
 import type { JiraAdapterConfigFields } from './fields/config.fields';
-import { type JiraAdapterQueryFields, fields } from './fields/query.fields';
+import { type JiraAdapterQueryFields, queryFields } from './fields/query.fields';
+import { type JiraAdapterNoteMappingFields, noteMappingFields } from './fields/note-mapping.fields';
 
 type Worklog = Worklog2 | Worklog3;
 
@@ -50,7 +56,8 @@ export const mapWorklogToTimeEntry = (issueKey: string, worklog: Worklog): TimeE
 
 export const adapter: AdapterFactory<
   JiraAdapterConfigFields,
-  JiraAdapterQueryFields
+  JiraAdapterQueryFields,
+  JiraAdapterNoteMappingFields
 > = async config => {
   const client = createClient(config);
 
@@ -64,8 +71,10 @@ export const adapter: AdapterFactory<
       }
     },
 
-    async getTimeEntryFields(): Promise<JiraAdapterQueryFields> {
-      return fields;
+    async getTimeEntryFields(): Promise<
+      AdapterTimeEntryFieldsResponse<JiraAdapterQueryFields, JiraAdapterNoteMappingFields>
+    > {
+      return { queryFields, noteMappingFields };
     },
 
     async getTimeEntries(options = {}): Promise<TimeEntry<Worklog>[]> {
