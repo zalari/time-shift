@@ -52,3 +52,4 @@ export * from './utils/router.utils';
 export * from './utils/time-entry.utils';
 export * from './utils/type.utils';
 export * from './utils/url.utils';
+export * from './utils/url.utils';

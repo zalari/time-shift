@@ -56,6 +56,10 @@ const options: BuildOptions = {
   plugins: [
     stdLibBrowserPlugin(stdLibBrowser),
     copyStaticFiles({
+      src: './node_modules/@time-shift/adapter-clockodo/dist',
+      dest: './dist/@time-shift/adapter-clockdo',
+    }),
+    copyStaticFiles({
       src: './node_modules/@time-shift/adapter-jira/dist',
       dest: './dist/@time-shift/adapter-jira',
     }),

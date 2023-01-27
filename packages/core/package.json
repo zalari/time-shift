@@ -34,6 +34,7 @@
     "modern-normalize": "1.1.0"
   },
   "devDependencies": {
+    "@time-shift/adapter-clockodo": "workspace:*",
     "@time-shift/adapter-jira": "workspace:*",
     "@time-shift/adapter-mite": "workspace:*",
     "@types/jest": "29.2.5",
