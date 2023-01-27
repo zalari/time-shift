@@ -85,16 +85,30 @@ export const getTimeEntries =
       typeof options extends { group_by: string } ? Mite.GroupedTimeEntry : Mite.UngroupedTimeEntry
     >
   > => {
-    const { at, from, to, group_by, ...others } = options;
-    const params = others as Record<string, string>;
-    if (at !== undefined) params.at = normalizeDateOption(at);
-    if (from !== undefined) params.from = normalizeDateOption(from);
-    if (to !== undefined) params.to = normalizeDateOption(to);
-    if (group_by !== undefined) params.group_by = group_by.join(',');
+    // prepare params from non-array types
+    const { group_by, user_id, customer_id, project_id, service_id, note, ...others } = options;
+    const params = new URLSearchParams(others as Record<string, string>);
 
+    // @TODO: separate those functions
+    const forceArray = <T>(v: T | T[]) => (Array.isArray(v) ? v : [v]);
+    const setDateOption = (k: string) =>
+      k in options && params.set(k, normalizeDateOption((options as any)[k]));
+    const setArrayOption = (k: string) =>
+      k in options && params.set(k, forceArray((options as any)[k]).join(','));
+    const setMultipleOptions = (k: string) =>
+      k in options && forceArray((options as any)[k]).forEach((v: any) => params.set(`${k}[]`, v));
+
+    // apply values according to API docs
+    // https://mite.yo.lk/en/api/time-entries.html#list-all
+    ['at', 'from', 'to'].forEach(setDateOption);
+    ['group_by', 'user_id', 'customer_id', 'project_id', 'service_id'].forEach(setArrayOption);
+    ['note'].forEach(setMultipleOptions);
+
+    // build request url with params
     const url = new URL(path, API_URL);
-    url.search = `${new URLSearchParams(params)}`;
+    url.search = `${params}`;
 
+    // fetch response
     const response = await doRequest(account, apiKey, url);
     const entries = response.ok ? await response.json() : [];
 

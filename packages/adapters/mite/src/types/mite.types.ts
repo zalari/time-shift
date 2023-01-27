@@ -30,11 +30,11 @@ export namespace Mite {
   };
 
   export type TimeEntryOptions = {
-    user_id?: number;
-    customer_id?: number;
-    project_id?: number;
-    service_id?: number;
-    note?: string;
+    user_id?: number | number[];
+    customer_id?: number | number[];
+    project_id?: number | number[];
+    service_id?: number | number[];
+    note?: string | string[];
     at?:
       | 'today'
       | 'yesterday'

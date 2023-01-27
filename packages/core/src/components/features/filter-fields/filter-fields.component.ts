@@ -52,24 +52,53 @@ export class FilterFields<F extends AdapterFields = any> extends LitElement {
       }));
   }
 
+  addEmptyValue(name: keyof F) {
+    if (name in this.values) {
+      let values = this.values[name];
+      if (Array.isArray(values)) {
+        this.values = { ...this.values, [name]: [...values, undefined] };
+      } else {
+        this.values = { ...this.values, [name]: [values, undefined] };
+      }
+    } else this.values = { ...this.values, [name]: undefined };
+  }
+
   @eventOptions({ passive: true })
   handleFilterSelect({ target }: EventWithTarget<HTMLSelectElement>) {
+    // apply currently selected filter selection
     this.selectedFieldName = target.value;
   }
 
   @eventOptions({ passive: true })
   handleFilterAdd() {
-    this.values[this.selectedFieldName!] = undefined as any;
+    // add an empty value
+    this.addEmptyValue(this.selectedFieldName!);
+
+    // reset filter selection
     this.selectedFieldName = undefined;
+
+    // trigger form input event
     this.emitInputEvent();
   }
 
   @eventOptions({ passive: true })
   handleFilterRemove(event: EventWithTarget) {
     const name = event.target.parentElement!.dataset.name!;
-    if (!confirm(`${this.removeLabel} "${this.fields[name].label}"?`)) return;
-    const { [name]: _, ...values } = this.values;
-    this.values = values as Partial<AdapterValues<F>>;
+    const index = Number(event.target.parentElement!.dataset.index!);
+    const values = this.values[name];
+    const hasMultiple = this.fields[name].multiple && Array.isArray(values);
+    const question = hasMultiple
+      ? `Remove "${this.fields[name].label}" (${index + 1})?`
+      : `Remove "${this.fields[name].label}"?`;
+    if (!confirm(question)) return;
+    const { [name]: value, ...remaining } = this.values;
+    if (hasMultiple) {
+      const filtered = values.filter((_, i) => i !== index);
+      const result = filtered.length > 0 ? { ...remaining, [name]: filtered } : remaining;
+      this.values = result as Partial<AdapterValues<F>>;
+    } else {
+      this.values = remaining as Partial<AdapterValues<F>>;
+    }
     this.emitInputEvent();
   }
 
@@ -94,24 +123,29 @@ export class FilterFields<F extends AdapterFields = any> extends LitElement {
       <ul>
         ${map(
           Object.entries(this.values),
-          ([name, value]) =>
+          ([name, values]) =>
             html`
-              <li data-name="${name}">
-                <time-shift-field-editor
-                  ?required="${ifDefined(this.fields[name]?.type !== 'boolean')}"
-                  ?disabled="${this.disabled}"
-                  name="${name}"
-                  type="${ifDefined(this.fields[name]?.type)}"
-                  label="${ifDefined(this.fields[name]?.label)}"
-                  message="${ifDefined(this.fields[name]?.description)}"
-                  placeholder="${ifDefined(this.fields[name]?.placeholder)}"
-                  .options="${ifDefined(this.fields[name]?.options)}"
-                  .value="${value}"
-                ></time-shift-field-editor>
-                <time-shift-button @click="${this.handleFilterRemove}">
-                  ${this.removeLabel}
-                </time-shift-button>
-              </li>
+              ${map(
+                this.fields[name]?.multiple && Array.isArray(values) ? values : [values],
+                (value, index) => html`
+                  <li data-name="${name}" data-index="${index}">
+                    <time-shift-field-editor
+                      ?required="${ifDefined(this.fields[name]?.type !== 'boolean')}"
+                      ?disabled="${this.disabled}"
+                      name="${name}"
+                      type="${ifDefined(this.fields[name]?.type)}"
+                      label="${ifDefined(this.fields[name]?.label)}"
+                      message="${ifDefined(this.fields[name]?.description)}"
+                      placeholder="${ifDefined(this.fields[name]?.placeholder)}"
+                      .options="${ifDefined(this.fields[name]?.options)}"
+                      .value="${value}"
+                    ></time-shift-field-editor>
+                    <time-shift-button @click="${this.handleFilterRemove}">
+                      ${this.removeLabel}
+                    </time-shift-button>
+                  </li>
+                `,
+              )}
             `,
         )}
       </ul>

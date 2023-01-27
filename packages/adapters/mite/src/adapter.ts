@@ -48,7 +48,7 @@ export const adapter: AdapterFactory<
     async getTimeEntries(fields = {}): Promise<TimeEntry<Mite.TimeEntry>[]> {
       // prepare options from fields
       const options = Object.entries(fields).reduce(
-        (all, [key, value]) => ({ ...all, [key]: value }),
+        (a, [key, value]) => ({ ...a, [key]: (a as any)[key] ? [(a as any)[key], value] : value }),
         {} satisfies Mite.TimeEntryOptions,
       );
       const entries = await miteClient(account, apiKey).getTimeEntries(options);

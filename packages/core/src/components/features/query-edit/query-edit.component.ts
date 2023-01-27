@@ -9,7 +9,6 @@ import { type Connection, getAllConnections, getConnection } from '../../../data
 import {
   checkFormValidity,
   collectDataForNames,
-  collectDataFromElements,
   getFormElements,
 } from '../../../utils/form.utils';
 
