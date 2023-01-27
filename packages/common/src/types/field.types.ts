@@ -79,7 +79,11 @@ export type AdapterField = AdapterFieldType extends infer K
         /**
          * Show this field conditionally depending on other fields (and their current values).
          */
-        when?: Record<string, string | number | boolean>;
+        when?: Record<
+          string,
+          | AdapterFieldTypeMap[keyof AdapterFieldTypeMap]
+          | Array<AdapterFieldTypeMap[keyof AdapterFieldTypeMap]>
+        >;
       }
     : never
   : never;
@@ -91,7 +95,10 @@ export type AdapterFields = Record<string, AdapterField>;
 
 /**
  * Values of an adapter, based on its configuration.
+ * A value can be either a single value or an array of values, depending on it being flagged as `multiple`.
  */
 export type AdapterValues<C extends AdapterFields> = {
-  [K in keyof C]: AdapterFieldTypeMap[C[K]['type']];
+  [K in keyof C]: C[K]['multiple'] extends true
+    ? AdapterFieldTypeMap[C[K]['type']][]
+    : AdapterFieldTypeMap[C[K]['type']];
 };

@@ -3,6 +3,7 @@ import {
   type AdapterSet,
   getAdapter,
   getAdapterNames,
+  AdapterField,
 } from '@time-shift/common';
 import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement, eventOptions, property, query, state } from 'lit/decorators.js';
@@ -45,7 +46,7 @@ export class ConnectionEdit extends LitElement {
     }));
 
   @state()
-  selectedAdapter?: AdapterSet<AdapterFields, AdapterFields>;
+  selectedAdapter?: AdapterSet<AdapterFields, AdapterFields, AdapterFields>;
 
   @property({ type: Boolean, reflect: true })
   disabled = false;
@@ -78,7 +79,7 @@ export class ConnectionEdit extends LitElement {
     this.formValid = checkFormValidity(this.form);
   }
 
-  checkWhenField(when?: Record<string, string | number | boolean>): boolean {
+  checkWhenField(when: AdapterField['when']): boolean {
     if (when === undefined) return true;
     return Object.entries(when).every(([name, value]) => this.data?.config[name] === value);
   }
