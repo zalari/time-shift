@@ -4,13 +4,11 @@ import { map } from 'lit/directives/map.js';
 import { when } from 'lit/directives/when.js';
 
 import { Database } from '../../../utils/database.utils';
-import { navigateTo } from '../../../utils/router.utils';
 
 import { Connection, getConnection } from '../../../data/connection.data';
-import { type Query, getAllQuerys, getQuery } from '../../../data/query.data';
+import { type Query, getAllQuerys } from '../../../data/query.data';
 
 import styles from './query-list.component.scss';
-import { encodeParamValue } from '../../../utils/url.utils';
 
 type NormalizedQuery = Omit<Query, 'source'> & {
   source: Connection | undefined;
@@ -23,8 +21,8 @@ export class QueryList extends LitElement {
   @state()
   queries: NormalizedQuery[] = [];
 
-  @property({ type: Boolean, reflect: true, attribute: 'disable-clone' })
-  disableClone = false;
+  @property({ type: String, reflect: true, attribute: 'action-label' })
+  actionLabel?: string;
 
   @property({ type: String, reflect: true })
   base = '';
@@ -51,12 +49,11 @@ export class QueryList extends LitElement {
   }
 
   @eventOptions({ passive: false })
-  async handleClone(event: Event) {
+  handleAction(event: Event) {
     event.preventDefault();
-    const query = await getQuery(Number((event.target as HTMLElement).dataset.id!));
-    const { id, name, ...entries } = query!;
-    const clone = { ...entries!, name: `${name} (Clone)` } satisfies Omit<Query, 'id'>;
-    navigateTo(`${this.base}/new/${encodeParamValue(clone)}`);
+    const { id } = (event.target as HTMLElement).dataset;
+    const action = new CustomEvent('time-shift-query-list:action', { detail: Number(id) });
+    this.dispatchEvent(action);
   }
 
   override connectedCallback() {
@@ -84,10 +81,10 @@ export class QueryList extends LitElement {
               description="${source!.name} (${source!.type})"
             >
               ${when(
-                !this.disableClone,
+                this.actionLabel,
                 () => html`
-                  <time-shift-button slot="actions" data-id="${id}" @click="${this.handleClone}">
-                    Clone
+                  <time-shift-button slot="actions" data-id="${id}" @click="${this.handleAction}">
+                    ${this.actionLabel}
                   </time-shift-button>
                 `,
               )}
@@ -100,6 +97,9 @@ export class QueryList extends LitElement {
 }
 
 declare global {
+  interface HTMLEventListenerMap {
+    'time-shift-query-list:action': CustomEvent<number>;
+  }
   interface HTMLElementTagNameMap {
     'time-shift-query-list': QueryList;
   }

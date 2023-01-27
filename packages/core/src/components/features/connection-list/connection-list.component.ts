@@ -4,9 +4,7 @@ import { map } from 'lit/directives/map.js';
 import { when } from 'lit/directives/when.js';
 
 import { Database } from '../../../utils/database.utils';
-import { navigateTo } from '../../../utils/router.utils';
-import { encodeParamValue } from '../../../utils/url.utils';
-import { type Connection, getAllConnections, getConnection } from '../../../data/connection.data';
+import { type Connection, getAllConnections } from '../../../data/connection.data';
 
 import styles from './connection-list.component.scss';
 
@@ -17,8 +15,8 @@ export class ConnectionList extends LitElement {
   @state()
   connections: Connection[] = [];
 
-  @property({ type: Boolean, reflect: true, attribute: 'disable-clone' })
-  disableClone = false;
+  @property({ type: String, reflect: true, attribute: 'action-label' })
+  actionLabel?: string;
 
   @property({ type: String, reflect: true })
   base = '';
@@ -37,12 +35,11 @@ export class ConnectionList extends LitElement {
   }
 
   @eventOptions({ passive: false })
-  async handleClone(event: Event) {
+  handleAction(event: Event) {
     event.preventDefault();
-    const query = await getConnection(Number((event.target as HTMLElement).dataset.id!));
-    const { id, name, ...entries } = query!;
-    const clone = { ...entries!, name: `${name} (Clone)` } satisfies Omit<Connection, 'id'>;
-    navigateTo(`${this.base}/new/${encodeParamValue(clone)}`);
+    const { id } = (event.target as HTMLElement).dataset;
+    const action = new CustomEvent('time-shift-connection-list:action', { detail: Number(id) });
+    this.dispatchEvent(action);
   }
 
   override connectedCallback() {
@@ -68,10 +65,10 @@ export class ConnectionList extends LitElement {
               description="${type}"
             >
               ${when(
-                !this.disableClone,
+                this.actionLabel,
                 () => html`
-                  <time-shift-button slot="actions" data-id="${id}" @click="${this.handleClone}">
-                    Clone
+                  <time-shift-button slot="actions" data-id="${id}" @click="${this.handleAction}">
+                    ${this.actionLabel}
                   </time-shift-button>
                 `,
               )}
@@ -84,6 +81,9 @@ export class ConnectionList extends LitElement {
 }
 
 declare global {
+  interface HTMLEventListenerMap {
+    'time-shift-connection-list:action': CustomEvent<number>;
+  }
   interface HTMLElementTagNameMap {
     'time-shift-connection-list': ConnectionList;
   }
