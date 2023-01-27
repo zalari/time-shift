@@ -32,6 +32,7 @@ export * from './components/ui/duration/duration.component';
 export * from './components/ui/fieldset/fieldset.component';
 export * from './components/ui/icons/icon-arrow-down.component';
 export * from './components/ui/icons/icon.component';
+export * from './components/ui/input/input-date.component';
 export * from './components/ui/input/input-number.component';
 export * from './components/ui/input/input-text.component';
 export * from './components/ui/input/input.component.mixin';

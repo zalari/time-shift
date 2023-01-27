@@ -108,16 +108,17 @@ export class FieldEditor extends LitElement {
 
   renderDate(): TemplateResult {
     return html`
-      <time-shift-input-number
+      <time-shift-input-date
         ?disabled=${this.disabled}
         ?required=${this.required}
+        disable-autocomplete
         class="input"
         label="${this.label}"
         name="${ifDefined(this.name)}"
         placeholder="${ifDefined(this.placeholder)}"
         message="${ifDefined(this.message)}"
-        .value="${+(this.value as Date)}"
-      ></time-shift-input-number>
+        .value="${this.value}"
+      ></time-shift-input-date>
     `;
   }
 
@@ -126,6 +127,7 @@ export class FieldEditor extends LitElement {
       <time-shift-select
         ?disabled="${this.disabled}"
         ?required="${this.required}"
+        disable-autocomplete
         class="input"
         label="${this.label}"
         name="${ifDefined(this.name)}"

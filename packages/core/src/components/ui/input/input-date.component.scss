@@ -1,0 +1,29 @@
+@use 'input.component.mixin.scss' as input;
+
+@include input.base('input[type="date"]', '.display') {
+  input[type='date'] {
+    // hide input to show the display value only
+    &:not(:focus) {
+      opacity: 0;
+    }
+
+    // this is needed only for firefox, so the vendor prefix can not be omitted
+    // despite the IDE plugin moaning and autoprefixer already enabled for all
+    // other occurrences
+    // https://stackoverflow.com/a/4298216/1146207
+    -moz-appearance: textfield;
+
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      appearance: none;
+    }
+  }
+}
+
+.display {
+  pointer-events: none;
+
+  input:focus ~ & {
+    display: none;
+  }
+}
