@@ -124,6 +124,7 @@ importers:
       '@types/jest': 29.2.5
       '@types/node': 18.11.18
       '@types/postcss-preset-env': 7.7.0
+      '@typescript/lib-dom': npm:@types/web@0.0.89
       '@vaadin/router': 1.7.4
       autoprefixer: 10.4.13
       barrelsby: 2.5.1
@@ -162,6 +163,7 @@ importers:
       '@types/jest': 29.2.5
       '@types/node': 18.11.18
       '@types/postcss-preset-env': 7.7.0
+      '@typescript/lib-dom': /@types/web/0.0.89
       autoprefixer: 10.4.13_postcss@8.4.21
       barrelsby: 2.5.1
       esbuild: 0.17.3
@@ -2530,6 +2532,10 @@ packages:
   /@types/trusted-types/2.0.2:
     resolution: {integrity: sha512-F5DIZ36YVLE+PN+Zwws4kJogq47hNgX3Nx6WyDJ3kcplxyke3XIzB8uK5n/Lpm1HBsbGzd6nmGehL8cPekP+Tg==}
     dev: false
+
+  /@types/web/0.0.89:
+    resolution: {integrity: sha512-GmYzEKEi5I2aUVcGMcNDMLOZ3N5f6Vmaly9rr7ZL9b8zxc8KFZU5h2Wqzxgx6/ztj9+Eq2t4jDeWGW18N5UeOQ==}
+    dev: true
 
   /@types/yargs-parser/21.0.0:
     resolution: {integrity: sha512-iO9ZQHkZxHn4mSakYV0vFHAVDyEOIJQrV2uZ06HxEPcx+mt8swXoZHIbaaJ2crJYFfErySgktuTZ3BeLz+XmFA==}
@@ -5631,8 +5637,19 @@ packages:
     peerDependenciesMeta:
       debug:
         optional: true
+    dev: false
+
+  /follow-redirects/1.15.2_debug@4.3.4:
+    resolution: {integrity: sha512-VQLG33o04KaQ8uYi2tVNbdrWp1QWxNNea+nmIB4EVM28v0hmP17z7aG1+wAkNzVq4KeXTq3221ye5qTJP91JwA==}
+    engines: {node: '>=4.0'}
+    peerDependencies:
+      debug: '*'
+    peerDependenciesMeta:
+      debug:
+        optional: true
     dependencies:
       debug: 4.3.4
+    dev: true
 
   /for-each/0.3.3:
     resolution: {integrity: sha512-jqYfLp7mo9vIyQf8ykW2v7A+2N4QjeCeI5+Dz9XraiO1ign81wjiH7Fb9vSOWvQfNtmSa4H2RoQTrrXivdUZmw==}
