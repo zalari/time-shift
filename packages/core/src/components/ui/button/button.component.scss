@@ -1,9 +1,25 @@
 @use '@styles/utils' as utils;
 
+:host {
+  ---time-shift-button-background-color: var(--time-shift-button-background-color, var(--time-shift-color-grey-095));
+  ---time-shift-button-border-color: var(--time-shift-button-border-color, var(--time-shift-color-grey-070));
+  ---time-shift-button-border-radius: var(--time-shift-button-border-radius, 5px);
+  ---time-shift-button-border-width: var(--time-shift-button-border-width, 2px);
+}
+
 button {
   display: flex;
   flex-direction: row;
   align-items: center;
   gap: utils.space(0.5);
   padding: utils.space(0.5) utils.space(1);
+
+  background-color: var(---time-shift-button-background-color);
+  border: solid var(---time-shift-button-border-color);
+  border-radius: var(---time-shift-button-border-radius);
+  border-width: var(---time-shift-button-border-width);
+
+  &:not(:disabled) {
+    cursor: pointer;
+  }
 }

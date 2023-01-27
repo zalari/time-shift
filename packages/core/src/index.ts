@@ -28,6 +28,7 @@ export * from './components/pages/settings.page';
 export * from './components/pages/time-entries.page';
 export * from './components/ui/actions/actions.component';
 export * from './components/ui/button/button.component';
+export * from './components/ui/button-group/button-group.component';
 export * from './components/ui/duration/duration.component';
 export * from './components/ui/fieldset/fieldset.component';
 export * from './components/ui/icons/icon-arrow-down.component';

@@ -221,6 +221,11 @@ export class TimeEntries extends LitElement {
           )}
           visible
         </time-shift-button>
+
+        <time-shift-button-group>
+          <time-shift-button>Preflight</time-shift-button>
+          <time-shift-button disabled>Sync</time-shift-button>
+        </time-shift-button-group>
       </header>
 
       <time-shift-data-table

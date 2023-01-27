@@ -1,0 +1,16 @@
+@use '@styles/utils' as utils;
+
+:host {
+  display: flex;
+  flex-direction: row;
+}
+
+::slotted(time-shift-button:first-child) {
+  --time-shift-button-border-radius: 5px 0 0 5px;
+  --time-shift-button-border-width: 2px 0 2px 2px;
+}
+
+::slotted(time-shift-button:last-child) {
+  --time-shift-button-border-radius: 0 5px 5px 0;
+  --time-shift-button-border-width: 2px 2px 2px 1px;
+}
