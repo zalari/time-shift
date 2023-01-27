@@ -48,14 +48,16 @@ export const adapter: AdapterFactory<
         {} satisfies Mite.TimeEntryOptions,
       );
       const entries = await miteClient(account, apiKey).getTimeEntries(options);
-      return entries.map(({ time_entry: entry }) => ({
-        id: `${entry.id}`,
-        at: new Date(entry.date_at),
-        minutes: entry.minutes,
-        active: entry.tracking ? true : false,
-        note: entry.note,
-        payload: entry,
-      }));
+      return entries.map(
+        ({ time_entry: entry }) =>
+          ({
+            at: new Date(entry.date_at),
+            minutes: entry.minutes,
+            active: entry.tracking ? true : false,
+            note: entry.note,
+            payload: entry,
+          } satisfies TimeEntry<Mite.TimeEntry>),
+      );
     },
   };
 };

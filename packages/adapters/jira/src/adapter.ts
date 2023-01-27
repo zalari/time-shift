@@ -41,7 +41,6 @@ export const stringifyComments = (comments?: (Worklog2 | Worklog3)['comment']): 
 export const mapWorklogToTimeEntry = (issueKey: string, worklog: Worklog): TimeEntry<Worklog> => {
   const { timeSpentSeconds = 0, started = 0, comment } = worklog;
   return {
-    id: worklog.id!,
     at: new Date(started),
     minutes: timeSpentSeconds / 60,
     note: `${issueKey}\n${stringifyComments(comment)}`,

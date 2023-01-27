@@ -4,11 +4,6 @@
  */
 export type TimeEntry<P = {}> = {
   /**
-   * an unique identifier within the source adapter.
-   */
-  id: string;
-
-  /**
    * The date of the time entry.
    */
   at: Date;
@@ -27,6 +22,11 @@ export type TimeEntry<P = {}> = {
    * Optinal notes for the time entry.
    */
   note?: string;
+
+  /**
+   * In order to map time entries with specific comments, we need a place for generated notes.
+   */
+  generatedNote?: string;
 
   /**
    * As adapters may deliver some more information, we can store it here.
