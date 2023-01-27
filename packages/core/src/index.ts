@@ -12,7 +12,7 @@ export * from './components/features/explanation/explanation.component';
 export * from './components/features/field-editor/field-editor.component';
 export * from './components/features/navigation/navigation.component';
 export * from './components/features/query-edit/query-edit.component';
-export * from './components/features/query-filters/query-filters.component';
+export * from './components/features/filter-fields/filter-fields.component';
 export * from './components/features/query-list/query-list.component';
 export * from './components/features/time-entries/time-entries.component';
 export * from './components/features/toggle-cors/toggle-cors.component';

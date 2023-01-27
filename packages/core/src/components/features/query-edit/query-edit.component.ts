@@ -1,12 +1,14 @@
-import { type AdapterFields, getAdapter } from '@time-shift/common';
+import { type AdapterFields, getAdapter, AdapterTimeEntryFieldsResponse } from '@time-shift/common';
 import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement, eventOptions, property, query, state } from 'lit/decorators.js';
+import { ifDefined } from 'lit/directives/if-defined.js';
 import { when } from 'lit/directives/when.js';
 
 import { type Query } from '../../../data/query.data';
 import { type Connection, getAllConnections, getConnection } from '../../../data/connection.data';
 import {
   checkFormValidity,
+  collectDataForNames,
   collectDataFromElements,
   getFormElements,
 } from '../../../utils/form.utils';
@@ -34,7 +36,10 @@ export class QueryEdit extends LitElement {
   selectedSource?: Connection;
 
   @state()
-  listFields?: AdapterFields;
+  queryFields?: AdapterFields;
+
+  @state()
+  noteMappingFields?: AdapterFields;
 
   @property({ type: Boolean, reflect: true })
   disabled = false;
@@ -61,8 +66,12 @@ export class QueryEdit extends LitElement {
     return getConnection(id);
   }
 
-  async getListFields(connection?: Connection): Promise<AdapterFields | undefined> {
-    if (!connection?.type) return;
+  async getFields(
+    connection?: Connection,
+  ): Promise<AdapterTimeEntryFieldsResponse<AdapterFields, AdapterFields>> {
+    if (!connection?.type) {
+      return { queryFields: {}, noteMappingFields: {} };
+    }
     const adaper = await getAdapter(connection?.type).adapter(connection.config);
     return adaper.getTimeEntryFields();
   }
@@ -71,7 +80,9 @@ export class QueryEdit extends LitElement {
   async handleFormInput() {
     this.data = this.collectData();
     this.selectedSource = await this.selectConnection(this.data?.source);
-    this.listFields = await this.getListFields(this.selectedSource);
+    const { queryFields, noteMappingFields } = await this.getFields(this.selectedSource);
+    this.queryFields = queryFields;
+    this.noteMappingFields = noteMappingFields;
     this.formValid = checkFormValidity(this.form);
   }
 
@@ -91,13 +102,12 @@ export class QueryEdit extends LitElement {
 
   collectData(): QueryData {
     const elements = getFormElements(this.form);
-    const dataNames = ['name', 'source'];
-    const dataElements = elements.filter(({ name }) => dataNames.includes(name!));
-    const filterElements = elements.filter(({ name }) => !dataNames.includes(name!));
-    const data = collectDataFromElements(dataElements);
-    const filters = collectDataFromElements(filterElements);
 
-    return { ...data, filters } as QueryData;
+    const data = collectDataForNames(elements, ['name', 'source']);
+    const filters = collectDataForNames(elements, Object.keys(this.queryFields ?? {}));
+    const mapping = collectDataForNames(elements, Object.keys(this.noteMappingFields ?? {}));
+
+    return { ...data, filters, mapping } as QueryData;
   }
 
   emitSaveEvent(detail: QueryData) {
@@ -110,7 +120,9 @@ export class QueryEdit extends LitElement {
 
     this.connections = await this.prepareConnectionOptions();
     this.selectedSource = await this.selectConnection(this.data?.source);
-    this.listFields = await this.getListFields(this.selectedSource);
+    const { queryFields, noteMappingFields } = await this.getFields(this.selectedSource);
+    this.queryFields = queryFields;
+    this.noteMappingFields = noteMappingFields;
   }
 
   override firstUpdated() {
@@ -162,13 +174,24 @@ export class QueryEdit extends LitElement {
             </time-shift-fieldset>
 
             ${when(
-              this.listFields !== undefined,
+              this.queryFields !== undefined,
               () => html`
-                <time-shift-fieldset legend="Fields">
-                  <time-shift-query-filters
-                    .fields="${this.listFields!}"
-                    .filters="${this.data?.filters!}"
-                  ></time-shift-query-filters>
+                <time-shift-fieldset legend="Filters">
+                  <time-shift-filter-fields
+                    .fields="${this.queryFields!}"
+                    .values="${ifDefined(this.data?.filters)}"
+                  ></time-shift-filter-fields>
+                </time-shift-fieldset>
+              `,
+            )}
+            ${when(
+              this.noteMappingFields !== undefined,
+              () => html`
+                <time-shift-fieldset legend="Note mapping">
+                  <time-shift-filter-fields
+                    .fields="${this.noteMappingFields!}"
+                    .values="${ifDefined(this.data?.mapping)}"
+                  ></time-shift-filter-fields>
                 </time-shift-fieldset>
               `,
             )}

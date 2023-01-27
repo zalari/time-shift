@@ -19,6 +19,14 @@ export const collectFormElements = (element: Element): Element[] => {
   return Array.from(children).flatMap(child => collectFormElements(child));
 };
 
+export const collectDataForNames = <T, N extends string>(
+  elements: Array<EditableInterface<T>>,
+  names: N[],
+): Record<N, T> => {
+  const dataElements = elements.filter(({ name }) => names.includes(name! as N));
+  return collectDataFromElements(dataElements);
+};
+
 export const getFormElements = (form: HTMLFormElement): Array<EditableInterface<any>> => {
   const supportElementInternals = typeof ElementInternals !== 'undefined';
   const elements = supportElementInternals ? form.elements : collectFormElements(form);
