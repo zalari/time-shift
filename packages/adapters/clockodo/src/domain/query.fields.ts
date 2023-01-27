@@ -2,7 +2,7 @@ import type { AdapterFields } from '@time-shift/common';
 
 // https://www.clockodo.com/en/api/entries/
 
-export const fields = {
+export const queryFields = {
   // common values
   id: {
     label: 'ID',
@@ -29,7 +29,6 @@ export const fields = {
     description:
       'Indicates whether the entry is billable (0: not billable, 1: billable, 2: already billed)',
     type: 'number',
-    multiple: true,
     options: [
       { label: 'not billable', value: 0 },
       { label: 'billable', value: 1 },
@@ -68,7 +67,6 @@ export const fields = {
     description:
       'Name of the corresponding customer, only in list function with enhanced list mode enabled',
     type: 'string',
-    multiple: true,
     // values will be added later, once the connection is configured
     options: [{ label: '', value: '' }],
   },
@@ -77,7 +75,6 @@ export const fields = {
     description:
       'Name of the corresponding project, or null if none, only in list function with enhanced list mode enabled',
     type: 'string',
-    multiple: true,
     // values will be added later, once the connection is configured
     options: [{ label: '', value: '' }],
   },
@@ -166,4 +163,4 @@ export const fields = {
   },
 } satisfies AdapterFields;
 
-export type ClockodoAdapterQueryFields = typeof fields;
+export type ClockodoAdapterQueryFields = typeof queryFields;

@@ -1,6 +1,6 @@
 import type { AdapterFields, AdapterValues } from '@time-shift/common';
 
-export const config = {
+export const configFields = {
   apiKey: {
     type: 'token',
     label: 'API key',
@@ -22,5 +22,5 @@ export const config = {
   },
 } satisfies AdapterFields;
 
-export type ClockodoAdapterConfigFields = typeof config;
+export type ClockodoAdapterConfigFields = typeof configFields;
 export type ClockodoAdapterConfigValues = AdapterValues<ClockodoAdapterConfigFields>;
