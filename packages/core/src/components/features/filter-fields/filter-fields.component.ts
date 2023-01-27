@@ -45,7 +45,7 @@ export class FilterFields<F extends AdapterFields = any> extends LitElement {
 
   getFilterOptions(): SelectOption<string>[] {
     return Object.entries(this.fields)
-      .filter(([name]) => !(name in this.values))
+      .filter(([name, { multiple = false }]) => multiple || !(name in this.values))
       .map(([name, field]) => ({
         value: name,
         label: field.label,
