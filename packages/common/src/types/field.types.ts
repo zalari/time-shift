@@ -77,6 +77,12 @@ export type AdapterField = AdapterFieldType extends infer K
         multiple?: boolean;
 
         /**
+         * Reload the fields on change. As the already collected values are passed to the fields resolver,
+         * this can be used to dynamically narrow follow up fields.
+         */
+        reloadOnChange?: boolean;
+
+        /**
          * Show this field conditionally depending on other fields (and their current values).
          */
         when?: Record<

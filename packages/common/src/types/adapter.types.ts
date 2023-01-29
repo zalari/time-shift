@@ -25,7 +25,9 @@ export type Adapter<QueryFields extends AdapterFields, NoteMappingFields extends
    * In order to configure the getTimeEntries method, the adapter must provide a list of query fields.
    * Additionally, time entries may contain generated notes. Generating notes is configured by note mapping fields.
    */
-  getTimeEntryFields: () => Promise<AdapterTimeEntryFieldsResponse<QueryFields, NoteMappingFields>>;
+  getTimeEntryFields: (
+    values?: Partial<AdapterValues<QueryFields>>,
+  ) => Promise<AdapterTimeEntryFieldsResponse<QueryFields, NoteMappingFields>>;
 
   /**
    * Get all time entries for a given date range.
