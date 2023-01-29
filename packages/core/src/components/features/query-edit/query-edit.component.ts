@@ -1,17 +1,14 @@
-import { type AdapterFields, getAdapter, AdapterTimeEntryFieldsResponse } from '@time-shift/common';
+import { type AdapterFields, getAdapter } from '@time-shift/common';
 import { LitElement, html, unsafeCSS } from 'lit';
-import { customElement, eventOptions, property, query, state } from 'lit/decorators.js';
+import { customElement, eventOptions, property, query, queryAll, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { when } from 'lit/directives/when.js';
 
 import { type Query } from '../../../data/query.data';
 import { type Connection, getAllConnections, getConnection } from '../../../data/connection.data';
-import {
-  checkFormValidity,
-  collectDataForNames,
-  getFormElements,
-} from '../../../utils/form.utils';
+import { checkFormValidity, collectDataForNames, getFormElements } from '../../../utils/form.utils';
 
+import type { EditableInterface } from '../../ui/input/input.component.mixin';
 import type { SelectOption } from '../../ui/input/select.component';
 
 import styles from './query-edit.component.scss';
@@ -24,6 +21,9 @@ export class QueryEdit extends LitElement {
 
   @query('form')
   readonly form!: HTMLFormElement;
+
+  @queryAll('time-shift-filter-fields')
+  readonly filterFields!: HTMLElementTagNameMap['time-shift-filter-fields'][];
 
   @state()
   formValid = false;
@@ -65,23 +65,46 @@ export class QueryEdit extends LitElement {
     return getConnection(id);
   }
 
-  async getFields(
-    connection?: Connection,
-  ): Promise<AdapterTimeEntryFieldsResponse<AdapterFields, AdapterFields>> {
+  async loadFields(connection?: Connection) {
+    // no connection, no data
     if (!connection?.type) {
       return { queryFields: {}, noteMappingFields: {} };
     }
+
+    // load fields from adapter
     const adaper = await getAdapter(connection?.type).adapter(connection.config);
-    return adaper.getTimeEntryFields();
+    const { queryFields, noteMappingFields } = await adaper.getTimeEntryFields(this.data?.filters);
+
+    // update fields
+    this.queryFields = queryFields;
+    this.noteMappingFields = noteMappingFields;
+
+    // explicitly update filter fields, as the fileds may have changed
+    this.filterFields.forEach(filterFields => filterFields.requestUpdate());
+  }
+
+  @eventOptions({ passive: true, capture: true })
+  async handleSourceChange(event: Event) {
+    // do not bubble up, we'll handle this here
+    event.stopPropagation();
+
+    // collect the selected source, prepare a connection and (re)load fields
+    const { nativeInput } = event.target as unknown as EditableInterface<number>;
+    this.selectedSource = await this.selectConnection(Number(nativeInput.value));
+    this.loadFields(this.selectedSource);
+  }
+
+  @eventOptions({ passive: true })
+  async handleReloadFields() {
+    // collect latest data snapshot and (re)load fields
+    this.data = this.collectData();
+    this.loadFields(this.selectedSource);
   }
 
   @eventOptions({ passive: true })
   async handleFormInput() {
     this.data = this.collectData();
     this.selectedSource = await this.selectConnection(this.data?.source);
-    const { queryFields, noteMappingFields } = await this.getFields(this.selectedSource);
-    this.queryFields = queryFields;
-    this.noteMappingFields = noteMappingFields;
     this.formValid = checkFormValidity(this.form);
   }
 
@@ -117,11 +140,12 @@ export class QueryEdit extends LitElement {
     super.connectedCallback();
     this.addEventListener('query-edit:set-data', this.handleSetData, false);
 
+    // load connections initially
     this.connections = await this.prepareConnectionOptions();
     this.selectedSource = await this.selectConnection(this.data?.source);
-    const { queryFields, noteMappingFields } = await this.getFields(this.selectedSource);
-    this.queryFields = queryFields;
-    this.noteMappingFields = noteMappingFields;
+
+    // load fields initially
+    this.loadFields(this.selectedSource);
   }
 
   override firstUpdated() {
@@ -169,6 +193,7 @@ export class QueryEdit extends LitElement {
                 .primitive="${Number}"
                 .options="${this.getConnectionOptions()}"
                 .value="${this.data?.source}"
+                @input="${this.handleSourceChange}"
               ></time-shift-select>
             </time-shift-fieldset>
 
@@ -179,6 +204,7 @@ export class QueryEdit extends LitElement {
                   <time-shift-filter-fields
                     .fields="${this.queryFields!}"
                     .values="${ifDefined(this.data?.filters)}"
+                    @time-shift-filter-fields:reload-fields="${this.handleReloadFields}"
                   ></time-shift-filter-fields>
                 </time-shift-fieldset>
               `,

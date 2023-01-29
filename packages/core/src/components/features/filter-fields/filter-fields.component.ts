@@ -102,6 +102,11 @@ export class FilterFields<F extends AdapterFields = any> extends LitElement {
     this.emitInputEvent();
   }
 
+  @eventOptions({ passive: true })
+  handleReloadFields() {
+    this.dispatchEvent(new CustomEvent('time-shift-filter-fields:reload-fields'));
+  }
+
   render() {
     return html`
       <header>
@@ -139,6 +144,9 @@ export class FilterFields<F extends AdapterFields = any> extends LitElement {
                       placeholder="${ifDefined(this.fields[name]?.placeholder)}"
                       .options="${ifDefined(this.fields[name]?.options)}"
                       .value="${value}"
+                      @input="${ifDefined(
+                        this.fields[name]?.reloadOnChange ? this.handleReloadFields : undefined,
+                      )}"
                     ></time-shift-field-editor>
                     <time-shift-button @click="${this.handleFilterRemove}">
                       ${this.removeLabel}
@@ -154,6 +162,9 @@ export class FilterFields<F extends AdapterFields = any> extends LitElement {
 }
 
 declare global {
+  interface ElementEventMap {
+    'time-shift-filter-fields:reload-fields': CustomEvent;
+  }
   interface HTMLElementTagNameMap {
     'time-shift-filter-fields': FilterFields;
   }
