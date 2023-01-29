@@ -44,6 +44,8 @@ export const queryFields = {
     description: 'The customers to filter for.',
     type: 'number',
     multiple: true,
+    // once the custom is set or changed, the projects can be narrowed
+    reloadOnChange: true,
     // values will be added later, once the connection is configured
     options: [{ label: '', value: 0 }],
   },

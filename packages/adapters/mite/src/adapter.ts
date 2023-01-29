@@ -1,4 +1,9 @@
-import type { AdapterFactory, AdapterTimeEntryFieldsResponse, TimeEntry } from '@time-shift/common';
+import type {
+  AdapterFactory,
+  AdapterTimeEntryFieldsResponse,
+  AdapterValues,
+  TimeEntry,
+} from '@time-shift/common';
 
 import type { Mite } from './types/mite.types';
 import type { MiteAdapterConfigFields } from './fields/config.fields';
@@ -24,13 +29,15 @@ export const adapter: AdapterFactory<
       }
     },
 
-    async getTimeEntryFields(): Promise<
+    async getTimeEntryFields(
+      values?: Partial<AdapterValues<MiteAdapterQueryFields>>,
+    ): Promise<
       AdapterTimeEntryFieldsResponse<MiteAdapterQueryFields, MiteAdapterNoteMappingFields>
     > {
       const client = miteClient(account, apiKey);
       const users = await client.getUsers();
       const customers = await client.getCustomers();
-      const projects = await client.getProjects();
+      const projects = await client.getProjects(values?.customer_id);
       const services = await client.getServices();
 
       // add options to select fields

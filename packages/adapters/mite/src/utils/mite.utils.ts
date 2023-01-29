@@ -1,6 +1,30 @@
+import {
+  AdapterFieldType,
+  AdapterFieldTypeMap,
+  AdapterFields,
+  AdapterValues,
+} from '@time-shift/common';
 import type { Mite } from '../types/mite.types';
 
 const API_URL = 'https://corsapi.mite.yo.lk';
+
+export const forceArray = <T>(v: T | T[]) => (Array.isArray(v) ? v : [v]);
+
+export const setDateOption =
+  <O extends Record<string, any>>(options: O, params: URLSearchParams) =>
+  (k: string) =>
+    k in options && params.set(k as string, normalizeDateOption((options as any)[k]));
+
+export const setArrayOption =
+  <O extends Record<string, any>>(options: O, params: URLSearchParams) =>
+  (k: string) =>
+    k in options && params.set(k as string, forceArray((options as any)[k]).join(','));
+
+export const setMultipleOptions =
+  <O extends Record<string, any>>(options: O, params: URLSearchParams) =>
+  (k: string) =>
+    k in options &&
+    forceArray((options as any)[k]).forEach((v: any) => params.set(`${k as string}[]`, v));
 
 export const doRequest = (account: string, apiKey: string, url: URL) =>
   fetch(url, {
@@ -55,8 +79,12 @@ export const getCustomers =
   };
 
 export const getProjects =
-  (account: string, apiKey: string, path: string) => async (): Promise<Mite.Project[]> => {
+  (account: string, apiKey: string, path: string) =>
+  async (customer_id?: number | number[]): Promise<Mite.Project[]> => {
     const url = new URL(path, API_URL);
+    if (customer_id !== undefined) {
+      url.searchParams.set('customer_id', forceArray(customer_id).join(','));
+    }
     const response = await doRequest(account, apiKey, url);
     const projects = response.ok
       ? ((await response.json()) as Mite.WrappedEntry<'project', Mite.Project>[])
@@ -89,20 +117,13 @@ export const getTimeEntries =
     const { group_by, user_id, customer_id, project_id, service_id, note, ...others } = options;
     const params = new URLSearchParams(others as Record<string, string>);
 
-    // @TODO: separate those functions
-    const forceArray = <T>(v: T | T[]) => (Array.isArray(v) ? v : [v]);
-    const setDateOption = (k: string) =>
-      k in options && params.set(k, normalizeDateOption((options as any)[k]));
-    const setArrayOption = (k: string) =>
-      k in options && params.set(k, forceArray((options as any)[k]).join(','));
-    const setMultipleOptions = (k: string) =>
-      k in options && forceArray((options as any)[k]).forEach((v: any) => params.set(`${k}[]`, v));
-
     // apply values according to API docs
     // https://mite.yo.lk/en/api/time-entries.html#list-all
-    ['at', 'from', 'to'].forEach(setDateOption);
-    ['group_by', 'user_id', 'customer_id', 'project_id', 'service_id'].forEach(setArrayOption);
-    ['note'].forEach(setMultipleOptions);
+    ['at', 'from', 'to'].forEach(setDateOption(options, params));
+    ['group_by', 'user_id', 'customer_id', 'project_id', 'service_id'].forEach(
+      setArrayOption(options, params),
+    );
+    ['note'].forEach(setMultipleOptions(options, params));
 
     // build request url with params
     const url = new URL(path, API_URL);
