@@ -1,7 +1,9 @@
 @use '@styles/utils' as utils;
 
+// prettier-ignore
 :host {
-  ---time-shift-fieldset-legend-font-size: var(--time-shift-fieldset-legend-font-size, 1.4rem);
+  ---time-shift-fieldset-legend-font-size: var(--time-shift-fieldset-legend-font-size, 1.6em);
+  ---time-shift-fieldset-description-font-size: var(--time-shift-fieldset-description-font-size, 1.3rem);
 }
 
 :host {
@@ -32,4 +34,13 @@ legend {
   font-weight: 700;
   line-height: 1.14;
   text-transform: uppercase;
+
+  &:has(+ p) {
+    margin-bottom: utils.space(0.5);
+  }
+}
+
+p {
+  margin: 0 0 utils.space();
+  font-size: var(---time-shift-fieldset-description-font-size);
 }

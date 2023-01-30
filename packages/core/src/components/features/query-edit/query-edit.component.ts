@@ -200,7 +200,10 @@ export class QueryEdit extends LitElement {
             ${when(
               this.queryFields !== undefined,
               () => html`
-                <time-shift-fieldset legend="Filters">
+                <time-shift-fieldset
+                  legend="Filters"
+                  description="Allows to narrow the results initially."
+                >
                   <time-shift-filter-fields
                     .fields="${this.queryFields!}"
                     .values="${ifDefined(this.data?.filters)}"
@@ -212,7 +215,10 @@ export class QueryEdit extends LitElement {
             ${when(
               this.noteMappingFields !== undefined,
               () => html`
-                <time-shift-fieldset legend="Note mapping">
+                <time-shift-fieldset
+                  legend="Note mapping"
+                  description="Next to the notes provided by the source, a generated note can be created by the fields defined here."
+                >
                   <time-shift-filter-fields
                     .fields="${this.noteMappingFields!}"
                     .values="${ifDefined(this.data?.mapping)}"

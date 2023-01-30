@@ -8,21 +8,28 @@ export class Fieldset extends LitElement {
   static readonly styles = unsafeCSS(style);
 
   /**
-   * disable the fieldset
+   * Disables the fieldset.
    */
   @property({ reflect: true, type: Boolean })
   disabled = false;
 
   /**
-   * legend to be used
+   * A legend to be used.
    */
   @property({ reflect: true, type: String })
   legend?: string;
+
+  /**
+   * An optional description to be shown up front.
+   */
+  @property({ reflect: true, type: String })
+  description?: string;
 
   protected render() {
     return html`
       <fieldset ?disabled=${this.disabled}>
         ${this.legend !== undefined ? html`<legend>${this.legend}</legend>` : nothing}
+        ${this.description !== undefined ? html`<p>${this.description}</p>` : nothing}
         <div>
           <slot></slot>
         </div>
