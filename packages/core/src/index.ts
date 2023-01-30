@@ -14,6 +14,7 @@ export * from './components/features/filter-fields/filter-fields.component';
 export * from './components/features/navigation/navigation.component';
 export * from './components/features/query-edit/query-edit.component';
 export * from './components/features/query-list/query-list.component';
+export * from './components/features/time-entries/time-entries-header.component';
 export * from './components/features/time-entries/time-entries.component';
 export * from './components/features/toggle-cors/toggle-cors.component';
 export * from './components/layout/header/header.component';

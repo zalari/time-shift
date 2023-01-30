@@ -1,0 +1,18 @@
+@use '@styles/utils' as utils;
+
+// prettier-ignore
+:host {
+  ---time-shift-time-entries-header-background: var(--time-shift-time-entries-header-background, var(--time-shift-color-white));
+  ---time-shift-time-entries-header-spacing: var(--time-shift-time-entries-header-spacing, #{utils.space(2)});
+}
+
+:host {
+  display: block;
+  background-color: var(---time-shift-time-entries-header-background);
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(---time-shift-time-entries-header-spacing);
+}

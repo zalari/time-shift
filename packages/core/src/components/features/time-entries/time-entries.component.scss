@@ -12,11 +12,34 @@
   ---time-shift-time-entries-sort-desc: var(--time-shift-time-entries-sort-desc, '▾');
 }
 
-header {
+:host {
+  position: relative;
+}
+
+nav {
   display: flex;
   flex-direction: row;
   gap: utils.space(1);
-  padding-bottom: utils.space(2);
+
+  &:first-of-type {
+    justify-content: space-between;
+  }
+
+  time-shift-duration {
+    flex: 1 1 100%;
+  }
+
+  time-shift-button-group {
+    margin-left: auto;
+  }
+}
+
+time-shift-time-entries-header {
+  position: sticky;
+  top: utils.space(-2);
+  margin-top: utils.space(-2);
+  padding: utils.space(2) 0;
+  z-index: 1;
 }
 
 time-shift-data-table {

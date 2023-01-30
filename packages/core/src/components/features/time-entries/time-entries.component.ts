@@ -177,56 +177,58 @@ export class TimeEntries extends LitElement {
 
   render() {
     return html`
-      <header>
-        <time-shift-duration
-          label="Total"
-          minutes="${getDuration(this.entries)}"
-          ?decimal="${this.decimal}"
-          @time-shift-duration:decimal-changed="${this.handleDecimalChange}"
-        ></time-shift-duration>
-        <time-shift-duration
-          label="Yesterday"
-          minutes="${getDurationYesterday(this.entries)}"
-          ?decimal="${this.decimal}"
-          @time-shift-duration:decimal-changed="${this.handleDecimalChange}"
-        ></time-shift-duration>
-        <time-shift-duration
-          label="Today"
-          minutes="${getDurationToday(this.entries)}"
-          ?decimal="${this.decimal}"
-          @time-shift-duration:decimal-changed="${this.handleDecimalChange}"
-        ></time-shift-duration>
-        <time-shift-duration
-          label="Selected"
-          minutes="${getDuration(this.getSelectedTimeEntries())}"
-          ?decimal="${this.decimal}"
-          @time-shift-duration:decimal-changed="${this.handleDecimalChange}"
-        ></time-shift-duration>
-      </header>
+      <time-shift-time-entries-header>
+        <nav>
+          <time-shift-duration
+            label="Total"
+            minutes="${getDuration(this.entries)}"
+            ?decimal="${this.decimal}"
+            @time-shift-duration:decimal-changed="${this.handleDecimalChange}"
+          ></time-shift-duration>
+          <time-shift-duration
+            label="Yesterday"
+            minutes="${getDurationYesterday(this.entries)}"
+            ?decimal="${this.decimal}"
+            @time-shift-duration:decimal-changed="${this.handleDecimalChange}"
+          ></time-shift-duration>
+          <time-shift-duration
+            label="Today"
+            minutes="${getDurationToday(this.entries)}"
+            ?decimal="${this.decimal}"
+            @time-shift-duration:decimal-changed="${this.handleDecimalChange}"
+          ></time-shift-duration>
+          <time-shift-duration
+            label="Selected"
+            minutes="${getDuration(this.getSelectedTimeEntries())}"
+            ?decimal="${this.decimal}"
+            @time-shift-duration:decimal-changed="${this.handleDecimalChange}"
+          ></time-shift-duration>
+        </nav>
 
-      <header>
-        <time-shift-button @click="${this.handleToggleAll}">
-          ${when(
-            this.allChecked,
-            () => 'Deselect',
-            () => 'Select',
-          )}
-          all
-        </time-shift-button>
-        <time-shift-button @click="${this.handleToggleVisible}">
-          ${when(
-            this.visibleChecked,
-            () => 'Deselect',
-            () => 'Select',
-          )}
-          visible
-        </time-shift-button>
+        <nav>
+          <time-shift-button @click="${this.handleToggleAll}">
+            ${when(
+              this.allChecked,
+              () => 'Deselect',
+              () => 'Select',
+            )}
+            all
+          </time-shift-button>
+          <time-shift-button @click="${this.handleToggleVisible}">
+            ${when(
+              this.visibleChecked,
+              () => 'Deselect',
+              () => 'Select',
+            )}
+            visible
+          </time-shift-button>
 
-        <time-shift-button-group>
-          <time-shift-button>Preflight</time-shift-button>
-          <time-shift-button disabled>Sync</time-shift-button>
-        </time-shift-button-group>
-      </header>
+          <time-shift-button-group>
+            <time-shift-button>Preflight</time-shift-button>
+            <time-shift-button disabled>Sync</time-shift-button>
+          </time-shift-button-group>
+        </nav>
+      </time-shift-time-entries-header>
 
       <time-shift-data-table
         .itemsPerPage="${25}"
