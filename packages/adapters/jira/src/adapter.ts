@@ -1,9 +1,4 @@
-import type {
-  AdapterValues,
-  AdapterFactory,
-  TimeEntry,
-  AdapterTimeEntryFields,
-} from '@time-shift/common';
+import type { AdapterValues, AdapterFactory, TimeEntry } from '@time-shift/common';
 
 import type { Worklog as Worklog2 } from 'jira.js/out/version2/models';
 import type { Worklog as Worklog3 } from 'jira.js/out/version3/models';
@@ -13,7 +8,7 @@ import type { JiraAdapterConfigFields } from './fields/config.fields';
 import { type JiraAdapterQueryFields, queryFields } from './fields/query.fields';
 import { type JiraAdapterNoteMappingFields, noteMappingFields } from './fields/note-mapping.fields';
 
-type Worklog = Worklog2 | Worklog3;
+export type Worklog = Worklog2 | Worklog3;
 
 export const createClient = (config: AdapterValues<JiraAdapterConfigFields>): Version3Client => {
   const clients = { '2': Version2Client, '3': Version3Client };
@@ -57,12 +52,13 @@ export const mapWorklogToTimeEntry = (issueKey: string, worklog: Worklog): TimeE
 export const adapter: AdapterFactory<
   JiraAdapterConfigFields,
   JiraAdapterQueryFields,
-  JiraAdapterNoteMappingFields
+  JiraAdapterNoteMappingFields,
+  Worklog
 > = async config => {
   const client = createClient(config);
 
   return {
-    async checkConnection(): Promise<boolean> {
+    async checkConnection() {
       try {
         const { active } = await client.myself.getCurrentUser();
         return active !== undefined;
@@ -71,13 +67,11 @@ export const adapter: AdapterFactory<
       }
     },
 
-    async getTimeEntryFields(): Promise<
-      AdapterTimeEntryFields<JiraAdapterQueryFields, JiraAdapterNoteMappingFields>
-    > {
+    async getTimeEntryFields() {
       return { queryFields, noteMappingFields };
     },
 
-    async getTimeEntries(options = {}): Promise<TimeEntry<Worklog>[]> {
+    async getTimeEntries(options = {}) {
       // build jql query
       const jql = Object.entries(options).reduce(
         (all, [field, value]) => `${all} AND ${field}=${value}`,
@@ -94,6 +88,17 @@ export const adapter: AdapterFactory<
         const timeEntries = worklogs.map(worklog => mapWorklogToTimeEntry(issueIdOrKey, worklog));
         return [...(await all), ...timeEntries];
       }, Promise.resolve([] as TimeEntry<Worklog>[]));
+    },
+
+    // @TODO: implement preflight
+    async getPreflight(sources) {
+      return {
+        type: '1:n',
+        result: sources.map(source => ({
+          source,
+          targets: [source as TimeEntry<Worklog>],
+        })),
+      };
     },
   };
 };

@@ -1,9 +1,4 @@
-import type {
-  AdapterFactory,
-  AdapterTimeEntryFields,
-  AdapterValues,
-  TimeEntry,
-} from '@time-shift/common';
+import type { AdapterFactory, TimeEntry } from '@time-shift/common';
 
 import type { Mite } from './types/mite.types';
 import type { MiteAdapterConfigFields } from './fields/config.fields';
@@ -15,12 +10,13 @@ import { miteClient } from './utils/mite.utils.js';
 export const adapter: AdapterFactory<
   MiteAdapterConfigFields,
   MiteAdapterQueryFields,
-  MiteAdapterNoteMappingFields
+  MiteAdapterNoteMappingFields,
+  Mite.TimeEntry
 > = async config => {
   const { account, apiKey } = config;
 
   return {
-    async checkConnection(): Promise<boolean> {
+    async checkConnection() {
       try {
         const me = await miteClient(account, apiKey).getMyself();
         return me?.id !== undefined;
@@ -29,9 +25,7 @@ export const adapter: AdapterFactory<
       }
     },
 
-    async getTimeEntryFields(
-      values?: Partial<AdapterValues<MiteAdapterQueryFields>>,
-    ): Promise<AdapterTimeEntryFields<MiteAdapterQueryFields, MiteAdapterNoteMappingFields>> {
+    async getTimeEntryFields(values) {
       const client = miteClient(account, apiKey);
       const users = await client.getUsers();
       const customers = await client.getCustomers();
@@ -50,10 +44,7 @@ export const adapter: AdapterFactory<
       return { queryFields, noteMappingFields };
     },
 
-    async getTimeEntries(
-      queryFields = {},
-      noteMappingFields = {},
-    ): Promise<TimeEntry<Mite.TimeEntry>[]> {
+    async getTimeEntries(queryFields = {}, noteMappingFields = {}) {
       // prepare options from fields
       const options = Object.entries(queryFields).reduce(
         (a, [key, value]) => ({ ...a, [key]: (a as any)[key] ? [(a as any)[key], value] : value }),
@@ -73,6 +64,17 @@ export const adapter: AdapterFactory<
             payload: entry,
           } satisfies TimeEntry<Mite.TimeEntry>),
       );
+    },
+
+    // @TODO: implement preflight
+    async getPreflight(sources) {
+      return {
+        type: '1:1',
+        result: sources.map(source => ({
+          source,
+          target: source as TimeEntry<Mite.TimeEntry>,
+        })),
+      };
     },
   };
 };

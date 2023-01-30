@@ -4,7 +4,7 @@ import type { AdapterFields } from '../types/field.types';
 // @fixme: provide as global to all adapters
 declare global {
   interface Adapters {
-    [name: string]: AdapterSet<AdapterFields, AdapterFields, AdapterFields>;
+    [name: string]: AdapterSet<AdapterFields, AdapterFields, AdapterFields, {}>;
   }
 
   interface TimeShift {
@@ -33,9 +33,10 @@ export const registerAdapter = <
   ConfigFields extends AdapterFields,
   QueryFields extends AdapterFields,
   NoteMappingFields extends AdapterFields,
+  TimeEntryPayload extends {},
 >(
   name: string,
-  adapter: AdapterSet<ConfigFields, QueryFields, NoteMappingFields>,
+  adapter: AdapterSet<ConfigFields, QueryFields, NoteMappingFields, TimeEntryPayload>,
 ) => {
   prepareNamespace();
   window['time-shift'].adapters[name] = adapter as any;
@@ -43,7 +44,7 @@ export const registerAdapter = <
 
 export const getAdapter = (
   name: string,
-): AdapterSet<AdapterFields, AdapterFields, AdapterFields> => {
+): AdapterSet<AdapterFields, AdapterFields, AdapterFields, {}> => {
   prepareNamespace();
   return window['time-shift'].adapters[name];
 };

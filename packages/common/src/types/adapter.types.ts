@@ -1,4 +1,5 @@
 import type { AdapterFields, AdapterValues } from './field.types';
+import type { PreflightResult } from './preflight.types';
 import type { TimeEntry } from './time-entry.types';
 
 /**
@@ -15,7 +16,11 @@ export type AdapterTimeEntryFields<
 /**
  * Describes an adapter instance with all its necessary members.
  */
-export type Adapter<QueryFields extends AdapterFields, NoteMappingFields extends AdapterFields> = {
+export type Adapter<
+  QueryFields extends AdapterFields,
+  NoteMappingFields extends AdapterFields,
+  TimeEntryPayload extends {},
+> = {
   /**
    * Used to test configurations.
    */
@@ -35,7 +40,13 @@ export type Adapter<QueryFields extends AdapterFields, NoteMappingFields extends
   getTimeEntries: (
     queryFields?: Partial<AdapterValues<QueryFields>>,
     noteMappingFields?: Partial<AdapterValues<NoteMappingFields>>,
-  ) => Promise<TimeEntry[]>;
+  ) => Promise<TimeEntry<TimeEntryPayload>[]>;
+
+  /**
+   * In order to do a sync operation, a preflight has to be done, mapping the source entris to some targets.
+   * These preflight mappings consists of either a 1:1, 1:n, or 1:n mapping.
+   */
+  getPreflight: (sources: TimeEntry[]) => Promise<PreflightResult<TimeEntryPayload>>;
 };
 
 /**
@@ -45,10 +56,11 @@ export type AdapterFactory<
   ConfigFields extends AdapterFields,
   QueryFields extends AdapterFields,
   NoteMappingFields extends AdapterFields,
+  TimeEntryPayload extends {},
 > = (
   // for configuration, all options must be passed
   config: AdapterValues<ConfigFields>,
-) => Promise<Adapter<QueryFields, NoteMappingFields>>;
+) => Promise<Adapter<QueryFields, NoteMappingFields, TimeEntryPayload>>;
 
 /**
  * Used in global scope to store adapters.
@@ -57,7 +69,8 @@ export type AdapterSet<
   ConfigFields extends AdapterFields,
   QueryFields extends AdapterFields,
   NoteMappingFields extends AdapterFields,
+  TimeEntryPayload extends {},
 > = {
-  adapter: AdapterFactory<ConfigFields, QueryFields, NoteMappingFields>;
+  adapter: AdapterFactory<ConfigFields, QueryFields, NoteMappingFields, TimeEntryPayload>;
   config: ConfigFields;
 };

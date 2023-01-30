@@ -1,4 +1,4 @@
-import type { AdapterFactory, AdapterTimeEntryFields, TimeEntry } from '@time-shift/common';
+import type { AdapterFactory, TimeEntry } from '@time-shift/common';
 import type { EntriesParams } from 'clockodo/dist/clockodo';
 
 import type { ClockodoAdapterConfigFields } from './domain/config.fields';
@@ -10,20 +10,21 @@ import {
 
 import { NpmClockodoClient } from './infrastructure/npm-clockodo-client';
 
+type ClockodoTimeEntry = {};
+
 export const adapter: AdapterFactory<
   ClockodoAdapterConfigFields,
   ClockodoAdapterQueryFields,
-  ClockodoAdapterNoteMappingFields
+  ClockodoAdapterNoteMappingFields,
+  ClockodoTimeEntry
 > = async config => {
   return {
-    async checkConnection(): Promise<boolean> {
+    async checkConnection() {
       const client = new NpmClockodoClient(config);
       return client.canConnect();
     },
 
-    async getTimeEntryFields(): Promise<
-      AdapterTimeEntryFields<ClockodoAdapterQueryFields, ClockodoAdapterNoteMappingFields>
-    > {
+    async getTimeEntryFields() {
       const client = new NpmClockodoClient(config);
       const customers = await client.getCustomers();
       const projects = await client.getProjects();
@@ -43,7 +44,7 @@ export const adapter: AdapterFactory<
       return { queryFields, noteMappingFields };
     },
 
-    async getTimeEntries(fields = {}): Promise<TimeEntry<{}>[]> {
+    async getTimeEntries(fields = {}) {
       const client = new NpmClockodoClient(config);
       const params: EntriesParams = {
         timeSince: fields.timeSince!,
@@ -65,6 +66,17 @@ export const adapter: AdapterFactory<
           at: timeSince,
         };
       });
+    },
+
+    // @TODO: implement preflight
+    async getPreflight(sources) {
+      return {
+        type: '1:1',
+        result: sources.map(source => ({
+          source,
+          target: source as TimeEntry<ClockodoTimeEntry>,
+        })),
+      };
     },
   };
 };
