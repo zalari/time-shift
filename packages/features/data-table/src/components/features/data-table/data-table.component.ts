@@ -351,7 +351,14 @@ export class DataTable extends LitElement {
                           name="row-${row.index}-cell-${cell.header.column}"
                           data-cell-value-formatted="${ifDefined(cell.value.formatted)}"
                         >
-                          ${cell.value.formatted}
+                          ${when(
+                            cell.header.multiline,
+                            () =>
+                              html`<span
+                                .innerHTML="${cell.value.formatted?.replace(/\n/g, '<br>')}"
+                              ></span>`,
+                            () => cell.value.formatted,
+                          )}
                         </slot>
                       </time-shift-table-cell>
                     `,

@@ -1,6 +1,6 @@
 import type {
   AdapterFactory,
-  AdapterTimeEntryFieldsResponse,
+  AdapterTimeEntryFields,
   AdapterValues,
   TimeEntry,
 } from '@time-shift/common';
@@ -31,9 +31,7 @@ export const adapter: AdapterFactory<
 
     async getTimeEntryFields(
       values?: Partial<AdapterValues<MiteAdapterQueryFields>>,
-    ): Promise<
-      AdapterTimeEntryFieldsResponse<MiteAdapterQueryFields, MiteAdapterNoteMappingFields>
-    > {
+    ): Promise<AdapterTimeEntryFields<MiteAdapterQueryFields, MiteAdapterNoteMappingFields>> {
       const client = miteClient(account, apiKey);
       const users = await client.getUsers();
       const customers = await client.getCustomers();
@@ -52,9 +50,12 @@ export const adapter: AdapterFactory<
       return { queryFields, noteMappingFields };
     },
 
-    async getTimeEntries(fields = {}): Promise<TimeEntry<Mite.TimeEntry>[]> {
+    async getTimeEntries(
+      queryFields = {},
+      noteMappingFields = {},
+    ): Promise<TimeEntry<Mite.TimeEntry>[]> {
       // prepare options from fields
-      const options = Object.entries(fields).reduce(
+      const options = Object.entries(queryFields).reduce(
         (a, [key, value]) => ({ ...a, [key]: (a as any)[key] ? [(a as any)[key], value] : value }),
         {} satisfies Mite.TimeEntryOptions,
       );
@@ -66,6 +67,9 @@ export const adapter: AdapterFactory<
             minutes: entry.minutes,
             active: entry.tracking ? true : false,
             note: entry.note,
+            generated: noteMappingFields.field
+              ?.reduce((acc, field) => [...acc, entry[field as keyof typeof entry]], [] as string[])
+              .join('\n'),
             payload: entry,
           } satisfies TimeEntry<Mite.TimeEntry>),
       );

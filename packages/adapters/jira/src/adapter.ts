@@ -2,7 +2,7 @@ import type {
   AdapterValues,
   AdapterFactory,
   TimeEntry,
-  AdapterTimeEntryFieldsResponse,
+  AdapterTimeEntryFields,
 } from '@time-shift/common';
 
 import type { Worklog as Worklog2 } from 'jira.js/out/version2/models';
@@ -72,7 +72,7 @@ export const adapter: AdapterFactory<
     },
 
     async getTimeEntryFields(): Promise<
-      AdapterTimeEntryFieldsResponse<JiraAdapterQueryFields, JiraAdapterNoteMappingFields>
+      AdapterTimeEntryFields<JiraAdapterQueryFields, JiraAdapterNoteMappingFields>
     > {
       return { queryFields, noteMappingFields };
     },

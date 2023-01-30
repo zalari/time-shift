@@ -1,5 +1,3 @@
-import type { TemplateResult } from 'lit';
-
 export type TableDataTypeMap = {
   bool: boolean;
   string: string;
@@ -10,7 +8,7 @@ export type TableDataTypes = TableDataTypeMap[keyof TableDataTypeMap];
 
 export type TableSchemaEntry<T extends keyof TableDataTypeMap = any> = {
   column: string;
-  label: string | TemplateResult;
+  label: string;
   type: T;
 
   sortable?: boolean;
@@ -35,7 +33,7 @@ export type Header = Required<TableSchemaEntry>;
 export type Value<T extends TableDataTypes = TableDataTypes> = {
   raw: TableDataTypes;
   parsed: T;
-  formatted: TemplateResult | string;
+  formatted: string;
 };
 export type Cell<T extends TableDataTypes = TableDataTypes> = {
   header: Header;
@@ -47,7 +45,7 @@ export type Row = { index: number; data: TableDataEntry; cells: Cell[] };
 export type Formatter<T extends TableDataTypes> = (
   value: T,
   index: number,
-) => TemplateResult | string;
+) => string;
 export type FormatterMap = { [key in keyof TableDataTypeMap]: Formatter<TableDataTypeMap[key]> };
 export type Parser<T, R extends TableDataTypes> = (value: T) => R;
 export type Sorter<T extends TableDataTypes = TableDataTypes> = (

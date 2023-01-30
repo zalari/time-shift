@@ -4,7 +4,7 @@ import type { TimeEntry } from './time-entry.types';
 /**
  * Time entry fields consist of multiple grouped fields.
  */
-export type AdapterTimeEntryFieldsResponse<
+export type AdapterTimeEntryFields<
   QueryFields extends AdapterFields,
   NoteMappingFields extends AdapterFields,
 > = {
@@ -27,12 +27,15 @@ export type Adapter<QueryFields extends AdapterFields, NoteMappingFields extends
    */
   getTimeEntryFields: (
     values?: Partial<AdapterValues<QueryFields>>,
-  ) => Promise<AdapterTimeEntryFieldsResponse<QueryFields, NoteMappingFields>>;
+  ) => Promise<AdapterTimeEntryFields<QueryFields, NoteMappingFields>>;
 
   /**
    * Get all time entries for a given date range.
    */
-  getTimeEntries: (fields?: Partial<AdapterValues<QueryFields>>) => Promise<TimeEntry[]>;
+  getTimeEntries: (
+    queryFields?: Partial<AdapterValues<QueryFields>>,
+    noteMappingFields?: Partial<AdapterValues<NoteMappingFields>>,
+  ) => Promise<TimeEntry[]>;
 };
 
 /**

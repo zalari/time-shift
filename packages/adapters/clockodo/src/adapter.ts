@@ -1,4 +1,4 @@
-import type { AdapterFactory, AdapterTimeEntryFieldsResponse, TimeEntry } from '@time-shift/common';
+import type { AdapterFactory, AdapterTimeEntryFields, TimeEntry } from '@time-shift/common';
 import type { EntriesParams } from 'clockodo/dist/clockodo';
 
 import type { ClockodoAdapterConfigFields } from './domain/config.fields';
@@ -22,7 +22,7 @@ export const adapter: AdapterFactory<
     },
 
     async getTimeEntryFields(): Promise<
-      AdapterTimeEntryFieldsResponse<ClockodoAdapterQueryFields, ClockodoAdapterNoteMappingFields>
+      AdapterTimeEntryFields<ClockodoAdapterQueryFields, ClockodoAdapterNoteMappingFields>
     > {
       const client = new NpmClockodoClient(config);
       const customers = await client.getCustomers();

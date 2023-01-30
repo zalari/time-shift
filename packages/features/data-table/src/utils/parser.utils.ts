@@ -2,8 +2,8 @@ import type { Parser, TableDataTypeMap, TableDataTypes } from '../types/table.ty
 
 export const defaultParsers = {
   bool: value => !!value,
-  string: value => `${value}`,
-  number: value => parseFloat(`${value}`),
+  string: value => (value === undefined ? '' : `${value}`),
+  number: value => (value === undefined ? 0 : parseFloat(`${value}`)),
   date: value => new Date(value as any),
 } satisfies {
   [key in keyof TableDataTypeMap]: Parser<TableDataTypes, TableDataTypeMap[key]>;

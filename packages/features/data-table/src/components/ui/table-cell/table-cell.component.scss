@@ -94,8 +94,8 @@
 
   :host([multiline]) & {
     overflow: hidden;
-    // white-space: pre;
-    word-break: break-all;
+    white-space: normal;
+    word-break: keep-all;
   }
 
   :host([alignment='left']) & {

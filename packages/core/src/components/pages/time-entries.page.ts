@@ -38,14 +38,8 @@ export class TimeEntriesPage extends LitElement {
     const { adapter: factory } = getAdapter(connection.type);
     const adapter = await factory(connection.config);
 
-    // prepare the filter fields
-    const fields = Object.entries(query.filters).reduce(
-      (all, [name, filter]) => ({ ...all, [name]: filter }),
-      {},
-    );
-
     // fetch the entries and align loading state
-    this.entries = await adapter.getTimeEntries(fields);
+    this.entries = await adapter.getTimeEntries(query.filters, query.mapping);
     this.loading = false;
   }
 
