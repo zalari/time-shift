@@ -91,8 +91,9 @@ export class QueryEdit extends LitElement {
     const { queryFields, noteMappingFields } = await adaper.getTimeEntryFields(this.data?.filters);
 
     // update fields
-    this.queryFields = queryFields;
-    this.noteMappingFields = noteMappingFields;
+    this.queryFields = Object.keys(queryFields).length > 0 ? queryFields : undefined;
+    this.noteMappingFields =
+      Object.keys(noteMappingFields).length > 0 ? noteMappingFields : undefined;
 
     // explicitly update filter fields, as the fileds may have changed
     this.fieldEditors.forEach(filterFields => filterFields.requestUpdate());
@@ -109,7 +110,8 @@ export class QueryEdit extends LitElement {
     // load fields from adapter
     this.loadingStrategyFields = true;
     const adaper = await getAdapter(connection?.type).adapter(connection.config);
-    this.strategyFields = await adaper.getStrategyFields(connection.type);
+    const strategyFields = await adaper.getStrategyFields(connection.type);
+    this.strategyFields = Object.keys(strategyFields).length > 0 ? strategyFields : undefined;
     this.loadingStrategyFields = false;
   }
 
