@@ -5,7 +5,7 @@ import { LitElement, html } from 'lit';
 import { customElement, eventOptions, query, state } from 'lit/decorators.js';
 import { when } from 'lit/directives/when.js';
 
-import { getQuery } from '../../data/query.data';
+import { type Query, getQuery } from '../../data/query.data';
 import { getConnection } from '../../data/connection.data';
 import { navigateTo } from '../../utils/router.utils';
 
@@ -23,6 +23,9 @@ export class TimeEntriesPage extends LitElement {
   selected = false;
 
   @state()
+  query?: Query;
+
+  @state()
   entries: TimeEntry[] = [];
 
   override async connectedCallback() {
@@ -33,11 +36,11 @@ export class TimeEntriesPage extends LitElement {
     this.entries = [];
 
     // try to get a query
-    const query = await getQuery(Number(this.location.params.id));
-    if (query === undefined) return;
+    this.query = await getQuery(Number(this.location.params.id));
+    if (this.query === undefined) return;
 
     // try to get the source connection
-    const connection = await getConnection(query.source);
+    const connection = await getConnection(this.query.source);
     if (connection === undefined) return;
 
     // get the adapter
@@ -45,7 +48,7 @@ export class TimeEntriesPage extends LitElement {
     const adapter = await factory(connection.config);
 
     // fetch the entries and align loading state
-    this.entries = await adapter.getTimeEntries(query.filters, query.mapping);
+    this.entries = await adapter.getTimeEntries(this.query.filters, this.query.mapping);
     this.loading = false;
   }
 
@@ -60,9 +63,23 @@ export class TimeEntriesPage extends LitElement {
   }
 
   @eventOptions({ passive: true })
-  handlePreflightClick() {
-    // @TODO: implement preflight
-    console.log('preflight', this.timeEntriesRef.getSelectedTimeEntries());
+  async handlePreflightClick() {
+    if (this.query === undefined) return;
+
+    // try to get the target connection
+    const connection = await getConnection(this.query.target);
+    if (connection === undefined) return;
+
+    // get the adapter
+    const { adapter: factory } = getAdapter(connection.type);
+    const adapter = await factory(connection.config);
+
+    // fetch the prefight result
+    const entries = this.timeEntriesRef.getSelectedTimeEntries();
+    const result = await adapter.getPreflight(entries, this.query.strategy);
+
+    // @TODO: implement preflight UI
+    console.log(result);
   }
 
   render() {
