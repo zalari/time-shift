@@ -25,8 +25,10 @@ export type Query = {
   id: number;
   name: string;
   source: Connection['id'];
+  target: Connection['id'];
   filters: AdapterValues<AdapterFields>;
   mapping: AdapterValues<AdapterFields>;
+  strategy: AdapterValues<AdapterFields>;
 };
 
 export const getAllQuerys = async (): Promise<Query[]> => {

@@ -35,10 +35,22 @@ export class QueryEdit extends LitElement {
   selectedSource?: Connection;
 
   @state()
+  selectedTarget?: Connection;
+
+  @state()
   queryFields?: AdapterFields;
 
   @state()
   noteMappingFields?: AdapterFields;
+
+  @state()
+  loadingQueryAndNoteMappingFields = false;
+
+  @state()
+  loadingStrategyFields = false;
+
+  @state()
+  strategyFields?: AdapterFields;
 
   @property({ type: Boolean, reflect: true })
   disabled = false;
@@ -65,13 +77,16 @@ export class QueryEdit extends LitElement {
     return getConnection(id);
   }
 
-  async loadFields(connection?: Connection) {
+  async loadQueryAndNoteMappingFields(connection?: Connection) {
     // no connection, no data
     if (!connection?.type) {
-      return { queryFields: {}, noteMappingFields: {} };
+      this.queryFields = undefined;
+      this.noteMappingFields = undefined;
+      return;
     }
 
     // load fields from adapter
+    this.loadingQueryAndNoteMappingFields = true;
     const adaper = await getAdapter(connection?.type).adapter(connection.config);
     const { queryFields, noteMappingFields } = await adaper.getTimeEntryFields(this.data?.filters);
 
@@ -81,6 +96,36 @@ export class QueryEdit extends LitElement {
 
     // explicitly update filter fields, as the fileds may have changed
     this.filterFields.forEach(filterFields => filterFields.requestUpdate());
+    this.loadingQueryAndNoteMappingFields = false;
+  }
+
+  async loadStrategyFields(connection?: Connection) {
+    // no connection, no data
+    if (!connection?.type) {
+      this.strategyFields = undefined;
+      return;
+    }
+
+    // load fields from adapter
+    this.loadingStrategyFields = true;
+    const adaper = await getAdapter(connection?.type).adapter(connection.config);
+    this.strategyFields = await adaper.getStrategyFields(connection.type);
+    this.loadingStrategyFields = false;
+  }
+
+  collectData(): QueryData {
+    const elements = getFormElements(this.form);
+
+    const data = collectDataForNames(elements, ['name', 'source', 'target']);
+    const filters = collectDataForNames(elements, Object.keys(this.queryFields ?? {}));
+    const mapping = collectDataForNames(elements, Object.keys(this.noteMappingFields ?? {}));
+    const strategy = collectDataForNames(elements, Object.keys(this.strategyFields ?? {}));
+
+    return { ...data, filters, mapping, strategy } as QueryData;
+  }
+
+  emitSaveEvent(detail: QueryData) {
+    this.dispatchEvent(new CustomEvent('query-edit:save-data', { detail }));
   }
 
   @eventOptions({ passive: true, capture: true })
@@ -91,20 +136,39 @@ export class QueryEdit extends LitElement {
     // collect the selected source, prepare a connection and (re)load fields
     const { nativeInput } = event.target as unknown as EditableInterface<number>;
     this.selectedSource = await this.selectConnection(Number(nativeInput.value));
-    this.loadFields(this.selectedSource);
+    this.loadQueryAndNoteMappingFields(this.selectedSource);
+  }
+
+  @eventOptions({ passive: true, capture: true })
+  async handleTargetChange(event: Event) {
+    // do not bubble up, we'll handle this here
+    event.stopPropagation();
+
+    // collect the selected source, prepare a connection and (re)load fields
+    const { nativeInput } = event.target as unknown as EditableInterface<number>;
+    this.selectedTarget = await this.selectConnection(Number(nativeInput.value));
+    this.loadStrategyFields(this.selectedTarget);
   }
 
   @eventOptions({ passive: true })
-  async handleReloadFields() {
+  async handleReloadQueryAndNoteMappingFields() {
     // collect latest data snapshot and (re)load fields
     this.data = this.collectData();
-    this.loadFields(this.selectedSource);
+    this.loadQueryAndNoteMappingFields(this.selectedSource);
+  }
+
+  @eventOptions({ passive: true })
+  async handleReloadStrategyFields() {
+    // collect latest data snapshot and (re)load fields
+    this.data = this.collectData();
+    this.loadStrategyFields(this.selectedTarget);
   }
 
   @eventOptions({ passive: true })
   async handleFormInput() {
     this.data = this.collectData();
     this.selectedSource = await this.selectConnection(this.data?.source);
+    this.selectedTarget = await this.selectConnection(this.data?.target);
     this.formValid = checkFormValidity(this.form);
   }
 
@@ -122,20 +186,6 @@ export class QueryEdit extends LitElement {
     this.formValid = checkFormValidity(this.form);
   }
 
-  collectData(): QueryData {
-    const elements = getFormElements(this.form);
-
-    const data = collectDataForNames(elements, ['name', 'source']);
-    const filters = collectDataForNames(elements, Object.keys(this.queryFields ?? {}));
-    const mapping = collectDataForNames(elements, Object.keys(this.noteMappingFields ?? {}));
-
-    return { ...data, filters, mapping } as QueryData;
-  }
-
-  emitSaveEvent(detail: QueryData) {
-    this.dispatchEvent(new CustomEvent('query-edit:save-data', { detail }));
-  }
-
   override async connectedCallback() {
     super.connectedCallback();
     this.addEventListener('query-edit:set-data', this.handleSetData, false);
@@ -143,9 +193,11 @@ export class QueryEdit extends LitElement {
     // load connections initially
     this.connections = await this.prepareConnectionOptions();
     this.selectedSource = await this.selectConnection(this.data?.source);
+    this.selectedTarget = await this.selectConnection(this.data?.target);
 
     // load fields initially
-    this.loadFields(this.selectedSource);
+    this.loadQueryAndNoteMappingFields(this.selectedSource);
+    this.loadStrategyFields(this.selectedTarget);
   }
 
   override firstUpdated() {
@@ -207,7 +259,9 @@ export class QueryEdit extends LitElement {
                   <time-shift-filter-fields
                     .fields="${this.queryFields!}"
                     .values="${ifDefined(this.data?.filters)}"
-                    @time-shift-filter-fields:reload-fields="${this.handleReloadFields}"
+                    ?disabled="${this.loadingQueryAndNoteMappingFields}"
+                    @time-shift-filter-fields:reload-fields="${this
+                      .handleReloadQueryAndNoteMappingFields}"
                   ></time-shift-filter-fields>
                 </time-shift-fieldset>
               `,
@@ -222,6 +276,39 @@ export class QueryEdit extends LitElement {
                   <time-shift-filter-fields
                     .fields="${this.noteMappingFields!}"
                     .values="${ifDefined(this.data?.mapping)}"
+                  ></time-shift-filter-fields>
+                </time-shift-fieldset>
+              `,
+            )}
+
+            <time-shift-fieldset legend="Target">
+              <time-shift-select
+                include-empty-option
+                required
+                label="Target connection"
+                name="target"
+                placeholder="Select a connection"
+                validate-on="input blur"
+                ?disabled="${this.disabled}"
+                .primitive="${Number}"
+                .options="${this.getConnectionOptions()}"
+                .value="${this.data?.target}"
+                @input="${this.handleTargetChange}"
+              ></time-shift-select>
+            </time-shift-fieldset>
+
+            ${when(
+              this.strategyFields !== undefined,
+              () => html`
+                <time-shift-fieldset
+                  legend="Strategy"
+                  description="Choose a mapping strategy from the target adapter."
+                >
+                  <time-shift-filter-fields
+                    .fields="${this.strategyFields!}"
+                    .values="${ifDefined(this.data?.strategy)}"
+                    ?disabled="${this.loadingStrategyFields}"
+                    @time-shift-filter-fields:reload-fields="${this.handleReloadStrategyFields}"
                   ></time-shift-filter-fields>
                 </time-shift-fieldset>
               `,
