@@ -3,7 +3,7 @@ import type { AdapterFields } from '@time-shift/common';
 export const noteMappingFields = {
   field: {
     label: 'Field',
-    description: 'A field to map to the generated note',
+    description: 'A field to map to the generated note.',
     type: 'string',
     multiple: true,
     options: [

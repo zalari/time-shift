@@ -4,6 +4,7 @@ import type { Mite } from './types/mite.types';
 import type { MiteAdapterConfigFields } from './fields/config.fields';
 import { type MiteAdapterQueryFields, queryFields } from './fields/query.fields';
 import { type MiteAdapterNoteMappingFields, noteMappingFields } from './fields/note-mapping.fields';
+import { type MiteAdapterStrategyFields, strategyFields } from './fields/strategy.fields';
 
 import { miteClient } from './utils/mite.utils.js';
 
@@ -11,6 +12,7 @@ export const adapter: AdapterFactory<
   MiteAdapterConfigFields,
   MiteAdapterQueryFields,
   MiteAdapterNoteMappingFields,
+  MiteAdapterStrategyFields,
   Mite.TimeEntry
 > = async config => {
   const { account, apiKey } = config;
@@ -66,8 +68,12 @@ export const adapter: AdapterFactory<
       );
     },
 
+    async getStrategyFields() {
+      return strategyFields;
+    },
+
     // @TODO: implement preflight
-    async getPreflight(sources) {
+    async getPreflight(sources, _strategyFields) {
       return {
         type: '1:1',
         result: sources.map(source => ({

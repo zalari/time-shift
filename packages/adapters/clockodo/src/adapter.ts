@@ -7,6 +7,7 @@ import {
   type ClockodoAdapterNoteMappingFields,
   noteMappingFields,
 } from './domain/note-mapping.fields';
+import { type ClockodoAdapterStrategyFields, strategyFields } from './domain/strategy.fields';
 
 import { NpmClockodoClient } from './infrastructure/npm-clockodo-client';
 
@@ -16,6 +17,7 @@ export const adapter: AdapterFactory<
   ClockodoAdapterConfigFields,
   ClockodoAdapterQueryFields,
   ClockodoAdapterNoteMappingFields,
+  ClockodoAdapterStrategyFields,
   ClockodoTimeEntry
 > = async config => {
   return {
@@ -66,6 +68,10 @@ export const adapter: AdapterFactory<
           at: timeSince,
         };
       });
+    },
+
+    async getStrategyFields() {
+      return strategyFields;
     },
 
     // @TODO: implement preflight

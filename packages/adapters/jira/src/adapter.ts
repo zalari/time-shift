@@ -7,6 +7,7 @@ import { type Config, Version2Client, Version3Client } from 'jira.js';
 import type { JiraAdapterConfigFields } from './fields/config.fields';
 import { type JiraAdapterQueryFields, queryFields } from './fields/query.fields';
 import { type JiraAdapterNoteMappingFields, noteMappingFields } from './fields/note-mapping.fields';
+import { type JiraAdapterStrategyFields, strategyFields } from './fields/strategy.fields';
 
 export type Worklog = Worklog2 | Worklog3;
 
@@ -53,6 +54,7 @@ export const adapter: AdapterFactory<
   JiraAdapterConfigFields,
   JiraAdapterQueryFields,
   JiraAdapterNoteMappingFields,
+  JiraAdapterStrategyFields,
   Worklog
 > = async config => {
   const client = createClient(config);
@@ -88,6 +90,10 @@ export const adapter: AdapterFactory<
         const timeEntries = worklogs.map(worklog => mapWorklogToTimeEntry(issueIdOrKey, worklog));
         return [...(await all), ...timeEntries];
       }, Promise.resolve([] as TimeEntry<Worklog>[]));
+    },
+
+    async getStrategyFields() {
+      return strategyFields;
     },
 
     // @TODO: implement preflight
