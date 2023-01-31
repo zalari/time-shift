@@ -98,6 +98,12 @@ export class TimeEntries extends LitElement {
       .map(row => row.data) as unknown as TimeEntry[];
   }
 
+  emitSelectionChangeEvent() {
+    const detail = this.getSelectedTimeEntries();
+    const event = new CustomEvent('time-shift-time-entries:selection-change', { detail });
+    this.dispatchEvent(event);
+  }
+
   handleTableRef(element?: Element) {
     if (element === undefined) return;
     const options = { sort: { column: 'at', invert: false } } satisfies HeadlessTable.Options;
@@ -139,7 +145,10 @@ export class TimeEntries extends LitElement {
     } else {
       selected.delete(index);
     }
+
+    // update selection
     this.selected = selected;
+    this.emitSelectionChangeEvent();
   }
 
   @eventOptions({ passive: true })
@@ -148,6 +157,7 @@ export class TimeEntries extends LitElement {
     this.selected = this.selectAll.checked
       ? Array.from({ length }).reduce<Set<number>>((set, _, index) => set.add(index), new Set())
       : new Set();
+    this.emitSelectionChangeEvent();
   }
 
   @eventOptions({ passive: true })
@@ -163,11 +173,13 @@ export class TimeEntries extends LitElement {
     const selected = Array.from(this.selected);
     const checked = visible.every(index => selected.includes(index));
 
+    // update selection
     if (checked) {
       this.selected = new Set(selected.filter(index => !visible.includes(index)));
     } else {
       this.selected = new Set([...selected, ...visible]);
     }
+    this.emitSelectionChangeEvent();
   }
 
   @eventOptions({ passive: true })
@@ -223,10 +235,7 @@ export class TimeEntries extends LitElement {
             visible
           </time-shift-button>
 
-          <time-shift-button-group>
-            <time-shift-button>Preflight</time-shift-button>
-            <time-shift-button disabled>Sync</time-shift-button>
-          </time-shift-button-group>
+          <slot name="actions"></slot>
         </nav>
       </time-shift-time-entries-header>
 
@@ -272,6 +281,9 @@ export class TimeEntries extends LitElement {
 }
 
 declare global {
+  interface HTMLElementEventMap {
+    'time-shift-time-entries:selection-change': CustomEvent<TimeEntry[]>;
+  }
   interface HTMLElementTagNameMap {
     'time-shift-time-entries': TimeEntries;
   }

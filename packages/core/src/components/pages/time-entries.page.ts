@@ -2,7 +2,7 @@ import { type TimeEntry, getAdapter } from '@time-shift/common';
 import { RouterLocation } from '@vaadin/router';
 
 import { LitElement, html } from 'lit';
-import { customElement, eventOptions, state } from 'lit/decorators.js';
+import { customElement, eventOptions, query, state } from 'lit/decorators.js';
 import { when } from 'lit/directives/when.js';
 
 import { getQuery } from '../../data/query.data';
@@ -13,8 +13,14 @@ import { navigateTo } from '../../utils/router.utils';
 export class TimeEntriesPage extends LitElement {
   readonly location!: RouterLocation;
 
+  @query('time-shift-time-entries')
+  readonly timeEntriesRef!: HTMLElementTagNameMap['time-shift-time-entries'];
+
   @state()
   loading = true;
+
+  @state()
+  selected = false;
 
   @state()
   entries: TimeEntry[] = [];
@@ -44,8 +50,19 @@ export class TimeEntriesPage extends LitElement {
   }
 
   @eventOptions({ passive: true })
-  async handleQueryEdit(event: HTMLEventListenerMap['time-shift-query-list:action']) {
+  async handleQueryEdit(event: HTMLElementEventMap['time-shift-query-list:action']) {
     navigateTo(`/settings/query/${event.detail}`);
+  }
+
+  @eventOptions({ passive: true })
+  handleSelectionChange(event: HTMLElementEventMap['time-shift-time-entries:selection-change']) {
+    this.selected = event.detail.length > 0;
+  }
+
+  @eventOptions({ passive: true })
+  handlePreflightClick() {
+    // @TODO: implement preflight
+    console.log('preflight', this.timeEntriesRef.getSelectedTimeEntries());
   }
 
   render() {
@@ -70,7 +87,20 @@ export class TimeEntriesPage extends LitElement {
               () => html`<span>No entries found</span>`,
               () =>
                 html`
-                  <time-shift-time-entries .entries="${this.entries}"></time-shift-time-entries>
+                  <time-shift-time-entries
+                    .entries="${this.entries}"
+                    @time-shift-time-entries:selection-change="${this.handleSelectionChange}"
+                  >
+                    <time-shift-button-group slot="actions">
+                      <time-shift-button
+                        ?disabled="${!this.selected}"
+                        @click="${this.handlePreflightClick}"
+                      >
+                        Preflight
+                      </time-shift-button>
+                      <time-shift-button disabled>Sync</time-shift-button>
+                    </time-shift-button-group>
+                  </time-shift-time-entries>
                 `,
             )}
           `,
