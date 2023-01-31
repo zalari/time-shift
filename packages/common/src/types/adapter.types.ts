@@ -54,7 +54,7 @@ export type Adapter<
    */
   getPreflight: (
     sources: TimeEntry[],
-    startegyFields?: Partial<AdapterValues<StrategyFields>>,
+    strategyFields?: Partial<AdapterValues<StrategyFields>>,
   ) => Promise<PreflightResult<TimeEntryPayload>>;
 };
 
