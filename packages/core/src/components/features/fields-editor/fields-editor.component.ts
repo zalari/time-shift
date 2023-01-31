@@ -3,6 +3,7 @@ import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement, eventOptions, property, queryAll, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { map } from 'lit/directives/map.js';
+import { when } from 'lit/directives/when.js';
 
 import type { SelectOption } from '../../ui/input/select.component';
 import type { EventWithTarget } from '../../../utils/type.utils';
@@ -107,56 +108,72 @@ export class FieldsEditor<F extends AdapterFields = any> extends LitElement {
     this.dispatchEvent(new CustomEvent('time-shift-fields-editor:reload-fields'));
   }
 
+  renderFieldEditor(name: keyof F, value: any, required: boolean) {
+    const field = this.fields[name];
+    return html`
+      <time-shift-field-editor
+        ?required="${ifDefined(required)}"
+        ?disabled="${this.disabled}"
+        name="${name}"
+        type="${ifDefined(field?.type)}"
+        label="${ifDefined(field?.label)}"
+        message="${ifDefined(field?.description)}"
+        placeholder="${ifDefined(field?.placeholder)}"
+        .options="${ifDefined(field?.options)}"
+        .value="${value}"
+        @input="${ifDefined(field?.reloadOnChange ? this.handleReloadFields : undefined)}"
+      ></time-shift-field-editor>
+    `;
+  }
+
   render() {
     return html`
-      <header>
-        <time-shift-select
-          include-empty-option
-          placeholder="${this.selectLabel}"
-          .primitive="${String}"
-          .options="${this.getFieldOptions()}"
-          .value="${this.selectedFieldName}"
-          @input="${this.handleFieldSelect}"
-        ></time-shift-select>
-        <time-shift-button
-          ?disabled="${this.selectedFieldName === undefined}"
-          @click="${this.handleFieldAdd}"
-        >
-          ${this.addLabel}
-        </time-shift-button>
-      </header>
-      <ul>
-        ${map(
-          Object.entries(this.values),
-          ([name, values]) =>
-            html`
-              ${map(
-                this.fields[name]?.multiple && Array.isArray(values) ? values : [values],
-                (value, index) => html`
-                  <li data-name="${name}" data-index="${index}">
-                    <time-shift-field-editor
-                      ?required="${ifDefined(this.fields[name]?.type !== 'boolean')}"
-                      ?disabled="${this.disabled}"
-                      name="${name}"
-                      type="${ifDefined(this.fields[name]?.type)}"
-                      label="${ifDefined(this.fields[name]?.label)}"
-                      message="${ifDefined(this.fields[name]?.description)}"
-                      placeholder="${ifDefined(this.fields[name]?.placeholder)}"
-                      .options="${ifDefined(this.fields[name]?.options)}"
-                      .value="${value}"
-                      @input="${ifDefined(
-                        this.fields[name]?.reloadOnChange ? this.handleReloadFields : undefined,
-                      )}"
-                    ></time-shift-field-editor>
-                    <time-shift-button @click="${this.handleFieldRemove}">
-                      ${this.removeLabel}
-                    </time-shift-button>
-                  </li>
+      ${when(
+        Object.keys(this.fields).length > 1,
+        () => html`
+          <header>
+            <time-shift-select
+              include-empty-option
+              placeholder="${this.selectLabel}"
+              .primitive="${String}"
+              .options="${this.getFieldOptions()}"
+              .value="${this.selectedFieldName}"
+              @input="${this.handleFieldSelect}"
+            ></time-shift-select>
+            <time-shift-button
+              ?disabled="${this.selectedFieldName === undefined}"
+              @click="${this.handleFieldAdd}"
+            >
+              ${this.addLabel}
+            </time-shift-button>
+          </header>
+          <ul>
+            ${map(
+              Object.entries(this.values),
+              ([name, values]) =>
+                html`
+                  ${map(
+                    this.fields[name]?.multiple && Array.isArray(values) ? values : [values],
+                    (value, index) => html`
+                      <li data-name="${name}" data-index="${index}">
+                        ${this.renderFieldEditor(
+                          name,
+                          value,
+                          this.fields[name]?.type !== 'boolean',
+                        )}
+                        <time-shift-button @click="${this.handleFieldRemove}">
+                          ${this.removeLabel}
+                        </time-shift-button>
+                      </li>
+                    `,
+                  )}
                 `,
-              )}
-            `,
-        )}
-      </ul>
+            )}
+          </ul>
+        `,
+        () =>
+          this.renderFieldEditor(Object.keys(this.fields)[0], Object.values(this.values)[0], false),
+      )}
     `;
   }
 }
