@@ -248,7 +248,7 @@ export class QueryEdit extends LitElement {
 }
 
 declare global {
-  interface ElementEventMap {
+  interface HTMLElementEventMap {
     'query-edit:save-data': CustomEvent<QueryData>;
     'query-edit:set-data': CustomEvent<QueryData>;
   }

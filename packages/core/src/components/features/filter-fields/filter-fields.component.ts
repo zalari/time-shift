@@ -162,7 +162,7 @@ export class FilterFields<F extends AdapterFields = any> extends LitElement {
 }
 
 declare global {
-  interface ElementEventMap {
+  interface HTMLElementEventMap {
     'time-shift-filter-fields:reload-fields': CustomEvent;
   }
   interface HTMLElementTagNameMap {

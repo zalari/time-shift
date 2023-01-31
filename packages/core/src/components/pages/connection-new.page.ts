@@ -17,7 +17,7 @@ export class ConnectionNewPage extends LitElement {
   connection?: Connection;
 
   @eventOptions({ passive: true })
-  async handleSaveData(event: ElementEventMap['connection-edit:save-data']) {
+  async handleSaveData(event: HTMLElementEventMap['connection-edit:save-data']) {
     this.disabled = true;
     const id = await createConnection(event.detail);
     navigateTo(`/settings/connection/${id}`);

@@ -10,7 +10,7 @@ import { encodeParamValue } from '../../utils/url.utils';
 @customElement('time-shift-settings-page')
 export class SettingsPage extends LitElement {
   @eventOptions({ passive: true })
-  async handleConnectionClone(event: HTMLEventListenerMap['time-shift-connection-list:action']) {
+  async handleConnectionClone(event: HTMLElementEventMap['time-shift-connection-list:action']) {
     const connection = await getConnection(event.detail);
     const { id, name, ...entries } = connection!;
     const clone = { ...entries!, name: `${name} (Clone)` } satisfies Omit<Connection, 'id'>;
@@ -18,7 +18,7 @@ export class SettingsPage extends LitElement {
   }
   
   @eventOptions({ passive: true })
-  async handleQueryClone(event: HTMLEventListenerMap['time-shift-query-list:action']) {
+  async handleQueryClone(event: HTMLElementEventMap['time-shift-query-list:action']) {
     const query = await getQuery(event.detail);
     const { id, name, ...entries } = query!;
     const clone = { ...entries!, name: `${name} (Clone)` } satisfies Omit<Query, 'id'>;

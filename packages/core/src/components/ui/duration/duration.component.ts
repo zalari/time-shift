@@ -54,7 +54,7 @@ export class Duration extends LitElement {
 }
 
 declare global {
-  interface ElementEventMap {
+  interface HTMLElementEventMap {
     'time-shift-duration:decimal-changed': CustomEvent<boolean>;
   }
   interface HTMLElementTagNameMap {

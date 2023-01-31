@@ -23,7 +23,7 @@ export class ConnectionEditPage extends LitElement {
   connection?: Connection;
 
   @eventOptions({ passive: true })
-  async handleSaveData({ detail }: ElementEventMap['connection-edit:save-data']) {
+  async handleSaveData({ detail }: HTMLElementEventMap['connection-edit:save-data']) {
     this.disabled = true;
     this.connection = { ...detail, id: this.connection!.id } as Connection;
     await updateConnection(this.connection);

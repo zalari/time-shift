@@ -118,7 +118,7 @@ export class Pagination extends LitElement {
 }
 
 declare global {
-  interface ElementEventMap {
+  interface HTMLElementEventMap {
     'time-shift-pagination:turn-page': CustomEvent<number>;
   }
   interface HTMLElementTagNameMap {

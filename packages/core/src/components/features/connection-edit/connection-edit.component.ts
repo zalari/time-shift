@@ -197,7 +197,7 @@ export class ConnectionEdit extends LitElement {
 }
 
 declare global {
-  interface ElementEventMap {
+  interface HTMLElementEventMap {
     'connection-edit:save-data': CustomEvent<ConnectionData>;
     'connection-edit:set-data': CustomEvent<ConnectionData>;
   }

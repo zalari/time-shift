@@ -17,7 +17,7 @@ export class QueryNewPage extends LitElement {
   query?: Query;
 
   @eventOptions({ passive: true })
-  async handleSaveData(event: ElementEventMap['query-edit:save-data']) {
+  async handleSaveData(event: HTMLElementEventMap['query-edit:save-data']) {
     this.disabled = true;
     const id = await createQuery(event.detail);
     navigateTo(`/settings/query/${id}`);

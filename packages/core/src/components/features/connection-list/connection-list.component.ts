@@ -81,7 +81,7 @@ export class ConnectionList extends LitElement {
 }
 
 declare global {
-  interface HTMLEventListenerMap {
+  interface HTMLElementEventMap {
     'time-shift-connection-list:action': CustomEvent<number>;
   }
   interface HTMLElementTagNameMap {

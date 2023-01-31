@@ -97,7 +97,7 @@ export class QueryList extends LitElement {
 }
 
 declare global {
-  interface HTMLEventListenerMap {
+  interface HTMLElementEventMap {
     'time-shift-query-list:action': CustomEvent<number>;
   }
   interface HTMLElementTagNameMap {

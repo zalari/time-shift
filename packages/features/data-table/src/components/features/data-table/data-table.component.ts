@@ -384,7 +384,7 @@ export class DataTable extends LitElement {
 }
 
 declare global {
-  interface ElementEventMap {
+  interface HTMLElementEventMap {
     'time-shift-data-table:sorted': CustomEvent<{
       column: string;
       inverted: boolean;
