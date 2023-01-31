@@ -19,6 +19,7 @@ export type AdapterTimeEntryFields<
 export type Adapter<
   QueryFields extends AdapterFields,
   NoteMappingFields extends AdapterFields,
+  StrategyFields extends AdapterFields,
   TimeEntryPayload extends {},
 > = {
   /**
@@ -43,10 +44,18 @@ export type Adapter<
   ) => Promise<TimeEntry<TimeEntryPayload>[]>;
 
   /**
+   * In order to map time entries, the adapter must provide a list of strategy fields.
+   */
+  getStrategyFields: (sourceAdapter?: string) => Promise<StrategyFields>;
+
+  /**
    * In order to do a sync operation, a preflight has to be done, mapping the source entris to some targets.
    * These preflight mappings consists of either a 1:1, 1:n, or 1:n mapping.
    */
-  getPreflight: (sources: TimeEntry[]) => Promise<PreflightResult<TimeEntryPayload>>;
+  getPreflight: (
+    sources: TimeEntry[],
+    startegyFields?: Partial<AdapterValues<StrategyFields>>,
+  ) => Promise<PreflightResult<TimeEntryPayload>>;
 };
 
 /**
@@ -56,11 +65,12 @@ export type AdapterFactory<
   ConfigFields extends AdapterFields,
   QueryFields extends AdapterFields,
   NoteMappingFields extends AdapterFields,
+  StrategyFields extends AdapterFields,
   TimeEntryPayload extends {},
 > = (
   // for configuration, all options must be passed
   config: AdapterValues<ConfigFields>,
-) => Promise<Adapter<QueryFields, NoteMappingFields, TimeEntryPayload>>;
+) => Promise<Adapter<QueryFields, NoteMappingFields, StrategyFields, TimeEntryPayload>>;
 
 /**
  * Used in global scope to store adapters.
@@ -69,8 +79,15 @@ export type AdapterSet<
   ConfigFields extends AdapterFields,
   QueryFields extends AdapterFields,
   NoteMappingFields extends AdapterFields,
+  StrategyFields extends AdapterFields,
   TimeEntryPayload extends {},
 > = {
-  adapter: AdapterFactory<ConfigFields, QueryFields, NoteMappingFields, TimeEntryPayload>;
+  adapter: AdapterFactory<
+    ConfigFields,
+    QueryFields,
+    NoteMappingFields,
+    StrategyFields,
+    TimeEntryPayload
+  >;
   config: ConfigFields;
 };
