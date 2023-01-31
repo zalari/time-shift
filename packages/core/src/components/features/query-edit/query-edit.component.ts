@@ -257,6 +257,9 @@ export class QueryEdit extends LitElement {
                   description="Allows to narrow the results initially."
                 >
                   <time-shift-fields-editor
+                    add-label="Add filter"
+                    remove-label="Remove filter"
+                    select-label="Select filter"
                     .fields="${this.queryFields!}"
                     .values="${ifDefined(this.data?.filters)}"
                     ?disabled="${this.loadingQueryAndNoteMappingFields}"
@@ -274,6 +277,9 @@ export class QueryEdit extends LitElement {
                   description="Next to the notes provided by the source, a generated note can be created by the fields defined here."
                 >
                   <time-shift-fields-editor
+                    add-label="Add mapping"
+                    remove-label="Remove mapping"
+                    select-label="Select mapping"
                     .fields="${this.noteMappingFields!}"
                     .values="${ifDefined(this.data?.mapping)}"
                   ></time-shift-fields-editor>

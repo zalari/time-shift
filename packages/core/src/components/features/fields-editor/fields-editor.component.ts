@@ -29,14 +29,14 @@ export class FieldsEditor<F extends AdapterFields = any> extends LitElement {
   @property({ type: Object })
   values: Partial<AdapterValues<F>> = {};
 
-  @property({ type: String, reflect: true })
-  addLabel = 'Add filter';
+  @property({ type: String, reflect: true, attribute: 'add-label' })
+  addLabel = 'Add field';
 
-  @property({ type: String, reflect: true })
-  removeLabel = 'Remove filter';
+  @property({ type: String, reflect: true, attribute: 'remove-label' })
+  removeLabel = 'Remove field';
 
-  @property({ type: String, reflect: true })
-  selectLabel = 'Select filter';
+  @property({ type: String, reflect: true, attribute: 'select-label' })
+  selectLabel = 'Select field';
 
   emitInputEvent() {
     const event = new Event('input', { bubbles: true, composed: true, cancelable: true });
