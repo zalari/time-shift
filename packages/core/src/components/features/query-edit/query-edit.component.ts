@@ -330,8 +330,8 @@ export class QueryEdit extends LitElement {
           `,
           () => html`
             <p>
-              No connections found. Please <a href="/settings/connection/new">a connection</a> from
-              the available adapters first.
+              No connections found. Please create
+              <a href="/settings/connection/new">a connection</a> from the available adapters first.
             </p>
           `,
         )}

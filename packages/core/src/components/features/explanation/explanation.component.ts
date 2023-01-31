@@ -10,12 +10,14 @@ export class Explanation extends LitElement {
   render() {
     return html`
       <h1>How to configure Time Shift</h1>
-      <p>Time Shift collects time entries from various sources and maps them into configured targets.</p>
+      <p>
+        Time Shift collects time entries from various sources and maps them into configured targets.
+      </p>
       <dl>
         <dt>Adapters</dt>
         <dd>
-          Are provided at runtime by Time Shift. They can be used to access APIs or to convert data. They
-          conveniently deliver and receive time entries in a common format.
+          Are provided at runtime by Time Shift. They can be used to access APIs or to convert data.
+          They conveniently deliver and receive time entries in a common format.
         </dd>
 
         <dt>Connections</dt>
@@ -42,10 +44,10 @@ export class Explanation extends LitElement {
           be filtered and individual entries selected for further interactions.
         </dd>
 
-        <dt>Actions</dt>
+        <dt>Strategy</dt>
         <dd>
-          The selected time entries can be either manipulated or synced by various actions. Actions
-          are derived from a target connections adapter and the application scope.
+          Time entries can be mapped to targets by using a strategy. The strategy defines how the
+          mapping is done and is provided by the target adapter.
         </dd>
       </dl>
     `;
