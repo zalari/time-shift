@@ -10,7 +10,7 @@ export * from './components/features/connection-status/connection-status.compone
 export * from './components/features/connection-test/connection-test.component';
 export * from './components/features/explanation/explanation.component';
 export * from './components/features/field-editor/field-editor.component';
-export * from './components/features/filter-fields/filter-fields.component';
+export * from './components/features/fields-editor/fields-editor.component';
 export * from './components/features/navigation/navigation.component';
 export * from './components/features/query-edit/query-edit.component';
 export * from './components/features/query-list/query-list.component';

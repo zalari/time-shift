@@ -7,10 +7,10 @@ import { map } from 'lit/directives/map.js';
 import type { SelectOption } from '../../ui/input/select.component';
 import type { EventWithTarget } from '../../../utils/type.utils';
 
-import styles from './filter-fields.component.scss';
+import styles from './fields-editor.component.scss';
 
-@customElement('time-shift-filter-fields')
-export class FilterFields<F extends AdapterFields = any> extends LitElement {
+@customElement('time-shift-fields-editor')
+export class FieldsEditor<F extends AdapterFields = any> extends LitElement {
   static override readonly styles = unsafeCSS(styles);
   static readonly formAssociated = true;
 
@@ -43,7 +43,7 @@ export class FilterFields<F extends AdapterFields = any> extends LitElement {
     requestAnimationFrame(() => this.dispatchEvent(event));
   }
 
-  getFilterOptions(): SelectOption<string>[] {
+  getFieldOptions(): SelectOption<string>[] {
     return Object.entries(this.fields)
       .filter(([name, { multiple = false }]) => multiple || !(name in this.values))
       .map(([name, field]) => ({
@@ -64,13 +64,13 @@ export class FilterFields<F extends AdapterFields = any> extends LitElement {
   }
 
   @eventOptions({ passive: true })
-  handleFilterSelect({ target }: EventWithTarget<HTMLSelectElement>) {
+  handleFieldSelect({ target }: EventWithTarget<HTMLSelectElement>) {
     // apply currently selected filter selection
     this.selectedFieldName = target.value;
   }
 
   @eventOptions({ passive: true })
-  handleFilterAdd() {
+  handleFieldAdd() {
     // add an empty value
     this.addEmptyValue(this.selectedFieldName!);
 
@@ -82,7 +82,7 @@ export class FilterFields<F extends AdapterFields = any> extends LitElement {
   }
 
   @eventOptions({ passive: true })
-  handleFilterRemove(event: EventWithTarget) {
+  handleFieldRemove(event: EventWithTarget) {
     const name = event.target.parentElement!.dataset.name!;
     const index = Number(event.target.parentElement!.dataset.index!);
     const values = this.values[name];
@@ -104,7 +104,7 @@ export class FilterFields<F extends AdapterFields = any> extends LitElement {
 
   @eventOptions({ passive: true })
   handleReloadFields() {
-    this.dispatchEvent(new CustomEvent('time-shift-filter-fields:reload-fields'));
+    this.dispatchEvent(new CustomEvent('time-shift-fields-editor:reload-fields'));
   }
 
   render() {
@@ -114,13 +114,13 @@ export class FilterFields<F extends AdapterFields = any> extends LitElement {
           include-empty-option
           placeholder="${this.selectLabel}"
           .primitive="${String}"
-          .options="${this.getFilterOptions()}"
+          .options="${this.getFieldOptions()}"
           .value="${this.selectedFieldName}"
-          @input="${this.handleFilterSelect}"
+          @input="${this.handleFieldSelect}"
         ></time-shift-select>
         <time-shift-button
           ?disabled="${this.selectedFieldName === undefined}"
-          @click="${this.handleFilterAdd}"
+          @click="${this.handleFieldAdd}"
         >
           ${this.addLabel}
         </time-shift-button>
@@ -148,7 +148,7 @@ export class FilterFields<F extends AdapterFields = any> extends LitElement {
                         this.fields[name]?.reloadOnChange ? this.handleReloadFields : undefined,
                       )}"
                     ></time-shift-field-editor>
-                    <time-shift-button @click="${this.handleFilterRemove}">
+                    <time-shift-button @click="${this.handleFieldRemove}">
                       ${this.removeLabel}
                     </time-shift-button>
                   </li>
@@ -163,9 +163,9 @@ export class FilterFields<F extends AdapterFields = any> extends LitElement {
 
 declare global {
   interface HTMLElementEventMap {
-    'time-shift-filter-fields:reload-fields': CustomEvent;
+    'time-shift-fields-editor:reload-fields': CustomEvent;
   }
   interface HTMLElementTagNameMap {
-    'time-shift-filter-fields': FilterFields;
+    'time-shift-fields-editor': FieldsEditor;
   }
 }
