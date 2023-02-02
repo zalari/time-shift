@@ -1,18 +1,23 @@
 import { TimeEntry } from './time-entry.types';
 
+export type PreflightResultTimeEntry<R = {}> = {
+  action: 'create' | 'update' | 'delete' | 'none';
+  entry: TimeEntry<R>;
+};
+
 export type PreflightResultOneToOne<R, P = {}> = {
   source: TimeEntry<P>;
-  target: TimeEntry<R>;
+  target: PreflightResultTimeEntry<R>;
 };
 
 export type PreflightResultOneToMany<R, P = {}> = {
   source: TimeEntry<P>;
-  targets: TimeEntry<R>[];
+  targets: PreflightResultTimeEntry<R>[];
 };
 
 export type PreflightResultManyToOne<R, P = {}> = {
   sources: TimeEntry<P>[];
-  target: TimeEntry<R>;
+  target: PreflightResultTimeEntry<R>;
 };
 
 export type PreflightResult<R = {}, P = {}> =
