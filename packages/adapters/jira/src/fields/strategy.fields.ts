@@ -6,7 +6,19 @@ export const strategyFields = {
     description: 'A strategy to map time entries.',
     type: 'string',
     multiple: false,
-    options: [{ label: 'None', value: 'none' }],
+    options: [
+      { label: 'None', value: 'none' },
+      { label: 'Parse notes', value: 'notes' },
+    ],
+  },
+  notesPrefix: {
+    label: 'Prefix',
+    description: 'A key prefix to search for issue keys in notes.',
+    type: 'string',
+    multiple: false,
+    when: {
+      strategy: 'notes',
+    },
   },
 } satisfies AdapterFields;
 

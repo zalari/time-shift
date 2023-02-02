@@ -39,9 +39,9 @@ export const adapter: AdapterFactory<
         });
       }
 
-      queryFields.customersName.options = customers.map(map());
-      queryFields.projectsName.options = projects.map(map());
-      queryFields.servicesName.options = services.map(map());
+      queryFields.filter.fields.customersName.options = customers.map(map());
+      queryFields.filter.fields.projectsName.options = projects.map(map());
+      queryFields.filter.fields.servicesName.options = services.map(map());
 
       return { queryFields, noteMappingFields };
     },
@@ -49,10 +49,10 @@ export const adapter: AdapterFactory<
     async getTimeEntries(fields = {}) {
       const client = new NpmClockodoClient(config);
       const params: EntriesParams = {
-        timeSince: fields.timeSince!,
-        timeUntil: fields.timeUntil!,
-        filterBillable: fields.billable,
-        filterProjectsId: fields.projectsId,
+        timeSince: fields.timeSince!.toISOString(),
+        timeUntil: fields.timeUntil!.toISOString(),
+        filterBillable: fields.filter?.billable,
+        filterProjectsId: fields.filter?.projectsId,
       };
 
       const entries = await client.getTimeEntries(params);

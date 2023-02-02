@@ -73,9 +73,9 @@ export const adapter: AdapterFactory<
       return { queryFields, noteMappingFields };
     },
 
-    async getTimeEntries(options = {}) {
+    async getTimeEntries(options) {
       // build jql query
-      const jql = Object.entries(options).reduce(
+      const jql = Object.entries(options?.filter ?? {}).reduce(
         (all, [field, value]) => `${all} AND ${field}=${value}`,
         'timespent>0',
       );

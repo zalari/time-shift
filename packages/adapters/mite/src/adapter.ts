@@ -31,17 +31,17 @@ export const adapter: AdapterFactory<
       const client = miteClient(account, apiKey);
       const users = await client.getUsers();
       const customers = await client.getCustomers();
-      const projects = await client.getProjects(values?.customer_id);
+      const projects = await client.getProjects(values?.filter?.customer_id);
       const services = await client.getServices();
 
       // add options to select fields
       type Optionable = Mite.Commons & Mite.Archivable;
       const getOptions = ({ id, name }: Optionable) => ({ label: name, value: id });
 
-      queryFields.user_id.options = users.map(getOptions);
-      queryFields.customer_id.options = customers.map(getOptions);
-      queryFields.project_id.options = projects.map(getOptions);
-      queryFields.service_id.options = services.map(getOptions);
+      queryFields.filter.fields.user_id.options = users.map(getOptions);
+      queryFields.filter.fields.customer_id.options = customers.map(getOptions);
+      queryFields.filter.fields.project_id.options = projects.map(getOptions);
+      queryFields.filter.fields.service_id.options = services.map(getOptions);
 
       return { queryFields, noteMappingFields };
     },
