@@ -23,6 +23,11 @@ export type AdapterFieldTypeMap = {
    * May allow obfuscation and toggling the input to be visible on request.
    */
   token: string;
+
+  /**
+   * Allows adding and removing fields.
+   */
+  group: AdapterFields;
 };
 
 /**
@@ -67,22 +72,6 @@ export type AdapterField = AdapterFieldType extends infer K
         description?: string;
 
         /**
-         * Allows predefinition of available values.
-         */
-        options?: AdapterFieldOptions<K>;
-
-        /**
-         * Let multiple values be selected.
-         */
-        multiple?: boolean;
-
-        /**
-         * Reload the fields on change. As the already collected values are passed to the fields resolver,
-         * this can be used to dynamically narrow follow up fields.
-         */
-        reloadOnChange?: boolean;
-
-        /**
          * Show this field conditionally depending on other fields (and their current values).
          */
         when?: Record<
@@ -90,7 +79,37 @@ export type AdapterField = AdapterFieldType extends infer K
           | AdapterFieldTypeMap[keyof AdapterFieldTypeMap]
           | Array<AdapterFieldTypeMap[keyof AdapterFieldTypeMap]>
         >;
-      }
+      } & (K extends 'group'
+        ? // groups will have different properties
+          {
+            /**
+             * Nested field definitions.
+             */
+            fields: AdapterFields;
+
+            /**
+             * Group fields can not appear more than once.
+             */
+            multiple?: false;
+          }
+        : // non-grouping fields allow some more properties
+          {
+            /**
+             * Allows predefinition of available values.
+             */
+            options?: AdapterFieldOptions<K>;
+
+            /**
+             * Let multiple values be selected.
+             */
+            multiple?: boolean;
+
+            /**
+             * Reload the fields on change. As the already collected values are passed to the fields resolver,
+             * this can be used to dynamically narrow follow up fields.
+             */
+            reloadOnChange?: boolean;
+          })
     : never
   : never;
 
@@ -104,7 +123,10 @@ export type AdapterFields = Record<string, AdapterField>;
  * A value can be either a single value or an array of values, depending on it being flagged as `multiple`.
  */
 export type AdapterValues<C extends AdapterFields> = {
-  [K in keyof C]: C[K]['multiple'] extends true
+  [K in keyof C]: C[K]['type'] extends 'group'
+    ? // @ts-expect-error
+      AdapterValues<C[K]['fields']>
+    : C[K]['multiple'] extends true
     ? AdapterFieldTypeMap[C[K]['type']][]
     : AdapterFieldTypeMap[C[K]['type']];
 };
