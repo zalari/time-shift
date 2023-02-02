@@ -27,7 +27,7 @@ export type AdapterFieldTypeMap = {
   /**
    * Allows adding and removing fields.
    */
-  group: AdapterFields;
+  group: 'group';
 };
 
 /**
@@ -91,6 +91,10 @@ export type AdapterField = AdapterFieldType extends infer K
              * Group fields can not appear more than once.
              */
             multiple?: false;
+
+            // aid union types around errors
+            options?: never;
+            reloadOnChange?: never;
           }
         : // non-grouping fields allow some more properties
           {
@@ -109,6 +113,9 @@ export type AdapterField = AdapterFieldType extends infer K
              * this can be used to dynamically narrow follow up fields.
              */
             reloadOnChange?: boolean;
+
+            // aid union types around errors
+            fields?: never;
           })
     : never
   : never;
@@ -124,9 +131,21 @@ export type AdapterFields = Record<string, AdapterField>;
  */
 export type AdapterValues<C extends AdapterFields> = {
   [K in keyof C]: C[K]['type'] extends 'group'
-    ? // @ts-expect-error
-      AdapterValues<C[K]['fields']>
+    ? C[K]['fields'] extends AdapterFields
+      ? AdapterValues<C[K]['fields']>
+      : never
     : C[K]['multiple'] extends true
     ? AdapterFieldTypeMap[C[K]['type']][]
     : AdapterFieldTypeMap[C[K]['type']];
 };
+
+// const t = {
+//   foo: { type: 'string', label: 'Foo' },
+//   bar: { type: 'string', label: 'Bar', multiple: true },
+//   baz: { type: 'group', label: 'Baz', fields: { f00: { type: 'number', label: 'F00' } } },
+// } satisfies AdapterFields;
+// const v = {
+//   foo: 'foo',
+//   bar: ['bar'],
+//   baz: { f00: 123 },
+// } satisfies AdapterValues<typeof t>;
