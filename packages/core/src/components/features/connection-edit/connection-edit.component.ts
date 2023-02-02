@@ -46,7 +46,7 @@ export class ConnectionEdit extends LitElement {
     }));
 
   @state()
-  selectedAdapter?: AdapterSet<AdapterFields, AdapterFields, AdapterFields>;
+  selectedAdapter?: AdapterSet<AdapterFields, AdapterFields, AdapterFields, AdapterFields, {}>;
 
   @property({ type: Boolean, reflect: true })
   disabled = false;
