@@ -98,11 +98,17 @@ export const adapter: AdapterFactory<
 
     // @TODO: implement preflight
     async getPreflight(sources) {
+      const actions = ['create', 'update', 'delete', 'none'] as const;
       return {
         type: '1:n',
         result: sources.map(source => ({
           source,
-          targets: [source as TimeEntry<Worklog>],
+          targets: [
+            {
+              action: actions[Math.floor(Math.random() * actions.length)],
+              entry: source as TimeEntry<Worklog>,
+            },
+          ],
         })),
       };
     },
