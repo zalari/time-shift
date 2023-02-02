@@ -1,4 +1,4 @@
-import type { AdapterFieldType, AdapterFieldTypeMap } from '@time-shift/common';
+import type { AdapterFieldType, AdapterFieldTypeMap, AdapterFields } from '@time-shift/common';
 import { type TemplateResult, LitElement, html, unsafeCSS } from 'lit';
 import { customElement, property, query } from 'lit/decorators.js';
 import { choose } from 'lit/directives/choose.js';
@@ -42,6 +42,9 @@ export class FieldEditor extends LitElement {
 
   @property({ reflect: true, type: Array })
   options?: SelectOption<AdapterFieldTypeMap[typeof this.type]>[];
+
+  @property({ reflect: true, type: Object })
+  fields?: AdapterFields;
 
   @property({ reflect: true })
   value?: AdapterFieldTypeMap[typeof this.type];
@@ -162,6 +165,19 @@ export class FieldEditor extends LitElement {
     `;
   }
 
+  renderGroup(): TemplateResult {
+    return html`
+      <time-shift-fields-editor
+        add-label="Add ${this.label}"
+        remove-label="Remove ${this.label}"
+        select-label="Select ${this.label}"
+        .fields="${ifDefined(this.fields)}"
+        .values="${ifDefined(this.value)}"
+        ?disabled="${this.disabled}"
+      ></time-shift-fields-editor>
+    `;
+  }
+
   render() {
     return html`
       ${choose(this.type, [
@@ -172,6 +188,7 @@ export class FieldEditor extends LitElement {
         ['email', () => this.renderString('email')],
         ['token', () => this.renderString('password')],
         ['url', () => this.renderUrl()],
+        ['group', () => this.renderGroup()],
       ])}
     `;
   }
