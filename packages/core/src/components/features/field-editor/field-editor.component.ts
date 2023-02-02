@@ -26,7 +26,7 @@ export class FieldEditor extends LitElement {
   label!: string;
 
   @property({ reflect: true, type: String })
-  name?: string;
+  name!: string;
 
   @property({ reflect: true, type: String })
   message?: string;
@@ -56,7 +56,7 @@ export class FieldEditor extends LitElement {
         ?required="${this.required}"
         class="input"
         label="${this.label}"
-        name="${ifDefined(this.name)}"
+        name="${this.name}"
         placeholder="${ifDefined(this.placeholder)}"
         message="${ifDefined(this.message)}"
         .value="${Boolean(this.value)}"
@@ -76,7 +76,7 @@ export class FieldEditor extends LitElement {
             class="input"
             label="${this.label}"
             type="${type}"
-            name="${ifDefined(this.name)}"
+            name="${this.name}"
             placeholder="${ifDefined(this.placeholder)}"
             message="${ifDefined(this.message)}"
             .value="${this.value}"
@@ -98,7 +98,7 @@ export class FieldEditor extends LitElement {
             disable-autocomplete
             class="input"
             label="${this.label}"
-            name="${ifDefined(this.name)}"
+            name="${this.name}"
             placeholder="${ifDefined(this.placeholder)}"
             message="${ifDefined(this.message)}"
             .value="${this.value}"
@@ -117,7 +117,7 @@ export class FieldEditor extends LitElement {
         disable-autocomplete
         class="input"
         label="${this.label}"
-        name="${ifDefined(this.name)}"
+        name="${this.name}"
         placeholder="${ifDefined(this.placeholder)}"
         message="${ifDefined(this.message)}"
         .value="${this.value}"
@@ -133,7 +133,7 @@ export class FieldEditor extends LitElement {
         disable-autocomplete
         class="input"
         label="${this.label}"
-        name="${ifDefined(this.name)}"
+        name="${this.name}"
         placeholder="${ifDefined(this.placeholder)}"
         message="${ifDefined(this.message)}"
         .primitive="${primitive}"
@@ -150,7 +150,7 @@ export class FieldEditor extends LitElement {
         ?required="${this.required}"
         class="input"
         label="${this.label}"
-        name="${ifDefined(this.name)}"
+        name="${this.name}"
         placeholder="${ifDefined(this.placeholder)}"
         message="${ifDefined(this.message)}"
         .value="${this.value}"
@@ -158,7 +158,7 @@ export class FieldEditor extends LitElement {
         <time-shift-toggle-cors
           ?disabled="${this.disabled}"
           slot="below"
-          input-name="${ifDefined(this.name)}"
+          input-name="${this.name}"
           label="Add CORS proxy to url"
         ></time-shift-toggle-cors>
       </time-shift-input-text>
@@ -168,11 +168,12 @@ export class FieldEditor extends LitElement {
   renderGroup(): TemplateResult {
     return html`
       <time-shift-fields-editor
+        name="${this.name}"
         add-label="Add ${this.label}"
         remove-label="Remove ${this.label}"
         select-label="Select ${this.label}"
         .fields="${ifDefined(this.fields)}"
-        .values="${ifDefined(this.value)}"
+        .values="${ifDefined((this.value as any)?.[this.name])}"
         ?disabled="${this.disabled}"
       ></time-shift-fields-editor>
     `;

@@ -151,28 +151,11 @@ export class ConnectionEdit extends LitElement {
           ${when(
             this.selectedAdapter !== undefined,
             () => html`
-              ${map(
-                Object.entries(this.selectedAdapter!.config),
-                ([name, field]) =>
-                  html`
-                    ${when(
-                      this.checkWhenField(field.when),
-                      () => html`
-                        <time-shift-field-editor
-                          required
-                          ?disabled="${this.disabled}"
-                          name="${name}"
-                          type="${field.type}"
-                          label="${field.label}"
-                          message="${ifDefined(field.description)}"
-                          placeholder="${ifDefined(field.placeholder)}"
-                          .options="${ifDefined(field.options)}"
-                          .value="${this.data?.config[name as keyof ConnectionData]}"
-                        ></time-shift-field-editor>
-                      `,
-                    )}
-                  `,
-              )}
+              <time-shift-field-editors
+                ?disabled="${this.disabled}"
+                .fields="${this.selectedAdapter!.config}"
+                .values="${this.data?.config}"
+              ></time-shift-field-editors>
             `,
           )}
         </time-shift-fieldset>

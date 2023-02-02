@@ -22,8 +22,8 @@ export class QueryEdit extends LitElement {
   @query('form')
   readonly form!: HTMLFormElement;
 
-  @queryAll('time-shift-fields-editor')
-  readonly fieldEditors!: HTMLElementTagNameMap['time-shift-fields-editor'][];
+  @queryAll('time-shift-field-editors')
+  readonly fieldEditors!: HTMLElementTagNameMap['time-shift-field-editors'][];
 
   @state()
   formValid = false;
@@ -258,16 +258,13 @@ export class QueryEdit extends LitElement {
                   legend="Filters"
                   description="Allows to narrow the results initially."
                 >
-                  <time-shift-fields-editor
-                    add-label="Add filter"
-                    remove-label="Remove filter"
-                    select-label="Select filter"
-                    .fields="${this.queryFields!}"
-                    .values="${ifDefined(this.data?.filters)}"
+                  <time-shift-field-editors
                     ?disabled="${this.loadingQueryAndNoteMappingFields}"
+                    .fields="${this.queryFields}"
+                    .values="${ifDefined(this.data?.filters)}"
                     @time-shift-fields-editor:reload-fields="${this
                       .handleReloadQueryAndNoteMappingFields}"
-                  ></time-shift-fields-editor>
+                  ></time-shift-field-editors>
                 </time-shift-fieldset>
               `,
             )}
@@ -278,13 +275,10 @@ export class QueryEdit extends LitElement {
                   legend="Note mapping"
                   description="Next to the notes provided by the source, a generated note can be created by the fields defined here."
                 >
-                  <time-shift-fields-editor
-                    add-label="Add mapping"
-                    remove-label="Remove mapping"
-                    select-label="Select mapping"
+                  <time-shift-field-editors
                     .fields="${this.noteMappingFields!}"
                     .values="${ifDefined(this.data?.mapping)}"
-                  ></time-shift-fields-editor>
+                  ></time-shift-field-editors>
                 </time-shift-fieldset>
               `,
             )}
@@ -312,12 +306,12 @@ export class QueryEdit extends LitElement {
                   legend="Strategy"
                   description="Choose a mapping strategy from the target adapter."
                 >
-                  <time-shift-fields-editor
+                  <time-shift-field-editors
                     .fields="${this.strategyFields!}"
                     .values="${ifDefined(this.data?.strategy)}"
                     ?disabled="${this.loadingStrategyFields}"
                     @time-shift-fields-editor:reload-fields="${this.handleReloadStrategyFields}"
-                  ></time-shift-fields-editor>
+                  ></time-shift-field-editors>
                 </time-shift-fieldset>
               `,
             )}

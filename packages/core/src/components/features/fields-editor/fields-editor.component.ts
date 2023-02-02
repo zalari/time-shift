@@ -20,11 +20,14 @@ export class FieldsEditor<F extends AdapterFields = any> extends LitElement {
   @state()
   selectedFieldName?: keyof F;
 
+  @property({ type: String, reflect: true })
+  name!: string;
+
   @property({ type: Boolean, reflect: true })
   disabled = false;
 
   @property({ type: Object })
-  fields!: F;
+  fields?: F;
 
   @property({ type: Object })
   values: Partial<AdapterValues<F>> = {};
@@ -44,15 +47,16 @@ export class FieldsEditor<F extends AdapterFields = any> extends LitElement {
   }
 
   getFieldOptions(): SelectOption<string>[] {
-    return Object.entries(this.fields)
+    return Object.entries(this.fields ?? {})
       .filter(([name, { multiple = false }]) => multiple || !(name in this.values))
       .map(([name, field]) => ({
-        value: name,
+        value: `${this.name}.${name}`,
         label: field.label,
       }));
   }
 
   addEmptyValue(name: keyof F) {
+    // TODO: nest group values
     if (name in this.values) {
       let values = this.values[name];
       if (Array.isArray(values)) {
@@ -86,10 +90,10 @@ export class FieldsEditor<F extends AdapterFields = any> extends LitElement {
     const name = event.target.parentElement!.dataset.name!;
     const index = Number(event.target.parentElement!.dataset.index!);
     const values = this.values[name];
-    const hasMultiple = this.fields[name].multiple && Array.isArray(values);
+    const hasMultiple = this.fields?.[name].multiple && Array.isArray(values);
     const question = hasMultiple
-      ? `Remove "${this.fields[name].label}" (${index + 1})?`
-      : `Remove "${this.fields[name].label}"?`;
+      ? `Remove "${this.fields?.[name].label}" (${index + 1})?`
+      : `Remove "${this.fields?.[name].label}"?`;
     if (!confirm(question)) return;
     const { [name]: value, ...remaining } = this.values;
     if (hasMultiple) {
@@ -131,21 +135,22 @@ export class FieldsEditor<F extends AdapterFields = any> extends LitElement {
           ([name, values]) =>
             html`
               ${map(
-                this.fields[name]?.multiple && Array.isArray(values) ? values : [values],
+                this.fields?.[name]?.multiple && Array.isArray(values) ? values : [values],
                 (value, index) => html`
                   <li data-name="${name}" data-index="${index}">
                     <time-shift-field-editor
-                      ?required="${ifDefined(this.fields[name]?.type !== 'boolean')}"
+                      ?required="${ifDefined(this.fields?.[name]?.type !== 'boolean')}"
                       ?disabled="${this.disabled}"
                       name="${name}"
-                      type="${ifDefined(this.fields[name]?.type)}"
-                      label="${ifDefined(this.fields[name]?.label)}"
-                      message="${ifDefined(this.fields[name]?.description)}"
-                      placeholder="${ifDefined(this.fields[name]?.placeholder)}"
-                      .options="${ifDefined(this.fields[name]?.options)}"
+                      type="${ifDefined(this.fields?.[name]?.type)}"
+                      label="${ifDefined(this.fields?.[name]?.label)}"
+                      message="${ifDefined(this.fields?.[name]?.description)}"
+                      placeholder="${ifDefined(this.fields?.[name]?.placeholder)}"
+                      .fields="${ifDefined(this.fields?.[name]?.fields)}"
+                      .options="${ifDefined(this.fields?.[name]?.options)}"
                       .value="${value}"
                       @input="${ifDefined(
-                        this.fields[name]?.reloadOnChange ? this.handleReloadFields : undefined,
+                        this.fields?.[name]?.reloadOnChange ? this.handleReloadFields : undefined,
                       )}"
                     ></time-shift-field-editor>
                     <time-shift-button @click="${this.handleFieldRemove}">

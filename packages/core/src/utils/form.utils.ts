@@ -39,6 +39,7 @@ export const collectDataFromElements = <T>(
   elements: Array<EditableInterface<T>>,
 ): Record<string, T> => {
   return elements.reduce((data, { name, value }) => {
+    // TODO: nest group values
     if (name === undefined) return data;
     if (name in data) {
       if (Array.isArray(data[name])) return { ...data, [name]: [...data[name], value] };
