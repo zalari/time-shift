@@ -262,7 +262,7 @@ export class QueryEdit extends LitElement {
                     ?disabled="${this.loadingQueryAndNoteMappingFields}"
                     .fields="${this.queryFields}"
                     .values="${ifDefined(this.data?.filters)}"
-                    @time-shift-fields-editor:reload-fields="${this
+                    @time-shift-group-editor:reload-fields="${this
                       .handleReloadQueryAndNoteMappingFields}"
                   ></time-shift-field-editors>
                 </time-shift-fieldset>
@@ -310,7 +310,7 @@ export class QueryEdit extends LitElement {
                     .fields="${this.strategyFields!}"
                     .values="${ifDefined(this.data?.strategy)}"
                     ?disabled="${this.loadingStrategyFields}"
-                    @time-shift-fields-editor:reload-fields="${this.handleReloadStrategyFields}"
+                    @time-shift-group-editor:reload-fields="${this.handleReloadStrategyFields}"
                   ></time-shift-field-editors>
                 </time-shift-fieldset>
               `,

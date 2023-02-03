@@ -3,14 +3,16 @@ import { LitElement, html, unsafeCSS } from 'lit';
 import { customElement, eventOptions, property, queryAll, state } from 'lit/decorators.js';
 import { ifDefined } from 'lit/directives/if-defined.js';
 import { map } from 'lit/directives/map.js';
+import { when } from 'lit/directives/when.js';
 
 import type { SelectOption } from '../../ui/input/select.component';
+import { getFieldByName } from '../../../utils/form.utils';
 import type { EventWithTarget } from '../../../utils/type.utils';
 
-import styles from './fields-editor.component.scss';
+import styles from './group-editor.component.scss';
 
-@customElement('time-shift-fields-editor')
-export class FieldsEditor<F extends AdapterFields = any> extends LitElement {
+@customElement('time-shift-group-editor')
+export class GroupEditor<F extends AdapterFields = any> extends LitElement {
   static override readonly styles = unsafeCSS(styles);
   static readonly formAssociated = true;
 
@@ -50,7 +52,7 @@ export class FieldsEditor<F extends AdapterFields = any> extends LitElement {
     return Object.entries(this.fields ?? {})
       .filter(([name, { multiple = false }]) => multiple || !(name in this.values))
       .map(([name, field]) => ({
-        value: `${this.name}.${name}`,
+        value: name,
         label: field.label,
       }));
   }
@@ -108,69 +110,77 @@ export class FieldsEditor<F extends AdapterFields = any> extends LitElement {
 
   @eventOptions({ passive: true })
   handleReloadFields() {
-    this.dispatchEvent(new CustomEvent('time-shift-fields-editor:reload-fields'));
+    this.dispatchEvent(new CustomEvent('time-shift-group-editor:reload-fields'));
+  }
+
+  renderField(name: string, index: number, value: any) {
+    const field = getFieldByName(name, this.fields!);
+    return html`
+      <li data-name="${name}" data-index="${index}">
+        <time-shift-field-editor
+          ?required="${ifDefined(field?.type !== 'boolean')}"
+          ?disabled="${this.disabled}"
+          name="${name}"
+          type="${ifDefined(field?.type)}"
+          label="${ifDefined(field?.label)}"
+          message="${ifDefined(field?.description)}"
+          placeholder="${ifDefined(field?.placeholder)}"
+          .fields="${ifDefined(field?.fields)}"
+          .options="${ifDefined(field?.options)}"
+          .value="${value}"
+          @input="${ifDefined(field?.reloadOnChange ? this.handleReloadFields : undefined)}"
+        ></time-shift-field-editor>
+        <time-shift-button @click="${this.handleFieldRemove}">
+          ${this.removeLabel}
+        </time-shift-button>
+      </li>
+    `;
   }
 
   render() {
     return html`
-      <header>
-        <time-shift-select
-          include-empty-option
-          placeholder="${this.selectLabel}"
-          .primitive="${String}"
-          .options="${this.getFieldOptions()}"
-          .value="${this.selectedFieldName}"
-          @input="${this.handleFieldSelect}"
-        ></time-shift-select>
-        <time-shift-button
-          ?disabled="${this.selectedFieldName === undefined}"
-          @click="${this.handleFieldAdd}"
-        >
-          ${this.addLabel}
-        </time-shift-button>
-      </header>
-      <ul>
-        ${map(
-          Object.entries(this.values),
-          ([name, values]) =>
-            html`
-              ${map(
-                this.fields?.[name]?.multiple && Array.isArray(values) ? values : [values],
-                (value, index) => html`
-                  <li data-name="${name}" data-index="${index}">
-                    <time-shift-field-editor
-                      ?required="${ifDefined(this.fields?.[name]?.type !== 'boolean')}"
-                      ?disabled="${this.disabled}"
-                      name="${name}"
-                      type="${ifDefined(this.fields?.[name]?.type)}"
-                      label="${ifDefined(this.fields?.[name]?.label)}"
-                      message="${ifDefined(this.fields?.[name]?.description)}"
-                      placeholder="${ifDefined(this.fields?.[name]?.placeholder)}"
-                      .fields="${ifDefined(this.fields?.[name]?.fields)}"
-                      .options="${ifDefined(this.fields?.[name]?.options)}"
-                      .value="${value}"
-                      @input="${ifDefined(
-                        this.fields?.[name]?.reloadOnChange ? this.handleReloadFields : undefined,
-                      )}"
-                    ></time-shift-field-editor>
-                    <time-shift-button @click="${this.handleFieldRemove}">
-                      ${this.removeLabel}
-                    </time-shift-button>
-                  </li>
+      ${when(
+        this.fields !== undefined,
+        () => html`
+          <header>
+            <time-shift-select
+              include-empty-option
+              placeholder="${this.selectLabel}"
+              .primitive="${String}"
+              .options="${this.getFieldOptions()}"
+              .value="${this.selectedFieldName}"
+              @input="${this.handleFieldSelect}"
+            ></time-shift-select>
+            <time-shift-button
+              ?disabled="${this.selectedFieldName === undefined}"
+              @click="${this.handleFieldAdd}"
+            >
+              ${this.addLabel}
+            </time-shift-button>
+          </header>
+          <ul>
+            ${map(
+              Object.entries(this.values),
+              ([name, values]) =>
+                html`
+                  ${map(
+                    this.fields?.[name]?.multiple && Array.isArray(values) ? values : [values],
+                    (value, index) => this.renderField(name, index, value),
+                  )}
                 `,
-              )}
-            `,
-        )}
-      </ul>
+            )}
+          </ul>
+        `,
+      )}
     `;
   }
 }
 
 declare global {
   interface HTMLElementEventMap {
-    'time-shift-fields-editor:reload-fields': CustomEvent;
+    'time-shift-group-editor:reload-fields': CustomEvent;
   }
   interface HTMLElementTagNameMap {
-    'time-shift-fields-editor': FieldsEditor;
+    'time-shift-group-editor': GroupEditor;
   }
 }

@@ -167,7 +167,8 @@ export class FieldEditor extends LitElement {
 
   renderGroup(): TemplateResult {
     return html`
-      <time-shift-fields-editor
+      <time-shift-group-editor
+        class="input"
         name="${this.name}"
         add-label="Add ${this.label}"
         remove-label="Remove ${this.label}"
@@ -175,7 +176,7 @@ export class FieldEditor extends LitElement {
         .fields="${ifDefined(this.fields)}"
         .values="${ifDefined((this.value as any)?.[this.name])}"
         ?disabled="${this.disabled}"
-      ></time-shift-fields-editor>
+      ></time-shift-group-editor>
     `;
   }
 
