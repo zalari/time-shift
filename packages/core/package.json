@@ -60,6 +60,6 @@
     "typescript-json-schema": "0.55.0"
   },
   "overrides": {
-    "esbuild": "0.16.15"
+    "esbuild": "0.17.3"
   }
 }
