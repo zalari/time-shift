@@ -23,7 +23,6 @@ export const collectDataForNames = <T, N extends string>(
   elements: Array<EditableInterface<T>>,
   names: N[],
 ): Record<N, T> => {
-  // console.log(elements, names)
   const dataElements = elements.filter(({ name }) => names.includes(name! as N));
   return collectDataFromElements(dataElements);
 };
@@ -31,7 +30,6 @@ export const collectDataForNames = <T, N extends string>(
 export const getFormElements = (form: HTMLFormElement): Array<EditableInterface<any>> => {
   const supportElementInternals = typeof ElementInternals !== 'undefined';
   const elements = supportElementInternals ? form.elements : collectFormElements(form);
-  // console.log(elements.length, Array.from(elements).length);
   return Array.from(elements).flatMap(element => unwrapFormElements(element));
 };
 
@@ -39,7 +37,6 @@ export const collectDataFromElements = <T>(
   elements: Array<EditableInterface<T>>,
 ): Record<string, T> => {
   return elements.reduce((data, { name, value }) => {
-    // TODO: nest group values
     if (name === undefined) return data;
     if (name in data) {
       if (Array.isArray(data[name])) return { ...data, [name]: [...data[name], value] };

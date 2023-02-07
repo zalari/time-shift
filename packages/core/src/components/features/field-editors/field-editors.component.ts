@@ -48,7 +48,9 @@ export class FieldEditors extends LitElement {
                   placeholder="${ifDefined(field.placeholder)}"
                   .fields="${ifDefined(field.fields)}"
                   .options="${ifDefined(field.options)}"
-                  .value="${ifDefined(this.values?.[name])}"
+                  .value="${typeof this.values?.[name] === 'object'
+                    ? { ...((this.values?.[name] as {}) ?? {}) }
+                    : this.values?.[name]}"
                 ></time-shift-field-editor>
               `,
             )}

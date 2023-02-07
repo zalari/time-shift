@@ -19,34 +19,34 @@ export class FieldEditor extends LitElement {
   @query('.input')
   readonly element!: EditableInterface<any>;
 
-  @property({ reflect: true, type: String })
+  @property({ type: String, reflect: true })
   type!: AdapterFieldType;
 
-  @property({ reflect: true, type: String })
+  @property({ type: String, reflect: true })
   label!: string;
 
-  @property({ reflect: true, type: String })
+  @property({ type: String, reflect: true })
   name!: string;
 
-  @property({ reflect: true, type: String })
+  @property({ type: String, reflect: true })
   message?: string;
 
-  @property({ reflect: true, type: String })
+  @property({ type: String, reflect: true })
   placeholder?: string;
 
-  @property({ reflect: true, type: Boolean })
+  @property({ type: Boolean, reflect: true })
   disabled = false;
 
-  @property({ reflect: true, type: Boolean })
+  @property({ type: Boolean, reflect: true })
   required = false;
 
-  @property({ reflect: true, type: Array })
+  @property({ type: Array, reflect: true })
   options?: SelectOption<AdapterFieldTypeMap[typeof this.type]>[];
 
-  @property({ reflect: true, type: Object })
+  @property({ type: Object })
   fields?: AdapterFields;
 
-  @property({ reflect: true })
+  @property()
   value?: AdapterFieldTypeMap[typeof this.type];
 
   renderBoolean(): TemplateResult {
@@ -168,14 +168,14 @@ export class FieldEditor extends LitElement {
   renderGroup(): TemplateResult {
     return html`
       <time-shift-group-editor
+        ?disabled="${this.disabled}"
         class="input"
         name="${this.name}"
         add-label="Add ${this.label}"
         remove-label="Remove ${this.label}"
         select-label="Select ${this.label}"
-        .fields="${ifDefined(this.fields)}"
-        .values="${ifDefined((this.value as any)?.[this.name])}"
-        ?disabled="${this.disabled}"
+        .fields="${this.fields}"
+        .value="${this.value}"
       ></time-shift-group-editor>
     `;
   }

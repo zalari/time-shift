@@ -204,9 +204,7 @@ export class QueryEdit extends LitElement {
 
   override firstUpdated() {
     // wait for form elements to be rendered as well
-    requestAnimationFrame(() => {
-      this.formValid = checkFormValidity(this.form);
-    });
+    setTimeout(() => (this.formValid = checkFormValidity(this.form)), 300);
   }
 
   override disconnectedCallback() {
@@ -261,7 +259,7 @@ export class QueryEdit extends LitElement {
                   <time-shift-field-editors
                     ?disabled="${this.loadingQueryAndNoteMappingFields}"
                     .fields="${this.queryFields}"
-                    .values="${ifDefined(this.data?.filters)}"
+                    .values="${this.data?.filters}"
                     @time-shift-group-editor:reload-fields="${this
                       .handleReloadQueryAndNoteMappingFields}"
                   ></time-shift-field-editors>
@@ -276,8 +274,8 @@ export class QueryEdit extends LitElement {
                   description="Next to the notes provided by the source, a generated note can be created by the fields defined here."
                 >
                   <time-shift-field-editors
-                    .fields="${this.noteMappingFields!}"
-                    .values="${ifDefined(this.data?.mapping)}"
+                    .fields="${this.noteMappingFields}"
+                    .values="${this.data?.mapping}"
                   ></time-shift-field-editors>
                 </time-shift-fieldset>
               `,
@@ -307,9 +305,9 @@ export class QueryEdit extends LitElement {
                   description="Choose a mapping strategy from the target adapter."
                 >
                   <time-shift-field-editors
-                    .fields="${this.strategyFields!}"
-                    .values="${ifDefined(this.data?.strategy)}"
                     ?disabled="${this.loadingStrategyFields}"
+                    .fields="${this.strategyFields}"
+                    .values="${this.data?.strategy}"
                     @time-shift-group-editor:reload-fields="${this.handleReloadStrategyFields}"
                   ></time-shift-field-editors>
                 </time-shift-fieldset>
