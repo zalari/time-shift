@@ -60,7 +60,7 @@ export const adapter: AdapterFactory<
             minutes: entry.minutes,
             active: entry.tracking ? true : false,
             note: entry.note,
-            generated: noteMappingFields.field
+            generated: noteMappingFields.mapping?.field
               ?.reduce((acc, field) => [...acc, entry[field as keyof typeof entry]], [] as string[])
               .join('\n'),
             payload: entry,
