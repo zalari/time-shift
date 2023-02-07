@@ -66,10 +66,32 @@ export class GroupEditor<F extends AdapterFields = any> extends LitElement {
       let values = this.value[name];
       if (Array.isArray(values)) {
         this.value = { ...this.value, [name]: [...values, value] };
-      } else {
+      } else if (this.fields?.[name].multiple) {
         this.value = { ...this.value, [name]: [values, value] };
+      } else {
+        this.value = { ...this.value, [name]: value };
       }
     } else this.value = { ...this.value, [name]: value } as Partial<AdapterValues<F>>;
+  }
+
+  setValue(name: string, index: number, value?: AdapterValues<F>[typeof name]) {
+    const field = Object.entries(this.fields!).find(([field]) => field === name)?.[1];
+
+    // prepare the value object if missing
+    if (this.value === undefined) this.value = {};
+
+    // update the value
+    if (field?.multiple) {
+      // convert to array if a value is already present
+      if (!Array.isArray(this.value[name])) {
+        (this.value[name] as any) = [this.value[name]];
+      }
+      // set the updated value at the given index
+      (this.value as any)[name][index] = value;
+    } else {
+      // set the updated value directly if single or not multiple
+      (this.value as any)[name] = value;
+    }
   }
 
   @eventOptions({ passive: true })
@@ -118,14 +140,14 @@ export class GroupEditor<F extends AdapterFields = any> extends LitElement {
     event.stopPropagation();
 
     // grab references
-    const { name, element } = event.target;
+    const { name, dataset, element } = event.target;
+    const index = Number(dataset.index);
     const field = Object.entries(this.fields!).find(([field]) => field === name)?.[1];
 
     // update the value
-    if (this.value === undefined) this.value = {};
-    this.value[name as keyof typeof this.value] = element.value;
+    this.setValue(name, index, element.value);
 
-    // trigger input event
+    // trigger input event to proceed with actual value
     this.emitInputEvent();
 
     // reload fields if reloadOnChange is set
@@ -146,6 +168,7 @@ export class GroupEditor<F extends AdapterFields = any> extends LitElement {
           label="${ifDefined(field?.label)}"
           message="${ifDefined(field?.description)}"
           placeholder="${ifDefined(field?.placeholder)}"
+          data-index="${index}"
           .fields="${ifDefined(field?.fields)}"
           .options="${ifDefined(field?.options)}"
           .value="${value}"
