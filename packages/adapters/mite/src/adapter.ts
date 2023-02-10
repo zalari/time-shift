@@ -48,7 +48,7 @@ export const adapter: AdapterFactory<
 
     async getTimeEntries(queryFields = {}, noteMappingFields = {}) {
       // prepare options from fields
-      const options = Object.entries(queryFields).reduce(
+      const options = Object.entries(queryFields.filter ?? {}).reduce(
         (a, [key, value]) => ({ ...a, [key]: (a as any)[key] ? [(a as any)[key], value] : value }),
         {} satisfies Mite.TimeEntryOptions,
       );
