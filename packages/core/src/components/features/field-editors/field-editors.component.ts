@@ -31,31 +31,33 @@ export class FieldEditors extends LitElement {
 
   render() {
     return html`
-      ${map(
-        Object.entries(this.fields),
-        ([name, field]) =>
-          html`
-            ${when(
-              this.checkWhenField(field.when),
-              () => html`
-                <time-shift-field-editor
-                  required
-                  ?disabled="${this.disabled}"
-                  name="${name}"
-                  type="${field.type}"
-                  label="${field.label}"
-                  message="${ifDefined(field.description)}"
-                  placeholder="${ifDefined(field.placeholder)}"
-                  .fields="${ifDefined(field.fields)}"
-                  .options="${ifDefined(field.options)}"
-                  .value="${typeof this.values?.[name] === 'object'
-                    ? { ...((this.values?.[name] as {}) ?? {}) }
-                    : this.values?.[name]}"
-                ></time-shift-field-editor>
-              `,
-            )}
-          `,
-      )}
+      <time-shift-fieldset>
+        ${map(
+          Object.entries(this.fields),
+          ([name, field]) =>
+            html`
+              ${when(
+                this.checkWhenField(field.when),
+                () => html`
+                  <time-shift-field-editor
+                    required
+                    ?disabled="${this.disabled}"
+                    name="${name}"
+                    type="${field.type}"
+                    label="${field.label}"
+                    message="${ifDefined(field.description)}"
+                    placeholder="${ifDefined(field.placeholder)}"
+                    .fields="${ifDefined(field.fields)}"
+                    .options="${ifDefined(field.options)}"
+                    .value="${typeof this.values?.[name] === 'object'
+                      ? { ...((this.values?.[name] as {}) ?? {}) }
+                      : this.values?.[name]}"
+                  ></time-shift-field-editor>
+                `,
+              )}
+            `,
+        )}
+      </time-shift-fieldset>
     `;
   }
 }
