@@ -3,10 +3,10 @@ import { customElement, eventOptions, property, state } from 'lit/decorators.js'
 import { map } from 'lit/directives/map.js';
 import { when } from 'lit/directives/when.js';
 
-import { Database } from '../../../utils/database.utils';
-import { type Connection, getAllConnections } from '../../../data/connection.data';
+import { type Connection, getAllConnections } from '@/data/connection.data';
 
 import styles from './connection-list.component.scss';
+import { addEventListener, removeEventListener } from '@/utils/event.utils';
 
 @customElement('time-shift-connection-list')
 export class ConnectionList extends LitElement {
@@ -44,12 +44,12 @@ export class ConnectionList extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback();
-    Database.Event.addListener('connections:changed', this.getConnections.bind(this));
+    addEventListener('connections:changed', this.getConnections.bind(this));
     this.getConnections();
   }
 
   override disconnectedCallback() {
-    Database.Event.removeListener('connections:changed', this.getConnections.bind(this));
+    removeEventListener('connections:changed', this.getConnections.bind(this));
     super.disconnectedCallback();
   }
 

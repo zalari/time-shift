@@ -1,7 +1,18 @@
 import type { AdapterFields, AdapterValues } from '@time-shift/common';
-
-import { Database } from '../utils/database.utils';
 import type { Connection } from './connection.data';
+import { getQueryRepository } from '@/utils/database.utils';
+import { dispatchEvent } from '@/utils/event.utils';
+
+declare global {
+  namespace Eventing {
+    interface DomainEvents {
+      'queries:changed': () => void;
+      'query:created': () => void;
+      'query:updated': () => void;
+      'query:deleted': () => void;
+    }
+  }
+}
 
 declare global {
   namespace TimeShiftDB {
@@ -11,12 +22,6 @@ declare global {
         key: string;
         value: Query;
       };
-    }
-    interface EventMap {
-      'queries:changed': () => void;
-      'query:created': () => void;
-      'query:updated': () => void;
-      'query:deleted': () => void;
     }
   }
 }
@@ -32,37 +37,33 @@ export type Query = {
 };
 
 export const getAllQuerys = async (): Promise<Query[]> => {
-  const db = await Database.connect();
-  return db.getAll('queries') as Promise<Query[]>;
+  const repository = getQueryRepository();
+  return repository.getQueries();
 };
 
 export const getQuery = async (id: number): Promise<Query | undefined> => {
-  const db = await Database.connect();
-  return db.get('queries', id as any) as Promise<Query | undefined>;
+  const repository = getQueryRepository();
+  return repository.getQuery(id);
 };
 
 export const createQuery = async (value: Omit<Query, 'id'>): Promise<Query['id']> => {
-  const db = await Database.connect();
-  const id = await db.add('queries', value as Query);
-  db.close();
+  const repository = getQueryRepository();
+  const query = repository.createQuery(value);
+  dispatchEvent('queries:changed', 'query:created');
 
-  Database.Event.dispatch('queries:changed', 'query:created');
-  return id as unknown as Query['id'];
+  return query;
 };
 
 export const updateQuery = async (value: Query): Promise<Query['id']> => {
-  const db = await Database.connect();
-  const id = await db.put('queries', value);
-  db.close();
+  const repository = getQueryRepository();
+  const query = repository.updateQuery(value);
+  dispatchEvent('queries:changed', 'query:updated');
 
-  Database.Event.dispatch('queries:changed', 'query:updated');
-  return id as unknown as Query['id'];
+  return query;
 };
 
 export const deleteQuery = async (id: number): Promise<void> => {
-  const db = await Database.connect();
-  await db.delete('queries', id as any);
-  db.close();
-
-  Database.Event.dispatch('queries:changed', 'query:deleted');
+  const repository = getQueryRepository();
+  await repository.deleteQuery(id);
+  dispatchEvent('queries:changed', 'query:deleted');
 };

@@ -1,5 +1,17 @@
 import type { AdapterFields, AdapterValues } from '@time-shift/common';
-import { Database } from '../utils/database.utils';
+import { getConnectionRepository } from '@/utils/database.utils';
+import { dispatchEvent } from '@/utils/event.utils';
+
+declare global {
+  namespace Eventing {
+    interface DomainEvents {
+      'connections:changed': () => void;
+      'connection:created': () => void;
+      'connection:updated': () => void;
+      'connection:deleted': () => void;
+    }
+  }
+}
 
 declare global {
   namespace TimeShiftDB {
@@ -9,12 +21,6 @@ declare global {
         key: string;
         value: Connection;
       };
-    }
-    interface EventMap {
-      'connections:changed': () => void;
-      'connection:created': () => void;
-      'connection:updated': () => void;
-      'connection:deleted': () => void;
     }
   }
 }
@@ -27,39 +33,36 @@ export type Connection = {
 };
 
 export const getAllConnections = async (): Promise<Connection[]> => {
-  const db = await Database.connect();
-  return db.getAll('connections') as Promise<Connection[]>;
+  const repository = getConnectionRepository();
+  return repository.getConnections();
 };
 
 export const getConnection = async (id: number): Promise<Connection | undefined> => {
-  const db = await Database.connect();
-  return db.get('connections', id as any) as Promise<Connection | undefined>;
+  const repository = getConnectionRepository();
+  return repository.getConnection(id);
 };
 
 export const createConnection = async (
   value: Omit<Connection, 'id'>,
 ): Promise<Connection['id']> => {
-  const db = await Database.connect();
-  const id = await db.add('connections', value as Connection);
-  db.close();
+  const repository = getConnectionRepository();
+  const connection = repository.createConnection(value);
+  dispatchEvent('connections:changed', 'connection:created');
 
-  Database.Event.dispatch('connections:changed', 'connection:created');
-  return id as unknown as Connection['id'];
+  return connection;
 };
 
 export const updateConnection = async (value: Connection): Promise<Connection['id']> => {
-  const db = await Database.connect();
-  const id = await db.put('connections', value);
-  db.close();
+  const repository = getConnectionRepository();
+  const id = repository.updateConnection(value);
+  dispatchEvent('connections:changed', 'connection:updated');
 
-  Database.Event.dispatch('connections:changed', 'connection:updated');
-  return id as unknown as Connection['id'];
+  return id;
 };
 
 export const deleteConnection = async (id: number): Promise<void> => {
-  const db = await Database.connect();
-  await db.delete('connections', id as any);
-  db.close();
+  const repository = getConnectionRepository();
+  await repository.deleteConnection(id);
 
-  Database.Event.dispatch('connections:changed', 'connection:deleted');
+  dispatchEvent('connections:changed', 'connection:deleted');
 };

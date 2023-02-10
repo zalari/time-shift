@@ -1,17 +1,43 @@
-import { type DBSchema, type IDBPDatabase, type OpenDBCallbacks, openDB } from 'idb';
+import { type DBSchema, type IDBPDatabase, openDB } from 'idb';
 
 import { getConfig } from './config.utils';
+import { ConnectionRepository, QueryRepository, Repository } from '@/data/repository.interface';
+import { RepositoryIndexDb } from '@/data/repository-index-db.class';
+
+/**
+ * Ensure a valid initial state for the database
+ */
+export const setupDb = (): void => {
+  // TODO: Switch based on configuration
+  IndexDbClient.addTable('connections');
+  IndexDbClient.addTable('queries');
+};
+
+/**
+ * Factory method to retrieve a repository implementation based on the current configuration
+ */
+export const getRepository = (): Repository => {
+  // TODO: Switch based on configuration
+  return new RepositoryIndexDb();
+};
+
+export const getConnectionRepository = (): ConnectionRepository => {
+  return getRepository();
+};
+
+export const getQueryRepository = (): QueryRepository => {
+  return getRepository();
+};
 
 // global declaration merging allows defining global
 // event types in their respective modules
 declare global {
   namespace TimeShiftDB {
     interface Schema extends DBSchema {}
-    interface EventMap {}
   }
 }
 
-export namespace Database {
+export namespace IndexDbClient {
   const slices = new Set<keyof TimeShiftDB.Schema>();
 
   export const addTable = (name: keyof TimeShiftDB.Schema) => {
@@ -33,49 +59,4 @@ export namespace Database {
       },
     });
   };
-
-  // provide some event handling
-  export namespace Event {
-    const listeners = new Map<
-      keyof TimeShiftDB.EventMap,
-      Array<TimeShiftDB.EventMap[keyof TimeShiftDB.EventMap]>
-    >();
-
-    /**
-     * Add a listener for a specific event
-     * @param event
-     * @param listener
-     */
-    export const addListener = <E extends keyof TimeShiftDB.EventMap>(
-      event: E,
-      listener: TimeShiftDB.EventMap[E],
-    ) => {
-      listeners.set(event, [...(listeners.get(event) || []), listener]);
-    };
-
-    /**
-     * Remove a listener for a specific event
-     * @param event
-     * @param listener
-     */
-    export const removeListener = <E extends keyof TimeShiftDB.EventMap>(
-      event: E,
-      listener?: TimeShiftDB.EventMap[E],
-    ) => {
-      if (listener && listeners.has(event)) {
-        const without = listeners.get(event)!.filter(l => l !== listener);
-        listeners.set(event, without);
-      } else {
-        listeners.delete(event);
-      }
-    };
-
-    /**
-     * Dispatches an event of a given type
-     * @param events
-     */
-    export const dispatch = (...events: Array<keyof TimeShiftDB.EventMap>) => {
-      events.forEach(event => listeners.get(event)?.forEach((listener: () => void) => listener()));
-    };
-  }
 }

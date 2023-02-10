@@ -3,12 +3,11 @@ import { customElement, eventOptions, property, state } from 'lit/decorators.js'
 import { map } from 'lit/directives/map.js';
 import { when } from 'lit/directives/when.js';
 
-import { Database } from '../../../utils/database.utils';
-
-import { Connection, getConnection } from '../../../data/connection.data';
-import { type Query, getAllQuerys } from '../../../data/query.data';
+import { Connection, getConnection } from '@/data/connection.data';
+import { type Query, getAllQuerys } from '@/data/query.data';
 
 import styles from './query-list.component.scss';
+import { addEventListener, removeEventListener } from '@/utils/event.utils';
 
 type NormalizedQuery = Omit<Query, 'source'> & {
   source: Connection | undefined;
@@ -58,14 +57,14 @@ export class QueryList extends LitElement {
 
   override connectedCallback() {
     super.connectedCallback();
-    Database.Event.addListener('connection:updated', this.getQuerys.bind(this));
-    Database.Event.addListener('queries:changed', this.getQuerys.bind(this));
+    addEventListener('connection:updated', this.getQuerys.bind(this));
+    addEventListener('queries:changed', this.getQuerys.bind(this));
     this.getQuerys();
   }
 
   override disconnectedCallback() {
-    Database.Event.removeListener('connection:updated', this.getQuerys.bind(this));
-    Database.Event.removeListener('queries:changed', this.getQuerys.bind(this));
+    removeEventListener('connection:updated', this.getQuerys.bind(this));
+    removeEventListener('queries:changed', this.getQuerys.bind(this));
     super.disconnectedCallback();
   }
 
