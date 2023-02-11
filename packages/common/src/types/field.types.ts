@@ -74,11 +74,8 @@ export type AdapterField = AdapterFieldType extends infer K
         /**
          * Show this field conditionally depending on other fields (and their current values).
          */
-        when?: Record<
-          string,
-          | AdapterFieldTypeMap[keyof AdapterFieldTypeMap]
-          | Array<AdapterFieldTypeMap[keyof AdapterFieldTypeMap]>
-        >;
+        // @TODO: type the condition properly
+        when?: Record<string, any>;
       } & (K extends 'group'
         ? // groups will have different properties
           {

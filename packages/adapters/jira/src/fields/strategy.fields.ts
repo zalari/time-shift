@@ -5,7 +5,6 @@ export const strategyFields = {
     label: 'Strategy',
     description: 'A strategy to map time entries.',
     type: 'string',
-    multiple: false,
     options: [
       { label: 'None', value: 'none' },
       { label: 'Parse notes', value: 'notes' },
@@ -15,9 +14,24 @@ export const strategyFields = {
     label: 'Prefix',
     description: 'A key prefix to search for issue keys in notes.',
     type: 'string',
-    multiple: false,
     when: {
       strategy: 'notes',
+    },
+  },
+  useFallbackIssue: {
+    label: 'Use fallback issue',
+    description: 'Use an issue key for time entries that can not be mapped.',
+    type: 'boolean',
+    when: {
+      strategy: 'notes',
+    },
+  },
+  fallbackIssue: {
+    label: 'Fallback issue',
+    description: 'The issue key to use for time entries that can not be mapped.',
+    type: 'string',
+    when: {
+      useFallbackIssue: true,
     },
   },
 } satisfies AdapterFields;
