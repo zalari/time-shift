@@ -9,6 +9,8 @@ import { type JiraAdapterQueryFields, queryFields } from './fields/query.fields'
 import { type JiraAdapterNoteMappingFields, noteMappingFields } from './fields/note-mapping.fields';
 import { type JiraAdapterStrategyFields, strategyFields } from './fields/strategy.fields';
 
+import { findWorklogIssuesByPrefixes, getUnmappedResult } from './utils/preflight.utils';
+
 export type Worklog = Worklog2 | Worklog3;
 
 export const createClient = (config: AdapterValues<JiraAdapterConfigFields>): Version3Client => {
@@ -97,20 +99,39 @@ export const adapter: AdapterFactory<
     },
 
     // @TODO: implement preflight
-    async getPreflight(sources) {
-      const actions = ['create', 'update', 'delete', 'none'] as const;
-      return {
-        type: '1:n',
-        result: sources.map(source => ({
-          source,
-          targets: [
-            {
-              action: actions[Math.floor(Math.random() * actions.length)],
-              entry: source as TimeEntry<Worklog>,
-            },
-          ],
-        })),
-      };
+    async getPreflight(sources, fields) {
+      switch (fields?.strategy) {
+        case 'notes':
+          // no prefix, no mapping
+          if ([undefined, ''].includes(fields?.notesPrefix)) {
+            return getUnmappedResult(sources);
+          }
+
+          // group the entries by found issues
+          const entries = findWorklogIssuesByPrefixes(sources, [fields!.notesPrefix!]);
+          console.log(entries);
+
+          // check for matching jira worklog items
+          // create a result set and deliver it
+
+          const actions = ['create', 'update', 'delete', 'none'] as const;
+          return {
+            type: '1:n',
+            result: sources.map(source => ({
+              source,
+              targets: [
+                {
+                  action: actions[Math.floor(Math.random() * actions.length)],
+                  entry: source as TimeEntry<Worklog>,
+                },
+              ],
+            })),
+          };
+
+        case 'none':
+        default:
+          return getUnmappedResult(sources);
+      }
     },
   };
 };
