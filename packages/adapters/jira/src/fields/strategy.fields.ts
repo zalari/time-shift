@@ -22,6 +22,7 @@ export const strategyFields = {
     label: 'Use fallback issue',
     description: 'Use an issue key for time entries that can not be mapped.',
     type: 'boolean',
+    required: false,
     when: {
       strategy: 'notes',
     },
