@@ -61,6 +61,18 @@ export const adapter: AdapterFactory<
 > = async config => {
   const client = createClient(config);
 
+  const getWorklogsForIssues = async (...keys: string[]): Promise<TimeEntry<Worklog>[]> => {
+    return keys.reduce(async (all, issueIdOrKey) => {
+      try {
+        const { worklogs } = await client.issueWorklogs.getIssueWorklog({ issueIdOrKey });
+        const timeEntries = worklogs.map(worklog => mapWorklogToTimeEntry(issueIdOrKey, worklog));
+        return [...(await all), ...timeEntries];
+      } catch (error) {
+        return all;
+      }
+    }, Promise.resolve([] as TimeEntry<Worklog>[]));
+  };
+
   return {
     async checkConnection() {
       try {
@@ -75,6 +87,10 @@ export const adapter: AdapterFactory<
       return { queryFields, noteMappingFields };
     },
 
+    /**
+     * Gathering time entries requires to resolve all issues first, as jira groups worklog items
+     * to issues. Thus, we'll have to query all issues first, then get all worklogs for all issues.
+     */
     async getTimeEntries(options) {
       // build jql query
       const jql = Object.entries(options?.filter ?? {}).reduce(
@@ -83,22 +99,28 @@ export const adapter: AdapterFactory<
       );
 
       // get all matching issues
-      const result = await client.issueSearch.searchForIssuesUsingJqlPost({ jql, fields: [] });
-      const issues = result.issues ?? [];
-
-      // get all worklogs for all issues
-      return issues.reduce(async (all, { key: issueIdOrKey }) => {
-        const { worklogs } = await client.issueWorklogs.getIssueWorklog({ issueIdOrKey });
-        const timeEntries = worklogs.map(worklog => mapWorklogToTimeEntry(issueIdOrKey, worklog));
-        return [...(await all), ...timeEntries];
-      }, Promise.resolve([] as TimeEntry<Worklog>[]));
+      try {
+        const result = await client.issueSearch.searchForIssuesUsingJqlPost({ jql, fields: [] });
+        const issues = result.issues ?? [];
+        // get all worklogs for all issues
+        return getWorklogsForIssues(...issues.map(({ key }) => key));
+      } catch (error) {
+        return [];
+      }
     },
 
     async getStrategyFields() {
       return strategyFields;
     },
 
-    // @TODO: implement preflight
+    /**
+     * Jira worklog items may be grouped to issues, but the worklog items map 1:1 to time entries.
+     * Thus, we'll have to map each time entry individually, but return a grouped result.
+     *
+     * @todo search for existing worklog items by strategy
+     * @todo create a result set and match the entries to actions to be made
+     * @todo return the results grouped by issue keys
+     */
     async getPreflight(sources, fields) {
       switch (fields?.strategy) {
         case 'notes':
@@ -109,10 +131,13 @@ export const adapter: AdapterFactory<
 
           // group the entries by found issues
           const entries = findWorklogIssuesByPrefixes(sources, [fields!.notesPrefix!]);
-          console.log(entries);
 
           // check for matching jira worklog items
+          const keys = Array.from(entries.keys()).filter(key => key !== undefined) as string[];
+          const existing = await getWorklogsForIssues(...keys);
+
           // create a result set and deliver it
+          console.log(existing);
 
           const actions = ['create', 'update', 'delete', 'none'] as const;
           return {
