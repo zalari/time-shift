@@ -72,6 +72,11 @@ export type AdapterField = AdapterFieldType extends infer K
         description?: string;
 
         /**
+         * Can be used to either mark a field as mandatory, or explicitly as optional.
+         */
+        required?: boolean;
+
+        /**
          * Show this field conditionally depending on other fields (and their current values).
          */
         // @TODO: type the condition properly

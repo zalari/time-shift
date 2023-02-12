@@ -40,8 +40,8 @@ export class FieldEditors extends LitElement {
                 this.checkWhenField(field.when),
                 () => html`
                   <time-shift-field-editor
-                    required
                     ?disabled="${this.disabled}"
+                    ?required="${field.required ?? true}"
                     name="${name}"
                     type="${field.type}"
                     label="${field.label}"

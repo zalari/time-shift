@@ -161,8 +161,8 @@ export class GroupEditor<F extends AdapterFields = any> extends LitElement {
     return html`
       <li data-name="${name}" data-index="${index}">
         <time-shift-field-editor
-          ?required="${ifDefined(field?.type !== 'boolean')}"
           ?disabled="${this.disabled}"
+          ?required="${field?.required ?? field?.type !== 'boolean'}"
           name="${name}"
           type="${ifDefined(field?.type)}"
           label="${ifDefined(field?.label)}"
