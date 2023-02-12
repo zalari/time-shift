@@ -55,9 +55,14 @@ export class GroupEditor<F extends AdapterFields = any> extends LitElement {
     this.dispatchEvent(new CustomEvent('time-shift-group-editor:reload-fields'));
   }
 
+  isOptionVisible(name: string, multiple = false): boolean {
+    if (multiple) return true;
+    return this.value?.[name as keyof F] === undefined;
+  }
+
   getFieldOptions(): SelectOption<string>[] {
     return Object.entries(this.fields ?? {})
-      .filter(([name, { multiple = 0 }]) => multiple || this.value?.[name as keyof F] !== undefined)
+      .filter(([name, { multiple = false }]) => this.isOptionVisible(name, multiple))
       .map(([name, field]) => ({ value: name, label: field.label }));
   }
 
