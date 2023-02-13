@@ -18,6 +18,15 @@ export const strategyFields = {
       strategy: 'notes',
     },
   },
+  useGeneratedNote: {
+    label: 'Use generated note',
+    description: 'Use the generated note to lookup issue keys instead of the original notes.',
+    type: 'boolean',
+    required: false,
+    when: {
+      strategy: 'notes',
+    },
+  },
   useFallbackIssue: {
     label: 'Use fallback issue',
     description: 'Use an issue key for time entries that can not be mapped.',

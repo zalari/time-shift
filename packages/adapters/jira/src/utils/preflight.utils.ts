@@ -21,11 +21,12 @@ export const addTimeEntry = (
 export const findWorklogIssuesByPrefixes = (
   timeEntries: TimeEntry[],
   prefixes: string[],
+  field: 'note' | 'generated' = 'note',
 ): MappedTimeEntries => {
   const expression = new RegExp(`(${prefixes.join('|')})\\d+`, 'gi');
   return timeEntries.reduce((map, timeEntry) => {
     // find any keys matching
-    const matches = timeEntry.note?.matchAll(expression) ?? [];
+    const matches = timeEntry[field]?.matchAll(expression) ?? [];
     const keys = new Set(Array.from(matches).map(([key]) => key));
 
     // non-matching
