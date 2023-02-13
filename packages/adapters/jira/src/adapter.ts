@@ -42,12 +42,22 @@ export const stringifyComments = (comments?: (Worklog2 | Worklog3)['comment']): 
   );
 };
 
-export const mapWorklogToTimeEntry = (issueKey: string, worklog: Worklog): TimeEntry<Worklog> => {
+export const mapWorklogToTimeEntry = (
+  issueKey: string,
+  worklog: Worklog,
+  noteMappingFields?: Partial<AdapterValues<JiraAdapterNoteMappingFields>>,
+): TimeEntry<Worklog> => {
   const { timeSpentSeconds = 0, started = 0, comment } = worklog;
+  const note = stringifyComments(comment);
+  const entry = { ...worklog, issueKey, note };
+
   return {
     at: new Date(started),
     minutes: timeSpentSeconds / 60,
-    note: `${issueKey}\n${stringifyComments(comment)}`,
+    note,
+    generated: noteMappingFields?.mapping?.field
+      ?.reduce((acc, field) => [...acc, entry[field as keyof Worklog] as string], [] as string[])
+      .join('\n'),
     payload: worklog,
   };
 };
@@ -61,11 +71,16 @@ export const adapter: AdapterFactory<
 > = async config => {
   const client = createClient(config);
 
-  const getWorklogsForIssues = async (...keys: string[]): Promise<TimeEntry<Worklog>[]> => {
+  const getWorklogsForIssues = async (
+    keys: string[],
+    noteMappingFields?: Partial<AdapterValues<JiraAdapterNoteMappingFields>>,
+  ): Promise<TimeEntry<Worklog>[]> => {
     return keys.reduce(async (all, issueIdOrKey) => {
       try {
         const { worklogs } = await client.issueWorklogs.getIssueWorklog({ issueIdOrKey });
-        const timeEntries = worklogs.map(worklog => mapWorklogToTimeEntry(issueIdOrKey, worklog));
+        const timeEntries = worklogs.map(worklog =>
+          mapWorklogToTimeEntry(issueIdOrKey, worklog, noteMappingFields),
+        );
         return [...(await all), ...timeEntries];
       } catch (error) {
         return all;
@@ -91,9 +106,9 @@ export const adapter: AdapterFactory<
      * Gathering time entries requires to resolve all issues first, as jira groups worklog items
      * to issues. Thus, we'll have to query all issues first, then get all worklogs for all issues.
      */
-    async getTimeEntries(options) {
+    async getTimeEntries(queryFields = {}, noteMappingFields = {}) {
       // build jql query
-      const jql = Object.entries(options?.filter ?? {}).reduce(
+      const jql = Object.entries(queryFields?.filter ?? {}).reduce(
         (all, [field, value]) => `${all} AND ${field}=${value}`,
         'timespent>0',
       );
@@ -103,7 +118,10 @@ export const adapter: AdapterFactory<
         const result = await client.issueSearch.searchForIssuesUsingJqlPost({ jql, fields: [] });
         const issues = result.issues ?? [];
         // get all worklogs for all issues
-        return getWorklogsForIssues(...issues.map(({ key }) => key));
+        return getWorklogsForIssues(
+          issues.map(({ key }) => key),
+          noteMappingFields,
+        );
       } catch (error) {
         return [];
       }
@@ -134,7 +152,7 @@ export const adapter: AdapterFactory<
 
           // check for matching jira worklog items
           const keys = Array.from(entries.keys()).filter(key => key !== undefined) as string[];
-          const existing = await getWorklogsForIssues(...keys);
+          const existing = await getWorklogsForIssues(keys);
 
           // create a result set and deliver it
           console.log(existing);
