@@ -325,6 +325,7 @@ export class DataTable extends LitElement {
               this.data!.getVisibleRows(),
               row => html`
                 <time-shift-table-row
+                  data-id="${row.id}"
                   data-index="${row.index}"
                   ?draggable="${this.draggableRows}"
                   ?droppable-after="${this.draggableRows}"
@@ -348,7 +349,7 @@ export class DataTable extends LitElement {
                         @click="${(event: Event) => this.handleCellClick(event, cell)}"
                       >
                         <slot
-                          name="row-${row.index}-cell-${cell.header.column}"
+                          name="row-${row.id}-cell-${cell.header.column}"
                           data-cell-value-formatted="${ifDefined(cell.value.formatted)}"
                         >
                           ${when(

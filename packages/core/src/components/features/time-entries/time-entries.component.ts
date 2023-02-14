@@ -84,7 +84,7 @@ export class TimeEntries extends LitElement {
 
   get visibleChecked(): boolean {
     const visible = this.table?.data!.getVisibleRows() ?? [];
-    return visible.map(row => row.index).every(index => this.selected.has(index));
+    return visible.map(row => row.id).every(id => this.selected.has(id));
   }
 
   getVisibleTimeEntries(): TimeEntry[] {
@@ -94,7 +94,7 @@ export class TimeEntries extends LitElement {
 
   getSelectedTimeEntries(): TimeEntry[] {
     return this.allRows
-      .filter(row => this.selected.has(row.index))
+      .filter(row => this.selected.has(row.id))
       .map(row => row.data) as unknown as TimeEntry[];
   }
 
@@ -121,8 +121,8 @@ export class TimeEntries extends LitElement {
 
   @eventOptions({ passive: true })
   handleRowClick(event: HTMLElementEventMap['time-shift-data-table:row-clicked']) {
-    const { index } = event.detail.row;
-    const input = this.table!.querySelector<HTMLInputElement>(`input[data-row-index="${index}"]`)!;
+    const { id } = event.detail.row;
+    const input = this.table!.querySelector<HTMLInputElement>(`input[data-row-id="${id}"]`)!;
     input.checked = !input.checked;
     input.dispatchEvent(new Event('change'));
   }
@@ -134,16 +134,16 @@ export class TimeEntries extends LitElement {
 
   @eventOptions({ passive: true })
   handleRowChange(event: Event) {
-    // get checked state and row index
+    // get checked state and row id
     const { checked, dataset } = event.target as HTMLInputElement;
-    const index = Number(dataset.rowIndex);
+    const id = Number(dataset.rowId);
     const selected = new Set(this.selected);
 
     // set new selection state
     if (checked) {
-      selected.add(index);
+      selected.add(id);
     } else {
-      selected.delete(index);
+      selected.delete(id);
     }
 
     // update selection
@@ -169,13 +169,13 @@ export class TimeEntries extends LitElement {
 
   @eventOptions({ passive: true })
   handleToggleVisible() {
-    const visible = this.table!.data!.getVisibleRows().map(row => row.index);
+    const visible = this.table!.data!.getVisibleRows().map(row => row.id);
     const selected = Array.from(this.selected);
-    const checked = visible.every(index => selected.includes(index));
+    const checked = visible.every(id => selected.includes(id));
 
     // update selection
     if (checked) {
-      this.selected = new Set(selected.filter(index => !visible.includes(index)));
+      this.selected = new Set(selected.filter(id => !visible.includes(id)));
     } else {
       this.selected = new Set([...selected, ...visible]);
     }
@@ -260,14 +260,14 @@ export class TimeEntries extends LitElement {
           () => html`
             ${repeat(
               this.allRows,
-              row => `${row.index}-${this.selected.has(row.index)}`,
+              row => `${row.id}-${this.selected.has(row.id)}`,
               row =>
                 html`
                   <input
                     type="checkbox"
-                    slot="row-${row.index}-cell-selected"
-                    data-row-index="${row.index}"
-                    .checked="${this.selected.has(row.index)}"
+                    slot="row-${row.id}-cell-selected"
+                    data-row-id="${row.id}"
+                    .checked="${this.selected.has(row.id)}"
                     @change="${this.handleRowChange}"
                     @click="${this.handleInputClick}"
                   />

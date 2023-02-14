@@ -48,6 +48,10 @@ export namespace HeadlessTable {
   export class Row implements TableType.Row {
     private readonly _cellsByColumn = new Map<string, Cell>();
 
+    get id(): number {
+      return this._id;
+    }
+
     get index(): number {
       return this._index;
     }
@@ -61,6 +65,7 @@ export namespace HeadlessTable {
     }
 
     constructor(
+      private readonly _id: number,
       private readonly _index: number,
       private readonly _data: TableType.TableDataEntry,
       private readonly _cells: Cell[] = [],
@@ -125,11 +130,15 @@ export namespace HeadlessTable {
         headers.set(column, header);
 
         this._data.forEach((entry, rowIndex) => {
+          const id = entry._id ?? rowIndex;
           const raw = entry[column];
           const parsed = parser(raw);
-          const formatted = formatter(parsed, rowIndex);
+          const formatted = formatter(parsed, rowIndex, id);
           const value: TableType.Value = { raw, formatted, parsed };
           const cell = new Cell(header, value);
+
+          // the intial data set will lack the _id property, so we have to add it
+          this._data[rowIndex]._id = id;
 
           // add to cells
           cells.push(cell);
@@ -141,14 +150,14 @@ export namespace HeadlessTable {
 
           // (prepare and) add to row
           if (rows[rowIndex] === undefined) {
-            rows[rowIndex] = new Row(rowIndex, entry);
+            rows[rowIndex] = new Row(id, rowIndex, entry);
           }
           rows[rowIndex].addCell(cell);
         });
       });
 
-      // derive visible rows from pagination
-      // no pagination required, deliver all rows
+      // derive visible rows from pagination, if no
+      // pagination is required, deliver all rows
       let visibleRows = rows;
 
       // prepare pagination from given options
