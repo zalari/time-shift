@@ -1,6 +1,6 @@
 import type { PreflightResult, TimeEntry } from '@time-shift/common';
 
-type MappedTimeEntries = Map<string | undefined, Set<TimeEntry>>;
+export type MappedTimeEntries = Map<string | undefined, Set<TimeEntry>>;
 
 /**
  * Adds a time entry to a given map.
@@ -21,6 +21,7 @@ export const addTimeEntry = (
 export const findWorklogIssuesByPrefixes = (
   timeEntries: TimeEntry[],
   prefixes: string[],
+  fallbackIssueKey?: string,
   field: 'note' | 'generated' = 'note',
 ): MappedTimeEntries => {
   const expression = new RegExp(`(${prefixes.join('|')})\\d+`, 'gi');
@@ -31,7 +32,7 @@ export const findWorklogIssuesByPrefixes = (
 
     // non-matching
     if (keys.size === 0) {
-      return addTimeEntry(map, undefined, timeEntry);
+      return addTimeEntry(map, fallbackIssueKey, timeEntry);
     }
 
     // divide the duration by the number of matched keys
@@ -44,9 +45,9 @@ export const findWorklogIssuesByPrefixes = (
 /**
  * In case of results that could not be mapped, we use this result for the time being
  */
-export const getUnmappedResult = (timeEntries: TimeEntry[]): PreflightResult => ({
+export const getUnmappedResult = (sources: TimeEntry[]): PreflightResult => ({
   type: '1:1',
-  result: timeEntries.map(source => ({
+  result: sources.map(source => ({
     source,
     target: {
       action: 'none',

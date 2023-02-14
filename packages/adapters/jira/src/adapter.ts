@@ -148,8 +148,10 @@ export const adapter: AdapterFactory<
           }
 
           // group the entries by found issues
+          const prefixes = [fields!.notesPrefix!];
           const field = fields?.useGeneratedNote ? 'generated' : 'note';
-          const entries = findWorklogIssuesByPrefixes(sources, [fields!.notesPrefix!], field);
+          const fallback = fields?.useFallbackIssue === true ? fields?.fallbackIssue : undefined;
+          const entries = findWorklogIssuesByPrefixes(sources, prefixes, fallback, field);
 
           // check for matching jira worklog items
           const keys = Array.from(entries.keys()).filter(key => key !== undefined) as string[];
