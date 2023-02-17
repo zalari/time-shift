@@ -11,7 +11,7 @@ export type PreflightResultTimeEntry<R = {}> = {
 /**
  * Maps a given time entry to a single target.
  */
-export type PreflightResultOneToOne<R, P = {}> = {
+export type PreflightResultOneToOne<R = {}, P = {}> = {
   source: TimeEntry<P>;
   target: PreflightResultTimeEntry<R>;
 };
@@ -19,7 +19,7 @@ export type PreflightResultOneToOne<R, P = {}> = {
 /**
  * Maps a given time entry to multiple targets.
  */
-export type PreflightResultOneToMany<R, P = {}> = {
+export type PreflightResultOneToMany<R = {}, P = {}> = {
   source: TimeEntry<P>;
   targets: PreflightResultTimeEntry<R>[];
 };
@@ -27,7 +27,7 @@ export type PreflightResultOneToMany<R, P = {}> = {
 /**
  * Maps multiple time entries to a single target.
  */
-export type PreflightResultManyToOne<R, P = {}> = {
+export type PreflightResultManyToOne<R = {}, P = {}> = {
   sources: TimeEntry<P>[];
   target: PreflightResultTimeEntry<R>;
 };

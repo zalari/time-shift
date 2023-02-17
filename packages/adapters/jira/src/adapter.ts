@@ -1,4 +1,12 @@
-import type { AdapterValues, AdapterFactory, TimeEntry } from '@time-shift/common';
+import type {
+  AdapterValues,
+  AdapterFactory,
+  TimeEntry,
+  GroupedPreflightResult,
+  PreflightResultOneToOne,
+  PlainPreflightResult,
+  PreflightResultTimeEntry,
+} from '@time-shift/common';
 
 import type { Worklog as Worklog2 } from 'jira.js/out/version2/models';
 import type { Worklog as Worklog3 } from 'jira.js/out/version3/models';
@@ -71,23 +79,6 @@ export const adapter: AdapterFactory<
 > = async config => {
   const client = createClient(config);
 
-  const getWorklogsForIssues = async (
-    keys: string[],
-    noteMappingFields?: Partial<AdapterValues<JiraAdapterNoteMappingFields>>,
-  ): Promise<TimeEntry<Worklog>[]> => {
-    return keys.reduce(async (all, issueIdOrKey) => {
-      try {
-        const { worklogs } = await client.issueWorklogs.getIssueWorklog({ issueIdOrKey });
-        const timeEntries = worklogs.map(worklog =>
-          mapWorklogToTimeEntry(issueIdOrKey, worklog, noteMappingFields),
-        );
-        return [...(await all), ...timeEntries];
-      } catch (error) {
-        return all;
-      }
-    }, Promise.resolve([] as TimeEntry<Worklog>[]));
-  };
-
   return {
     async checkConnection() {
       try {
@@ -118,10 +109,19 @@ export const adapter: AdapterFactory<
         const result = await client.issueSearch.searchForIssuesUsingJqlPost({ jql, fields: [] });
         const issues = result.issues ?? [];
         // get all worklogs for all issues
-        return getWorklogsForIssues(
-          issues.map(({ key }) => key),
-          noteMappingFields,
-        );
+        return issues
+          .map(({ key }) => key)
+          .reduce(async (all, issueIdOrKey) => {
+            try {
+              const { worklogs } = await client.issueWorklogs.getIssueWorklog({ issueIdOrKey });
+              const timeEntries = worklogs.map(worklog =>
+                mapWorklogToTimeEntry(issueIdOrKey, worklog, noteMappingFields),
+              );
+              return [...(await all), ...timeEntries];
+            } catch (error) {
+              return all;
+            }
+          }, Promise.resolve([] as TimeEntry<Worklog>[]));
       } catch (error) {
         return [];
       }
@@ -154,11 +154,29 @@ export const adapter: AdapterFactory<
           const entries = findWorklogIssuesByPrefixes(sources, prefixes, fallback, field);
 
           // check for matching jira worklog items
-          const keys = Array.from(entries.keys()).filter(key => key !== undefined) as string[];
-          const existing = await getWorklogsForIssues(keys);
+          const keys = Array.from(entries.keys()).filter(Boolean) as string[];
+          const results = keys.reduce(async (all, issueIdOrKey) => {
+            try {
+              const { worklogs } = await client.issueWorklogs.getIssueWorklog({ issueIdOrKey });
+              const result = worklogs.map(
+                worklog =>
+                  ({
+                    source: {} as TimeEntry,
+                    target: {
+                      action: 'none',
+                      entry: mapWorklogToTimeEntry(issueIdOrKey, worklog),
+                    },
+                  } satisfies PreflightResultOneToOne),
+              );
+              const group: PlainPreflightResult = { type: '1:1', result };
+              return { ...(await all), [issueIdOrKey]: group };
+            } catch (error) {
+              return all;
+            }
+          }, Promise.resolve({} as GroupedPreflightResult));
 
           // create a result set and deliver it
-          console.log(existing);
+          console.log('existing', keys, results);
 
           const actions = ['create', 'update', 'delete', 'none'] as const;
           return {
