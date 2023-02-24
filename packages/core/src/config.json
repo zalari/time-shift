@@ -1,7 +1,8 @@
 {
   "$schema": "./config.schema.json",
   "urls": {
-    "corsProxy": "/.netlify/functions/proxy?ua=time-shift&url="
+    "corsProxy": "/.netlify/functions/proxy?ua=time-shift&url=",
+    "storeProxy": "/.netlify/functions/store"
   },
   "database": {
     "name": "time-shift"

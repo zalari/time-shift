@@ -2,9 +2,16 @@
 export type Config = {
   urls: {
     corsProxy: string;
+    storeProxy: string;
   };
   database: {
     name: string;
+  };
+  s3?: {
+    accessKeyId: string;
+    secretAccessKey: string;
+    bucket: string;
+    key: string;
   };
 };
 

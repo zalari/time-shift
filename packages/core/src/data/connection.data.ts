@@ -33,19 +33,19 @@ export type Connection = {
 };
 
 export const getAllConnections = async (): Promise<Connection[]> => {
-  const repository = getConnectionRepository();
+  const repository = await getConnectionRepository();
   return repository.getConnections();
 };
 
 export const getConnection = async (id: number): Promise<Connection | undefined> => {
-  const repository = getConnectionRepository();
+  const repository = await getConnectionRepository();
   return repository.getConnection(id);
 };
 
 export const createConnection = async (
   value: Omit<Connection, 'id'>,
 ): Promise<Connection['id']> => {
-  const repository = getConnectionRepository();
+  const repository = await getConnectionRepository();
   const connection = repository.createConnection(value);
   dispatchEvent('connections:changed', 'connection:created');
 
@@ -53,7 +53,7 @@ export const createConnection = async (
 };
 
 export const updateConnection = async (value: Connection): Promise<Connection['id']> => {
-  const repository = getConnectionRepository();
+  const repository = await getConnectionRepository();
   const id = repository.updateConnection(value);
   dispatchEvent('connections:changed', 'connection:updated');
 
@@ -61,7 +61,7 @@ export const updateConnection = async (value: Connection): Promise<Connection['i
 };
 
 export const deleteConnection = async (id: number): Promise<void> => {
-  const repository = getConnectionRepository();
+  const repository = await getConnectionRepository();
   await repository.deleteConnection(id);
 
   dispatchEvent('connections:changed', 'connection:deleted');

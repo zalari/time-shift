@@ -3,6 +3,7 @@ import { type DBSchema, type IDBPDatabase, openDB } from 'idb';
 import { getConfig } from './config.utils';
 import { ConnectionRepository, QueryRepository, Repository } from '@/data/repository.interface';
 import { RepositoryIndexDb } from '@/data/repository-index-db.class';
+import { RepositoryS3 } from '@/data/repository-s3.class';
 
 /**
  * Ensure a valid initial state for the database
@@ -16,16 +17,21 @@ export const setupDb = (): void => {
 /**
  * Factory method to retrieve a repository implementation based on the current configuration
  */
-export const getRepository = (): Repository => {
-  // TODO: Switch based on configuration
+export const getRepository = async (): Promise<Repository> => {
+  const config = await getConfig();
+
+  if (config.s3) {
+    return new RepositoryS3();
+  }
+
   return new RepositoryIndexDb();
 };
 
-export const getConnectionRepository = (): ConnectionRepository => {
+export const getConnectionRepository = async (): Promise<ConnectionRepository> => {
   return getRepository();
 };
 
-export const getQueryRepository = (): QueryRepository => {
+export const getQueryRepository = async (): Promise<QueryRepository> => {
   return getRepository();
 };
 

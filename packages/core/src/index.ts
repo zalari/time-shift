@@ -47,6 +47,7 @@ export * from './components/ui/pane/pane.component';
 export * from './data/connection.data';
 export * from './data/query.data';
 export * from './data/repository-index-db.class';
+export * from './data/repository-s3.class';
 export * from './data/repository.interface';
 export * from './utils/config.utils';
 export * from './utils/converter.utils';

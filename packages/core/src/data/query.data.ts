@@ -37,17 +37,17 @@ export type Query = {
 };
 
 export const getAllQuerys = async (): Promise<Query[]> => {
-  const repository = getQueryRepository();
+  const repository = await getQueryRepository();
   return repository.getQueries();
 };
 
 export const getQuery = async (id: number): Promise<Query | undefined> => {
-  const repository = getQueryRepository();
+  const repository = await getQueryRepository();
   return repository.getQuery(id);
 };
 
 export const createQuery = async (value: Omit<Query, 'id'>): Promise<Query['id']> => {
-  const repository = getQueryRepository();
+  const repository = await getQueryRepository();
   const query = repository.createQuery(value);
   dispatchEvent('queries:changed', 'query:created');
 
@@ -55,7 +55,7 @@ export const createQuery = async (value: Omit<Query, 'id'>): Promise<Query['id']
 };
 
 export const updateQuery = async (value: Query): Promise<Query['id']> => {
-  const repository = getQueryRepository();
+  const repository = await getQueryRepository();
   const query = repository.updateQuery(value);
   dispatchEvent('queries:changed', 'query:updated');
 
@@ -63,7 +63,7 @@ export const updateQuery = async (value: Query): Promise<Query['id']> => {
 };
 
 export const deleteQuery = async (id: number): Promise<void> => {
-  const repository = getQueryRepository();
+  const repository = await getQueryRepository();
   await repository.deleteQuery(id);
   dispatchEvent('queries:changed', 'query:deleted');
 };
