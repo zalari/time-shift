@@ -37,6 +37,7 @@ const options: BuildOptions = {
     'src/index.html',
     'src/styles/global.scss',
     'src/functions/proxy.ts',
+    'src/functions/store.ts',
   ],
   outdir: 'dist',
   platform: 'browser',
