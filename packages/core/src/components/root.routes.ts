@@ -52,7 +52,10 @@ export const ROOT_ROUTES = [
       },
     ],
   },
-
+  {
+    path: '/test-form',
+    component: 'time-shift-test-form-page',
+  },
   {
     path: '(.*)',
     component: 'time-shift-not-found-page',
