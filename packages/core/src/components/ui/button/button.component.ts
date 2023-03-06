@@ -5,6 +5,10 @@ import styles from './button.component.scss';
 
 @customElement('time-shift-button')
 export class Button extends LitElement {
+  static readonly formAssociated = true;
+
+  readonly #internals = this.attachInternals();
+
   static override readonly styles = unsafeCSS(styles);
 
   @property({ reflect: true, type: Boolean })
@@ -15,7 +19,13 @@ export class Button extends LitElement {
 
   handleClick() {
     if (this.type === 'submit') {
-      this.closest('form')?.dispatchEvent(new Event('submit'));
+      const form = this.#internals.form;
+
+      if (!form) {
+        throw new Error('Form not detected');
+      }
+
+      form.requestSubmit();
     }
   }
 
