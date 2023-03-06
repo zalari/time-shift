@@ -8,6 +8,7 @@ export class TestFormPage extends LitElement {
       <time-shift-layout-main>
         <time-shift-navigation slot="header"></time-shift-navigation>
         <h1>Test Page Form</h1>
+        <time-shift-test-form></time-shift-test-form>
       </time-shift-layout-main> 
     `;
   }

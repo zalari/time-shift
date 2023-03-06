@@ -1,0 +1,13 @@
+@use '@styles/utils.scss' as utils;
+@use 'input.component.mixin.scss' as input;
+
+@include input.base('div');
+
+div:empty:before {
+  content: attr(data-placeholder);
+  color: var(--time-shift-color-grey-040);
+}
+
+label > span.border.invalid {
+  border: 1px solid var(---time-shift-input-invalid-border)
+}
