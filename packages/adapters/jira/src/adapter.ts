@@ -6,10 +6,12 @@ import type {
   PreflightResultOneToOne,
   PlainPreflightResult,
   PreflightResultTimeEntry,
+  PreflightResultOneToMany,
 } from '@time-shift/common';
 
 import type { Worklog as Worklog2 } from 'jira.js/out/version2/models';
 import type { Worklog as Worklog3 } from 'jira.js/out/version3/models';
+import type { GetIssueWorklog } from 'jira.js/out/version3/parameters';
 import { type Config, Version2Client, Version3Client } from 'jira.js';
 
 import type { JiraAdapterConfigFields } from './fields/config.fields';
@@ -17,7 +19,7 @@ import { type JiraAdapterQueryFields, queryFields } from './fields/query.fields'
 import { type JiraAdapterNoteMappingFields, noteMappingFields } from './fields/note-mapping.fields';
 import { type JiraAdapterStrategyFields, strategyFields } from './fields/strategy.fields';
 
-import { findWorklogIssuesByPrefixes, getUnmappedResult } from './utils/preflight.utils';
+import { findTimeEntriesByPrefixes, getUnmappedResult } from './utils/preflight.utils';
 
 export type Worklog = Worklog2 | Worklog3;
 
@@ -41,13 +43,19 @@ export const createClient = (config: AdapterValues<JiraAdapterConfigFields>): Ve
   }) as Version3Client;
 };
 
-export const stringifyComments = (comments?: (Worklog2 | Worklog3)['comment']): string => {
+export const stringifyComments = (comments?: Worklog['comment']): string => {
   if (typeof comments === 'string') return comments;
   return (
     comments?.content
       ?.map(({ content }) => content?.map(({ text = '' }) => text).join(''))
       .join('') ?? ''
   );
+};
+
+export const findTimeShiftIdInComments = (comments: Worklog['comment']): string | undefined => {
+  const note = stringifyComments(comments);
+  const [, match] = note.match(/TimeShift ID: (.*)/) || [];
+  return match;
 };
 
 export const mapWorklogToTimeEntry = (
@@ -68,6 +76,20 @@ export const mapWorklogToTimeEntry = (
       ?.reduce((acc, field) => [...acc, entry[field as keyof Worklog] as string], [] as string[])
       .join('\n'),
     payload: worklog,
+  };
+};
+
+export const getTimeEntryPreflight = (
+  timeEntry: TimeEntry,
+  worklog: Worklog[],
+): PreflightResultTimeEntry => {
+  // check if we already have an entry in the worklog
+  const mappedEntry = worklog.find(
+    ({ comment }) => findTimeShiftIdInComments(comment) === timeEntry.id,
+  );
+  return {
+    action: 'create',
+    entry: timeEntry,
   };
 };
 
@@ -152,24 +174,47 @@ export const adapter: AdapterFactory<
           const prefixes = [fields!.notesPrefix!];
           const field = fields?.useGeneratedNote ? 'generated' : 'note';
           const fallback = fields?.useFallbackIssue === true ? fields?.fallbackIssue : undefined;
-          const entries = findWorklogIssuesByPrefixes(sources, prefixes, fallback, field);
+          const entries = findTimeEntriesByPrefixes(sources, prefixes, fallback, field);
 
-          // check for matching jira worklog items
+          // entries without issue keys are filtered out
           const keys = Array.from(entries.keys()).filter(Boolean) as string[];
-          const results = keys.reduce(async (all, issueIdOrKey) => {
+          // check for matching jira worklog items
+          const results = await keys.reduce(async (all, issueIdOrKey) => {
             try {
-              const { worklogs } = await client.issueWorklogs.getIssueWorklog({ issueIdOrKey });
-              const result = worklogs.map(
-                worklog =>
-                  ({
-                    source: {} as TimeEntry,
-                    target: {
-                      action: 'none',
-                      entry: mapWorklogToTimeEntry(issueIdOrKey, worklog),
-                    },
-                  } satisfies PreflightResultOneToOne),
-              );
-              const group: PlainPreflightResult = { type: '1:1', result };
+              // get all existing worklogs for the issue
+              let worklogs: Worklog[] = [];
+              try {
+                const response = await client.issueWorklogs.getIssueWorklog({ issueIdOrKey });
+                worklogs = response.worklogs ?? [];
+              } catch {}
+              console.log('worklogs', issueIdOrKey, worklogs);
+              console.log('entries', issueIdOrKey, Array.from(entries.get(issueIdOrKey) || []));
+              // map the entries to the worklog items
+              const result = Array.from(entries.get(issueIdOrKey) || []).map(entry => {});
+
+              // const result = worklogs.map(
+              //   worklog =>
+              //     ({
+              //       source: {} as TimeEntry,
+              //       targets: {
+              //         action: 'none',
+              //         entry: mapWorklogToTimeEntry(issueIdOrKey, worklog),
+              //       },
+              //     } satisfies PreflightResultOneToMany),
+              // );
+              // const result = Array.from(entries.get(issueIdOrKey) || []).map(entry => {
+              //   const worklog = worklogs.find(
+              //     worklog => stringifyComments(worklog.comment) === entry.note,
+              //   );
+              //   return {
+              //     source: entry,
+              //     targets: {
+              //       action: worklog ? 'update' : 'create',
+              //       entry: worklog ? mapWorklogToTimeEntry(issueIdOrKey, worklog) : entry,
+              //     },
+              //   } satisfies PreflightResultOneToMany;
+              // });
+              const group: PlainPreflightResult = { type: '1:n', result: [] };
               return { ...(await all), [issueIdOrKey]: group };
             } catch (error) {
               return all;
@@ -178,20 +223,20 @@ export const adapter: AdapterFactory<
 
           // create a result set and deliver it
           console.log('existing', keys, results);
-
-          const actions = ['create', 'update', 'delete', 'none'] as const;
-          return {
-            type: '1:n',
-            result: sources.map(source => ({
-              source,
-              targets: [
-                {
-                  action: actions[Math.floor(Math.random() * actions.length)],
-                  entry: source as TimeEntry<Worklog>,
-                },
-              ],
-            })),
-          };
+          return results;
+        // const actions = ['create', 'update', 'delete', 'none'] as const;
+        // return {
+        //   type: '1:n',
+        //   result: sources.map(source => ({
+        //     source,
+        //     targets: [
+        //       {
+        //         action: actions[Math.floor(Math.random() * actions.length)],
+        //         entry: source as TimeEntry<Worklog>,
+        //       },
+        //     ],
+        //   })),
+        // };
 
         case 'none':
         default:
