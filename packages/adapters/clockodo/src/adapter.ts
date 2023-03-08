@@ -62,6 +62,7 @@ export const adapter: AdapterFactory<
         const timeUntil = new Date(entry.timeUntil!);
 
         return {
+          id: entry.id,
           minutes: Math.round((timeUntil.getTime() - timeSince.getTime()) / 1000 / 60),
           active: entry.isClockRunning,
           note: entry.text ?? undefined,

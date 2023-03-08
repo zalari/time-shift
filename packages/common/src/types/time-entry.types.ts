@@ -4,6 +4,11 @@
  */
 export type TimeEntry<P = {}> = {
   /**
+   * We need some kind of id to allow comparison with stored time entries.
+   */
+  id: string;
+
+  /**
    * The date of the time entry.
    */
   at: Date;

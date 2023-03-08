@@ -60,6 +60,7 @@ export const mapWorklogToTimeEntry = (
   const entry = { ...worklog, issueKey, note };
 
   return {
+    id: worklog.id!,
     at: new Date(started),
     minutes: timeSpentSeconds / 60,
     note,

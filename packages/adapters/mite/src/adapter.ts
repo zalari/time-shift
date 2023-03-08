@@ -56,6 +56,7 @@ export const adapter: AdapterFactory<
       return entries.map(
         ({ time_entry: entry }) =>
           ({
+            id: `${entry.id}`,
             at: new Date(entry.date_at),
             minutes: entry.minutes,
             active: entry.tracking ? true : false,
