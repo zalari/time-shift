@@ -1,12 +1,12 @@
 import { TimeEntry } from '@time-shift/common';
-import { findWorklogIssuesByPrefixes } from './preflight.utils';
+import { findTimeEntriesByPrefixes } from './preflight.utils';
 
 describe('preflight.utils', () => {
   describe('findWorklogIssuesByPrefixes', () => {
     it('should return an empty map if no time entries are given', () => {
       // GIVEN
       // WHEN
-      const result = findWorklogIssuesByPrefixes([], ['ABC-']);
+      const result = findTimeEntriesByPrefixes([], ['ABC-']);
       // THEN
       expect(result).toBeInstanceOf(Map);
       expect(result.size).toBe(0);
@@ -21,7 +21,7 @@ describe('preflight.utils', () => {
         { at, minutes: 30, note: 'foo bar' },
       ] satisfies TimeEntry[];
       // WHEN
-      const result = findWorklogIssuesByPrefixes(timeEntries, ['ABC-']);
+      const result = findTimeEntriesByPrefixes(timeEntries, ['ABC-']);
       // THEN
       expect(result).toBeInstanceOf(Map);
       expect(result.size).toBe(1);
@@ -38,7 +38,7 @@ describe('preflight.utils', () => {
         { at, minutes: 15, note: 'ABC-789' },
       ] satisfies TimeEntry[];
       // WHEN
-      const result = findWorklogIssuesByPrefixes(timeEntries, ['ABC-']);
+      const result = findTimeEntriesByPrefixes(timeEntries, ['ABC-']);
       // THEN
       expect(result).toBeInstanceOf(Map);
       expect(result.size).toBe(3);
@@ -53,7 +53,7 @@ describe('preflight.utils', () => {
         { at, minutes: 15, note: 'DEF-789\nABC-123\nDEF-8888' },
       ] satisfies TimeEntry[];
       // WHEN
-      const result = findWorklogIssuesByPrefixes(timeEntries, ['ABC-', 'DEF-']);
+      const result = findTimeEntriesByPrefixes(timeEntries, ['ABC-', 'DEF-']);
       // THEN
       expect(result).toBeInstanceOf(Map);
       expect(result.size).toBe(5);
@@ -72,7 +72,7 @@ describe('preflight.utils', () => {
         { at, minutes: 30, note: 'ABC-123\nABC-456' },
       ] satisfies TimeEntry[];
       // WHEN
-      const result = findWorklogIssuesByPrefixes(timeEntries, ['ABC-']);
+      const result = findTimeEntriesByPrefixes(timeEntries, ['ABC-']);
       const abc123 = Array.from(result.get('ABC-123')!);
       const abc456 = Array.from(result.get('ABC-456')!);
       // THEN

@@ -1,15 +1,15 @@
 import type { PreflightResult, TimeEntry } from '@time-shift/common';
 
-export type MappedTimeEntries = Map<string | undefined, Set<TimeEntry>>;
+export type MappedTimeEntries<P> = Map<string | undefined, Set<TimeEntry<P>>>;
 
 /**
  * Adds a time entry to a given map.
  */
-export const addTimeEntry = (
-  map: MappedTimeEntries,
+export const addTimeEntry = <P>(
+  map: MappedTimeEntries<P>,
   key: string | undefined,
-  timeEntry: TimeEntry,
-): MappedTimeEntries => {
+  timeEntry: TimeEntry<P>,
+): MappedTimeEntries<P> => {
   const entries = map.get(key) ?? new Set();
   return map.set(key, entries.add(timeEntry));
 };
@@ -18,12 +18,12 @@ export const addTimeEntry = (
  * Searches a collection of time entries for notes containing given issue
  * keys and returns a map of issue keys to matching time entries.
  */
-export const findWorklogIssuesByPrefixes = (
-  timeEntries: TimeEntry[],
+export const findTimeEntriesByPrefixes = <P>(
+  timeEntries: TimeEntry<P>[],
   prefixes: string[],
   fallbackIssueKey?: string,
   field: 'note' | 'generated' = 'note',
-): MappedTimeEntries => {
+): MappedTimeEntries<P> => {
   const expression = new RegExp(`(${prefixes.join('|')})\\d+`, 'gi');
   return timeEntries.reduce((map, timeEntry) => {
     // find any keys matching
