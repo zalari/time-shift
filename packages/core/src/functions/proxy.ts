@@ -46,7 +46,7 @@ const handler: Handler = async ({ rawUrl, headers, httpMethod, body: rawBody }: 
     const response = await fetch(searchParams.get('url')!, {
       headers: rawHeaders,
       method: httpMethod,
-      body: rawBody,
+      body: !['get', 'head'].includes(httpMethod.toLowerCase()) ? rawBody : undefined,
     });
 
     // gather result
