@@ -17,6 +17,17 @@ const handler: Handler = async ({ rawUrl, headers, httpMethod, body: rawBody }: 
     return { statusCode: 400, body: 'Missing "url" query parameter' };
   }
 
+  if (httpMethod.toLowerCase() === 'options') {
+    return {
+      statusCode: 200,
+      headers: {
+        'access-control-allow-origin': '*',
+        'access-control-allow-methods': '*',
+        'access-control-allow-headers': '*',
+      },
+    };
+  }
+
   // do the actual request
   try {
     // create headers from original request
@@ -56,6 +67,8 @@ const handler: Handler = async ({ rawUrl, headers, httpMethod, body: rawBody }: 
     // add missing cors headers
     const proxyHeaders = new Headers(response.headers);
     proxyHeaders.append('access-control-allow-origin', '*');
+    proxyHeaders.append('access-control-allow-methods', '*');
+    proxyHeaders.append('access-control-allow-headers', '*');
 
     // return the aligned response
     return {
