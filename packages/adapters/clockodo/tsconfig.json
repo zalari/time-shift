@@ -9,9 +9,5 @@
     "outDir": "dist",
     "strict": true,
     "target": "es2017"
-  },
-  "ts-node": {
-    "esm": true,
-    "files": true
   }
 }

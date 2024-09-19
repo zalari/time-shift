@@ -20,7 +20,8 @@
     "generate:config": "typescript-json-schema src/utils/config.utils.ts Config --ignoreErrors --out src/config.schema.json",
     "clean": "shx rm -rf dist",
     "test": "jest",
-    "build": "ts-node esbuild.config.ts",
+    "build": "tsx esbuild.config.ts",
+    "build:watch": "tsx esbuild.config.ts --watch",
     "dev": "netlify dev"
   },
   "dependencies": {
@@ -56,7 +57,7 @@
     "sass": "1.79.1",
     "shx": "0.3.4",
     "ts-jest": "29.0.3",
-    "ts-node": "10.9.1",
+    "tsx": "4.19.1",
     "typescript": "4.9.4",
     "typescript-json-schema": "0.55.0"
   },
