@@ -4,7 +4,7 @@ NPM_FLAGS = "--version"
 
 [build]
 command = """
-    pnpm install --recursive &&
+    pnpm install &&
     pnpm run --recursive --filter @time-shift/core... build
   """
 publish = "dist"
@@ -19,7 +19,7 @@ directory = "dist/functions/"
 
 [dev]
 autoLaunch = false
-command = "ts-node esbuild.config.ts --watch"
+command = "pnpm run --recursive --filter @time-shift/core build:watch"
 framework = "#custom"
 port = 3500
 publish = "dist"
